@@ -7,7 +7,7 @@ import 'package:fit_motiv/screens/progress_screen.dart';
 import 'package:fit_motiv/screens/community_screen.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  const HomeScreen({super.key});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
