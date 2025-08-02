@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+
 import '../constants/app_colors.dart';
 import '../constants/app_text_styles.dart';
+
+import 'profile_screen.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -25,7 +28,12 @@ class SettingsScreen extends StatelessWidget {
                 icon: Icons.person,
                 title: 'Edit Profile',
                 subtitle: 'Update your personal information',
-                onTap: () {},
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const ProfileScreen()),
+                  );
+                },
               ),
               _buildSettingItem(
                 icon: Icons.fitness_center,

@@ -9,7 +9,10 @@ import 'features/dashboard/presentation/providers/dashboard_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize dependency injection
   await di.init();
+
   runApp(
     MultiProvider(
       providers: [

@@ -1,14 +1,16 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+
 import 'package:animate_do/animate_do.dart';
-import '../widgets/progress_card.dart';
-import '../widgets/workout_card.dart';
-import '../widgets/recipe_card.dart';
-import '../widgets/bottom_navigation_bar.dart';
+
 import '../constants/app_colors.dart';
 import '../constants/app_text_styles.dart';
 import '../models/sample_data.dart';
 import '../screens/settings_screen.dart';
-import 'dart:math';
+import '../widgets/progress_card.dart';
+import '../widgets/recipe_card.dart';
+import '../widgets/workout_card.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -18,13 +20,11 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
-  int _selectedIndex = 0;
   late String dailyQuote;
 
   @override
   void initState() {
     super.initState();
-    // Seleccionar una cita aleatoria para el día
     final random = Random();
     dailyQuote =
         SampleData.motivationalQuotes[random.nextInt(
@@ -34,39 +34,28 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFB),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildHeader(),
-              const SizedBox(height: 30),
-              _buildProgressSection(),
-              const SizedBox(height: 30),
-              _buildQuoteSection(),
-              const SizedBox(height: 30),
-              _buildWorkoutSection(),
-              const SizedBox(height: 30),
-              _buildRecipeSection(),
-            ],
-          ),
+    return SafeArea(
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildHeader(context),
+            const SizedBox(height: 30),
+            _buildProgressSection(),
+            const SizedBox(height: 30),
+            _buildQuoteSection(),
+            const SizedBox(height: 30),
+            _buildWorkoutSection(),
+            const SizedBox(height: 30),
+            _buildRecipeSection(),
+          ],
         ),
-      ),
-      bottomNavigationBar: CustomBottomNavigationBar(
-        selectedIndex: _selectedIndex,
-        onItemSelected: (index) {
-          setState(() {
-            _selectedIndex = index;
-          });
-        },
       ),
     );
   }
 
-  Widget _buildHeader() {
+  Widget _buildHeader(BuildContext context) {
     return FadeInDown(
       duration: const Duration(milliseconds: 600),
       child: Row(
@@ -87,7 +76,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               borderRadius: BorderRadius.circular(12),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.grey.withOpacity(0.1),
+                  color: Colors.grey.withValues(alpha: 0.1),
                   spreadRadius: 1,
                   blurRadius: 10,
                   offset: const Offset(0, 2),
@@ -98,9 +87,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                    builder: (context) => const SettingsScreen(),
-                  ),
+                  MaterialPageRoute(builder: (_) => const SettingsScreen()),
                 );
               },
               child: const Icon(
@@ -135,7 +122,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
-              color: Colors.grey.withOpacity(0.1),
+              color: Colors.grey.withValues(alpha: 0.1),
               spreadRadius: 1,
               blurRadius: 10,
               offset: const Offset(0, 2),

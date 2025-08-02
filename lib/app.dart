@@ -1,9 +1,8 @@
-
 import 'package:flutter/material.dart';
 
 import 'package:google_fonts/google_fonts.dart';
 
-import 'package:fit_motiv/screens/dashboard_screen.dart';
+import 'package:fit_motiv/screens/home_screen.dart';
 
 class FitMotivApp extends StatelessWidget {
   const FitMotivApp({super.key});
@@ -24,7 +23,7 @@ class FitMotivApp extends StatelessWidget {
         ),
         useMaterial3: true,
       ),
-      home: const DashboardScreen(),
+      home: const HomeScreen(),
     );
   }
 }

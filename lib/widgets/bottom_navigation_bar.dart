@@ -46,7 +46,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
               ),
               _buildNavItem(
                 icon: Icons.directions_run,
-                label: 'Community',
+                label: 'Routines',
                 index: 2,
                 isSelected: selectedIndex == 2,
               ),
