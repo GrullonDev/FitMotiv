@@ -1,76 +1,93 @@
-# FitMotiv 💪
+## FitMotiv 💪
 
-Una aplicación Flutter elegante y moderna para fitness y motivación personal.
+FitMotiv es una aplicación Flutter moderna, elegante y personalizable para gestionar rutinas de ejercicio, nutrición y motivación diaria.
 
-## 🚀 Características
+---
 
-### Dashboard Principal
-- **Saludo personalizado**: Bienvenida con el nombre del usuario
-- **Progreso de pérdida de peso**: Barra de progreso visual con indicador de metas
-- **Cita motivacional**: Mensaje inspirador diario
-- **Workout del día**: Rutina de ejercicios recomendada con duración y descripción
-- **Receta saludable**: Sugerencia nutricional con información calórica y tiempo de preparación
+## 🔍 Tabla de Contenidos
+1. [Características](#características)
+2. [Tecnologías](#tecnologías)
+3. [Arquitectura y Estructura](#arquitectura-y-estructura)
+4. [Instalación y Ejecución](#instalación-y-ejecución)
+5. [Contribuciones](#contribuciones)
+6. [Licencia](#licencia)
 
-### Diseño UI/UX
-- **Colores armoniosos**: Paleta de verdes y tonos neutros
-- **Animaciones suaves**: Transiciones con `animate_do`
-- **Tipografía moderna**: Google Fonts (Poppins)
-- **Navegación intuitiva**: Bottom navigation bar customizada
-- **Cards elegantes**: Diseño con sombras y bordes redondeados
+---
 
-## 📱 Pantallas Implementadas
+## ✨ Características
+- **Dashboard**: Saludo personalizado, progreso de peso, cita motivacional, workout del día y receta saludable.
+- **Planes y Rutinas**: Gestión de planes de alimentación y vista de rutinas por categorías (All, Cardio, Strength, Flexibility).
+- **Progreso**: Gráficas semanales, mensuales y anuales de métricas (peso, medidas, actividad) y metas.
+- **Comunidad**: Feed social con publicaciones, likes, comentarios y navegación por pestañas.
+- **Perfil**: Avatar, estado de membresía, metas personales y recompensas.
+- **Configuraciones**: Preferencias de notificaciones, modo oscuro y sección de soporte.
 
-### 🏠 Dashboard (Pantalla Principal)
-- Header con saludo personalizado y botón de configuración
-- Card de progreso con barra de porcentaje
-- Sección de cita motivacional con gradiente
-- Card de workout con imagen, duración y botón de acción
-- Card de receta con ilustración, información nutricional y botón
+---
 
-### 🎨 Componentes Personalizados
-- `ProgressCard`: Muestra el progreso de objetivos
-- `WorkoutCard`: Presenta el ejercicio del día
-- `RecipeCard`: Exhibe recetas saludables
-- `CustomBottomNavigationBar`: Navegación inferior personalizada
+## 🛠️ Tecnologías
+- **Flutter** 3.32.4 (gestión con **FVM**).
+- **Dart** 3.x
+- **State Management**: Provider + GetIt
+- **Animaciones**: animate_do
+- **Tipografía**: google_fonts (Poppins)
+- **SVG**: flutter_svg
+- **Gráficas**: percent_indicator
 
-## 🛠️ Tecnologías Utilizadas
+---
 
-### Dependencias Principales
-```yaml
-dependencies:
-  flutter: sdk: flutter
-  google_fonts: ^6.1.0      # Tipografías elegantes
-  flutter_svg: ^2.0.9       # Soporte para SVG
-  percent_indicator: ^4.2.3   # Indicadores de progreso
-  animate_do: ^3.1.2         # Animaciones predefinidas
-```
+## 🏗️ Arquitectura y Estructura
+Se utiliza Clean Architecture con organización por features:
 
-### Estructura del Proyecto
 ```
 lib/
-├── main.dart                    # Punto de entrada de la aplicación
-├── screens/
-│   └── dashboard_screen.dart    # Pantalla principal del dashboard
-├── widgets/
-│   ├── progress_card.dart       # Widget de progreso
-│   ├── workout_card.dart        # Widget de ejercicios
-│   ├── recipe_card.dart         # Widget de recetas
-│   └── bottom_navigation_bar.dart # Navegación inferior
-└── constants/
-    ├── app_colors.dart          # Definición de colores
-    └── app_text_styles.dart     # Estilos de texto
+├── main.dart             # Punto de entrada
+├── app.dart              # Configuración de MaterialApp y rutas
+├── core/di/              # Inyección de dependencias (GetIt)
+├── constants/            # Colores y estilos de texto
+├── models/               # Entidades y sample_data
+├── features/             # data, domain, presentation por feature
+├── screens/              # Pantallas (Dashboard, Plans, Routines, Progress, Community, Profile, Settings)
+└── widgets/              # Componentes reutilizables (cards, bottom navigation, etc.)
 ```
 
+---
+
 ## 🚀 Instalación y Ejecución
+### Requisitos
+- **FVM** (Flutter Version Manager)
 
-1. **Instalar dependencias**:
+```bash
+dart pub global activate fvm
+```
+Clonar y usar la versión específica:
+```bash
+git clone <repo-url>
+cd fit_motiv
+fvm install 3.32.4
+fvm use 3.32.4
+```
+
+### Comandos
+1. Instalar dependencias:
    ```bash
-   flutter pub get
+   fvm flutter pub get
+   ```
+2. Ejecutar la app:
+   ```bash
+   fvm flutter run
    ```
 
-2. **Ejecutar la aplicación**:
-   ```bash
-   flutter run
-   ```
+---
 
-Desarrollado con ❤️ usando Flutter
+## Contribuciones
+1. Dale ⭐ al proyecto.
+2. Haz un *fork* y crea una rama (`feature/nueva-funcionalidad`).
+3. Realiza cambios y commitea con mensajes claros.
+4. Empuja tu rama y abre un Pull Request describiendo tu aporte.
+
+¡Gracias por contribuir! 🙏
+
+---
+
+## 📝 Licencia
+Este proyecto está bajo licencia MIT. Consulta `LICENSE` para más detalles.
