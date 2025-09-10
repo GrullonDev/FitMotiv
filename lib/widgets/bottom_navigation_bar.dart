@@ -19,7 +19,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
         color: Colors.white,
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
+            color: Colors.grey.withValues(alpha: 0.1),
             spreadRadius: 1,
             blurRadius: 10,
             offset: const Offset(0, -2),
@@ -28,9 +28,9 @@ class CustomBottomNavigationBar extends StatelessWidget {
       ),
       child: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               _buildNavItem(
                 icon: Icons.home,
@@ -62,6 +62,12 @@ class CustomBottomNavigationBar extends StatelessWidget {
                 index: 4,
                 isSelected: selectedIndex == 4,
               ),
+              _buildNavItem(
+                icon: Icons.person,
+                label: 'Profile',
+                index: 5,
+                isSelected: selectedIndex == 5,
+              ),
             ],
           ),
         ),
@@ -75,28 +81,36 @@ class CustomBottomNavigationBar extends StatelessWidget {
     required int index,
     required bool isSelected,
   }) {
-    return GestureDetector(
-      onTap: () => onItemSelected(index),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              icon,
-              size: 24,
-              color: isSelected ? AppColors.primary : const Color(0xFF9CA3AF),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              label,
-              style: AppTextStyles.bodySmall.copyWith(
-                fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+    return Expanded(
+      child: InkWell(
+        borderRadius: BorderRadius.circular(12),
+        onTap: () => onItemSelected(index),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 180),
+          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                icon,
+                size: 22,
                 color: isSelected ? AppColors.primary : const Color(0xFF9CA3AF),
               ),
-            ),
-          ],
+              const SizedBox(height: 2),
+              FittedBox(
+                child: Text(
+                  label,
+                  style: AppTextStyles.bodySmall.copyWith(
+                    fontSize: 11,
+                    fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+                    color: isSelected
+                        ? AppColors.primary
+                        : const Color(0xFF9CA3AF),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

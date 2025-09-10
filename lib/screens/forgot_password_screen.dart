@@ -3,7 +3,7 @@ import '../constants/app_colors.dart';
 import '../constants/app_text_styles.dart';
 
 class ForgotPasswordScreen extends StatelessWidget {
-  const ForgotPasswordScreen({Key? key}) : super(key: key);
+  const ForgotPasswordScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -24,10 +24,7 @@ class ForgotPasswordScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'Forgot Your Password?',
-                style: AppTextStyles.heading1,
-              ),
+              Text('Forgot Your Password?', style: AppTextStyles.heading1),
               const SizedBox(height: 16),
               Text(
                 'Enter your email and we’ll send you instructions to reset your password.',
@@ -59,14 +56,22 @@ class ForgotPasswordScreen extends StatelessWidget {
                       borderRadius: BorderRadius.circular(30),
                     ),
                   ),
-                  child: Text('Send Reset Link', style: AppTextStyles.buttonText),
+                  child: Text(
+                    'Send Reset Link',
+                    style: AppTextStyles.buttonText,
+                  ),
                 ),
               ),
               const SizedBox(height: 24),
               Center(
                 child: GestureDetector(
                   onTap: () => Navigator.pop(context),
-                  child: Text('Back to Sign In', style: AppTextStyles.bodySmall.copyWith(color: AppColors.primary)),
+                  child: Text(
+                    'Back to Sign In',
+                    style: AppTextStyles.bodySmall.copyWith(
+                      color: AppColors.primary,
+                    ),
+                  ),
                 ),
               ),
             ],

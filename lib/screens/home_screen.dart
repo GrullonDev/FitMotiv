@@ -5,6 +5,7 @@ import 'package:fit_motiv/screens/plans_screen.dart';
 import 'package:fit_motiv/screens/routines_screen.dart';
 import 'package:fit_motiv/screens/progress_screen.dart';
 import 'package:fit_motiv/screens/community_screen.dart';
+import 'package:fit_motiv/screens/profile_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -22,6 +23,7 @@ class _HomeScreenState extends State<HomeScreen> {
     RoutinesScreen(),
     ProgressScreen(),
     CommunityScreen(),
+    ProfileScreen(),
   ];
 
   void _onItemSelected(int index) {

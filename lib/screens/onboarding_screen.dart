@@ -3,7 +3,7 @@ import '../constants/app_colors.dart';
 import '../constants/app_text_styles.dart';
 
 class OnboardingScreen extends StatelessWidget {
-  const OnboardingScreen({Key? key}) : super(key: key);
+  const OnboardingScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -46,10 +46,7 @@ class OnboardingScreen extends StatelessWidget {
                         borderRadius: BorderRadius.circular(30),
                       ),
                     ),
-                    child: Text(
-                      'Get Started',
-                      style: AppTextStyles.buttonText,
-                    ),
+                    child: Text('Get Started', style: AppTextStyles.buttonText),
                   ),
                 ),
               ),

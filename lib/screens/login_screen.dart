@@ -3,7 +3,7 @@ import '../constants/app_colors.dart';
 import '../constants/app_text_styles.dart';
 
 class LoginScreen extends StatelessWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+  const LoginScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +23,9 @@ class LoginScreen extends StatelessWidget {
                     const SizedBox(height: 8),
                     Text(
                       'Sign in to continue your fitness journey.',
-                      style: AppTextStyles.bodyMedium.copyWith(color: AppColors.textSecondary),
+                      style: AppTextStyles.bodyMedium.copyWith(
+                        color: AppColors.textSecondary,
+                      ),
                       textAlign: TextAlign.center,
                     ),
                   ],
@@ -91,7 +93,10 @@ class LoginScreen extends StatelessWidget {
                   onPressed: () {
                     Navigator.pushNamed(context, '/forgot');
                   },
-                  child: Text('Forgot Password?', style: AppTextStyles.bodySmall),
+                  child: Text(
+                    'Forgot Password?',
+                    style: AppTextStyles.bodySmall,
+                  ),
                 ),
               ),
               const SizedBox(height: 40),
@@ -104,7 +109,12 @@ class LoginScreen extends StatelessWidget {
                       onTap: () {
                         Navigator.pushNamed(context, '/register');
                       },
-                      child: Text('Sign Up', style: AppTextStyles.bodySmall.copyWith(color: AppColors.primary)),
+                      child: Text(
+                        'Sign Up',
+                        style: AppTextStyles.bodySmall.copyWith(
+                          color: AppColors.primary,
+                        ),
+                      ),
                     ),
                   ],
                 ),
@@ -121,10 +131,7 @@ class LoginScreen extends StatelessWidget {
       onTap: onTap,
       child: Container(
         padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          shape: BoxShape.circle,
-        ),
+        decoration: BoxDecoration(color: Colors.white, shape: BoxShape.circle),
         child: Icon(icon, size: 24, color: AppColors.primary),
       ),
     );

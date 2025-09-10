@@ -3,7 +3,7 @@ import '../constants/app_colors.dart';
 import '../constants/app_text_styles.dart';
 
 class RegisterScreen extends StatelessWidget {
-  const RegisterScreen({Key? key}) : super(key: key);
+  const RegisterScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -91,10 +91,18 @@ class RegisterScreen extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text('Already have an account? ', style: AppTextStyles.bodySmall),
+                        Text(
+                          'Already have an account? ',
+                          style: AppTextStyles.bodySmall,
+                        ),
                         GestureDetector(
                           onTap: () => Navigator.pop(context),
-                          child: Text('Sign In', style: AppTextStyles.bodySmall.copyWith(color: AppColors.primary)),
+                          child: Text(
+                            'Sign In',
+                            style: AppTextStyles.bodySmall.copyWith(
+                              color: AppColors.primary,
+                            ),
+                          ),
                         ),
                       ],
                     ),
