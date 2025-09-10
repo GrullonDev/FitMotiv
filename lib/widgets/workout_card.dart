@@ -13,7 +13,7 @@ class WorkoutCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
+            color: Colors.grey.withValues(alpha: 0.1),
             spreadRadius: 1,
             blurRadius: 10,
             offset: const Offset(0, 2),
@@ -46,7 +46,7 @@ class WorkoutCard extends StatelessWidget {
                   child: Icon(
                     Icons.fitness_center,
                     size: 80,
-                    color: Colors.white.withOpacity(0.3),
+                    color: Colors.white.withValues(alpha: 0.3),
                   ),
                 ),
               ],

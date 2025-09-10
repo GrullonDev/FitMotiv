@@ -22,18 +22,17 @@ class ProfileScreen extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.edit, color: AppColors.primary),
             onPressed: () {
-              // Try to navigate to a dedicated edit profile route if available.
-              Navigator.pushNamed(context, '/profile_edit')
-                  .then((_) {
-                    // navigation returned; nothing to do for now
-                  })
-                  .catchError((_) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Edit profile is not available yet'),
-                      ),
-                    );
-                  });
+              // Navigate to edit profile if the route is registered. If not, show a snackbar.
+              try {
+                Navigator.of(context).pushNamed('/profile_edit');
+              } catch (_) {
+                // Route not found
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Edit profile is not available yet'),
+                  ),
+                );
+              }
             },
           ),
         ],
@@ -79,7 +78,7 @@ class ProfileScreen extends StatelessWidget {
               borderRadius: BorderRadius.circular(16),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.grey.withOpacity(0.08),
+                  color: Colors.grey.withValues(alpha: 0.08),
                   spreadRadius: 1,
                   blurRadius: 12,
                   offset: const Offset(0, 4),
@@ -106,7 +105,7 @@ class ProfileScreen extends StatelessWidget {
               borderRadius: BorderRadius.circular(16),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.grey.withOpacity(0.08),
+                  color: Colors.grey.withValues(alpha: 0.08),
                   spreadRadius: 1,
                   blurRadius: 12,
                   offset: const Offset(0, 4),

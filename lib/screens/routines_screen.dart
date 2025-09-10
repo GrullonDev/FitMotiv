@@ -81,7 +81,7 @@ class _RoutineCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
+            color: Colors.grey.withValues(alpha: 0.1),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -94,7 +94,7 @@ class _RoutineCard extends StatelessWidget {
             borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
             child: Container(
               height: 100,
-              color: AppColors.primary.withOpacity(0.1),
+              color: AppColors.primary.withValues(alpha: 0.1),
               child: Center(
                 child: Icon(
                   Icons.directions_run,
