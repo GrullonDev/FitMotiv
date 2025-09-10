@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-
-import '../constants/app_colors.dart';
-import '../constants/app_text_styles.dart';
+import 'package:fit_motiv/constants/app_colors.dart';
+import 'package:fit_motiv/constants/app_text_styles.dart';
 
 class PlansScreen extends StatelessWidget {
   const PlansScreen({super.key});
@@ -30,7 +29,6 @@ class PlansScreen extends StatelessWidget {
         ),
         body: TabBarView(
           children: [
-            // Meal Plans Tab
             SingleChildScrollView(
               padding: const EdgeInsets.all(16),
               child: Column(
@@ -41,7 +39,7 @@ class PlansScreen extends StatelessWidget {
                     style: AppTextStyles.heading4,
                   ),
                   const SizedBox(height: 16),
-                  _MealPlanCard(),
+                  const _MealPlanCard(),
                   const SizedBox(height: 32),
                   Text(
                     'Explore Healthy Recipes',
@@ -52,7 +50,7 @@ class PlansScreen extends StatelessWidget {
                     height: 160,
                     child: ListView(
                       scrollDirection: Axis.horizontal,
-                      children: [
+                      children: const [
                         _RecipePreviewCard(
                           title: 'Quick & Easy Salads',
                           imageUrl: 'https://via.placeholder.com/150',
@@ -71,11 +69,9 @@ class PlansScreen extends StatelessWidget {
                 ],
               ),
             ),
-            // Recipes Tab
             Center(
               child: Text('Recipes content', style: AppTextStyles.bodyLarge),
             ),
-            // Tips Tab
             Center(child: Text('Tips content', style: AppTextStyles.bodyLarge)),
           ],
         ),
@@ -85,6 +81,7 @@ class PlansScreen extends StatelessWidget {
 }
 
 class _MealPlanCard extends StatelessWidget {
+  const _MealPlanCard();
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -138,7 +135,6 @@ class _MealPlanCard extends StatelessWidget {
 class _RecipePreviewCard extends StatelessWidget {
   final String title;
   final String imageUrl;
-
   const _RecipePreviewCard({required this.title, required this.imageUrl});
 
   @override

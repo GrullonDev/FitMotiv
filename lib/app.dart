@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 
 import 'package:google_fonts/google_fonts.dart';
 
-import 'package:fit_motiv/screens/onboarding_screen.dart';
-import 'package:fit_motiv/screens/login_screen.dart';
-import 'package:fit_motiv/screens/register_screen.dart';
-import 'package:fit_motiv/screens/forgot_password_screen.dart';
-import 'package:fit_motiv/screens/home_screen.dart';
-import 'package:fit_motiv/screens/settings_screen.dart';
-import 'package:fit_motiv/screens/profile_screen.dart';
+import 'package:fit_motiv/features/auth/presentation/screens/onboarding_screen.dart';
+import 'package:fit_motiv/features/auth/presentation/screens/login_screen.dart';
+import 'package:fit_motiv/features/auth/presentation/screens/register_screen.dart';
+import 'package:fit_motiv/features/auth/presentation/screens/forgot_password_screen.dart';
+import 'package:fit_motiv/features/dashboard/presentation/screens/home_screen.dart';
+import 'package:fit_motiv/features/profile_settings/presentation/screens/settings_screen.dart';
+import 'package:fit_motiv/features/profile_settings/presentation/screens/profile_screen.dart';
 
 class FitMotivApp extends StatelessWidget {
   const FitMotivApp({super.key});

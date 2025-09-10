@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-
-import '../constants/app_colors.dart';
-import '../constants/app_text_styles.dart';
+import 'package:fit_motiv/constants/app_colors.dart';
+import 'package:fit_motiv/constants/app_text_styles.dart';
 
 class CommunityScreen extends StatelessWidget {
   const CommunityScreen({super.key});
@@ -39,8 +38,8 @@ class CommunityScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildFeed() {
-    final List<Map<String, dynamic>> posts = [
+  static Widget _buildFeed() {
+    final posts = [
       {
         'name': 'Sophia',
         'time': '10 min ago',
@@ -72,8 +71,7 @@ class CommunityScreen extends StatelessWidget {
       separatorBuilder: (_, __) => const SizedBox(height: 24),
       itemBuilder: (context, i) {
         final post = posts[i];
-        final initials = post['name']!
-            .toString()
+        final initials = (post['name'] as String)
             .split(' ')
             .map((e) => e[0])
             .join();
@@ -124,11 +122,15 @@ class CommunityScreen extends StatelessWidget {
             const SizedBox(height: 12),
             Row(
               children: [
-                Icon(Icons.favorite, size: 20, color: AppColors.primary),
+                const Icon(Icons.favorite, size: 20, color: AppColors.primary),
                 const SizedBox(width: 4),
                 Text('${post['likes']}', style: AppTextStyles.bodySmall),
                 const SizedBox(width: 16),
-                Icon(Icons.comment, size: 20, color: AppColors.textSecondary),
+                const Icon(
+                  Icons.comment,
+                  size: 20,
+                  color: AppColors.textSecondary,
+                ),
                 const SizedBox(width: 4),
                 Text('${post['comments']}', style: AppTextStyles.bodySmall),
                 const SizedBox(width: 4),

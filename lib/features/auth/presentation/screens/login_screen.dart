@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../constants/app_colors.dart';
-import '../constants/app_text_styles.dart';
+import 'package:fit_motiv/constants/app_colors.dart';
+import 'package:fit_motiv/constants/app_text_styles.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -73,15 +73,13 @@ class LoginScreen extends StatelessWidget {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.pushReplacementNamed(context, '/home');
-                  },
+                  onPressed: () =>
+                      Navigator.pushReplacementNamed(context, '/home'),
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30),
                     ),
-                    // Gradient style placeholder: use primary color
                     backgroundColor: AppColors.primary,
                   ),
                   child: Text('Sign In', style: AppTextStyles.buttonText),
@@ -90,9 +88,7 @@ class LoginScreen extends StatelessWidget {
               const SizedBox(height: 12),
               Center(
                 child: TextButton(
-                  onPressed: () {
-                    Navigator.pushNamed(context, '/forgot');
-                  },
+                  onPressed: () => Navigator.pushNamed(context, '/forgot'),
                   child: Text(
                     'Forgot Password?',
                     style: AppTextStyles.bodySmall,
@@ -106,9 +102,7 @@ class LoginScreen extends StatelessWidget {
                   children: [
                     Text('New to FitMotiv? ', style: AppTextStyles.bodySmall),
                     GestureDetector(
-                      onTap: () {
-                        Navigator.pushNamed(context, '/register');
-                      },
+                      onTap: () => Navigator.pushNamed(context, '/register'),
                       child: Text(
                         'Sign Up',
                         style: AppTextStyles.bodySmall.copyWith(
@@ -131,7 +125,10 @@ class LoginScreen extends StatelessWidget {
       onTap: onTap,
       child: Container(
         padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(color: Colors.white, shape: BoxShape.circle),
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          shape: BoxShape.circle,
+        ),
         child: Icon(icon, size: 24, color: AppColors.primary),
       ),
     );

@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-
-import '../constants/app_colors.dart';
-import '../constants/app_text_styles.dart';
+import 'package:fit_motiv/constants/app_colors.dart';
+import 'package:fit_motiv/constants/app_text_styles.dart';
 
 class ProfileScreen extends StatelessWidget {
   static const routeName = '/profile';
-
   const ProfileScreen({super.key});
 
   @override
@@ -22,11 +20,9 @@ class ProfileScreen extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.edit, color: AppColors.primary),
             onPressed: () {
-              // Navigate to edit profile if the route is registered. If not, show a snackbar.
               try {
                 Navigator.of(context).pushNamed('/profile_edit');
               } catch (_) {
-                // Route not found
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
                     content: Text('Edit profile is not available yet'),
@@ -43,11 +39,9 @@ class ProfileScreen extends StatelessWidget {
           Center(
             child: Column(
               children: [
-                CircleAvatar(
+                const CircleAvatar(
                   radius: 56,
-                  backgroundImage: const NetworkImage(
-                    'https://via.placeholder.com/150', // Placeholder avatar
-                  ),
+                  child: Icon(Icons.person, size: 48, color: AppColors.primary),
                 ),
                 const SizedBox(height: 16),
                 Text('Sophia Carter', style: AppTextStyles.heading2),
@@ -71,61 +65,55 @@ class ProfileScreen extends StatelessWidget {
           const SizedBox(height: 24),
           Text('Personal Goals', style: AppTextStyles.heading4),
           const SizedBox(height: 12),
-          Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(16),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withValues(alpha: 0.08),
-                  spreadRadius: 1,
-                  blurRadius: 12,
-                  offset: const Offset(0, 4),
-                ),
-              ],
-            ),
-            child: Column(
-              children: [
-                _buildGoalRow('Starting Weight', '165 lbs', 'Current: 150 lbs'),
-                const Divider(height: 1),
-                _buildGoalRow('Goal Weight', '130 lbs', 'Current: 140 lbs'),
-                const Divider(height: 1),
-                _buildGoalRow('Weight Lost', '15 lbs', 'Current: 10 lbs'),
-              ],
-            ),
+          _card(
+            children: const [
+              _GoalRow('Starting Weight', '165 lbs', 'Current: 150 lbs'),
+              Divider(height: 1),
+              _GoalRow('Goal Weight', '130 lbs', 'Current: 140 lbs'),
+              Divider(height: 1),
+              _GoalRow('Weight Lost', '15 lbs', 'Current: 10 lbs'),
+            ],
           ),
           const SizedBox(height: 24),
           Text('Rewards', style: AppTextStyles.heading4),
           const SizedBox(height: 12),
-          Container(
-            padding: const EdgeInsets.symmetric(vertical: 8),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(16),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withValues(alpha: 0.08),
-                  spreadRadius: 1,
-                  blurRadius: 12,
-                  offset: const Offset(0, 4),
-                ),
-              ],
-            ),
-            child: Column(
-              children: [
-                _buildRewardItem('10% off on next purchase'),
-                const Divider(height: 1),
-                _buildRewardItem('Free workout session'),
-              ],
-            ),
+          _card(
+            children: const [
+              _RewardItem('10% off on next purchase'),
+              Divider(height: 1),
+              _RewardItem('Free workout session'),
+            ],
           ),
         ],
       ),
     );
   }
 
-  Widget _buildGoalRow(String title, String value, String subtitle) {
+  Widget _card({required List<Widget> children}) => Container(
+    padding: const EdgeInsets.all(8),
+    decoration: BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(16),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.grey.withValues(alpha: 0.08),
+          spreadRadius: 1,
+          blurRadius: 12,
+          offset: const Offset(0, 4),
+        ),
+      ],
+    ),
+    child: Column(children: children),
+  );
+}
+
+class _GoalRow extends StatelessWidget {
+  final String title;
+  final String value;
+  final String subtitle;
+  const _GoalRow(this.title, this.value, this.subtitle);
+  @override
+  Widget build(BuildContext context) {
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       title: Text(title, style: AppTextStyles.bodyMedium),
@@ -139,8 +127,13 @@ class ProfileScreen extends StatelessWidget {
       ),
     );
   }
+}
 
-  Widget _buildRewardItem(String title) {
+class _RewardItem extends StatelessWidget {
+  final String title;
+  const _RewardItem(this.title);
+  @override
+  Widget build(BuildContext context) {
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       title: Text(title, style: AppTextStyles.bodyMedium),

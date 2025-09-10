@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-
-import '../constants/app_colors.dart';
-import '../constants/app_text_styles.dart';
-import '../models/sample_data.dart';
+import 'package:fit_motiv/constants/app_colors.dart';
+import 'package:fit_motiv/constants/app_text_styles.dart';
+import 'package:fit_motiv/models/sample_data.dart';
 
 class RoutinesScreen extends StatelessWidget {
   const RoutinesScreen({super.key});
@@ -95,7 +94,7 @@ class _RoutineCard extends StatelessWidget {
             child: Container(
               height: 100,
               color: AppColors.primary.withValues(alpha: 0.1),
-              child: Center(
+              child: const Center(
                 child: Icon(
                   Icons.directions_run,
                   size: 48,

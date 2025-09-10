@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-
-import '../constants/app_colors.dart';
-import '../constants/app_text_styles.dart';
+import 'package:fit_motiv/constants/app_colors.dart';
+import 'package:fit_motiv/constants/app_text_styles.dart';
 
 class ProgressScreen extends StatelessWidget {
   const ProgressScreen({super.key});
@@ -15,10 +14,6 @@ class ProgressScreen extends StatelessWidget {
         appBar: AppBar(
           backgroundColor: AppColors.background,
           elevation: 0,
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back, color: AppColors.textPrimary),
-            onPressed: () => Navigator.of(context).pop(),
-          ),
           title: Text('Progress', style: AppTextStyles.heading3),
           centerTitle: true,
           bottom: TabBar(
@@ -33,31 +28,42 @@ class ProgressScreen extends StatelessWidget {
           ),
         ),
         body: TabBarView(
-          children: [
-            _buildProgressContent('Weekly'),
-            _buildProgressContent('Monthly'),
-            _buildProgressContent('Yearly'),
+          children: const [
+            _ProgressTab(period: 'Weekly'),
+            _ProgressTab(period: 'Monthly'),
+            _ProgressTab(period: 'Yearly'),
           ],
         ),
       ),
     );
   }
+}
 
-  Widget _buildProgressContent(String period) {
+class _ProgressTab extends StatelessWidget {
+  final String period;
+  const _ProgressTab({required this.period});
+
+  @override
+  Widget build(BuildContext context) {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildChartCard(period),
+          _ChartCard(period: period),
           const SizedBox(height: 32),
-          _buildGoalsSection(),
+          const _GoalsSection(),
         ],
       ),
     );
   }
+}
 
-  Widget _buildChartCard(String period) {
+class _ChartCard extends StatelessWidget {
+  final String period;
+  const _ChartCard({required this.period});
+  @override
+  Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(20),
@@ -113,8 +119,12 @@ class ProgressScreen extends StatelessWidget {
       ),
     );
   }
+}
 
-  Widget _buildGoalsSection() {
+class _GoalsSection extends StatelessWidget {
+  const _GoalsSection();
+  @override
+  Widget build(BuildContext context) {
     final goals = [
       {
         'icon': Icons.fitness_center,
@@ -148,8 +158,8 @@ class ProgressScreen extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 8),
-        ...goals.map((g) {
-          return ListTile(
+        ...goals.map(
+          (g) => ListTile(
             contentPadding: EdgeInsets.zero,
             leading: Icon(g['icon'] as IconData, color: AppColors.primary),
             title: Text(g['title'] as String, style: AppTextStyles.bodyMedium),
@@ -160,15 +170,15 @@ class ProgressScreen extends StatelessWidget {
               ),
             ),
             trailing: Icon(
-              g['done'] as bool
+              (g['done'] as bool)
                   ? Icons.check_circle
                   : Icons.radio_button_unchecked,
-              color: g['done'] as bool
+              color: (g['done'] as bool)
                   ? AppColors.primary
                   : AppColors.textSecondary,
             ),
-          );
-        }),
+          ),
+        ),
       ],
     );
   }
