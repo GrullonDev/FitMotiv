@@ -1,16 +1,232 @@
 {
-	"version": "2.0.0",
-	"tasks": [
-		{
-			"label": "Run FitMotiv App",
-			"type": "shell",
-			"command": "flutter run",
-			"group": "build",
-			"isBackground": true,
-			"problemMatcher": [
-				"$dart-flutter"
-			],
-			"args": []
-		}
-	]
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "🔧 Flutter: Run Development",
+            "type": "shell",
+            "command": "flutter",
+            "args": [
+                "run",
+                "-t",
+                "lib/main_dev.dart"
+            ],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": false
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "🚀 Flutter: Run Production",
+            "type": "shell",
+            "command": "flutter",
+            "args": [
+                "run",
+                "-t",
+                "lib/main_prod.dart"
+            ],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": false
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "🤖 Build: Android APK (Dev)",
+            "type": "shell",
+            "command": "flutter",
+            "args": [
+                "build",
+                "apk",
+                "-t",
+                "lib/main_dev.dart",
+                "--flavor",
+                "dev",
+                "--debug"
+            ],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": false
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "🤖 Build: Android APK (Prod)",
+            "type": "shell",
+            "command": "flutter",
+            "args": [
+                "build",
+                "apk",
+                "-t",
+                "lib/main_prod.dart",
+                "--flavor",
+                "prod",
+                "--release"
+            ],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": false
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "🍎 Build: iOS (Dev)",
+            "type": "shell",
+            "command": "flutter",
+            "args": [
+                "build",
+                "ios",
+                "-t",
+                "lib/main_dev.dart",
+                "--debug",
+                "--no-codesign"
+            ],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": false
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "🍎 Build: iOS (Prod)",
+            "type": "shell",
+            "command": "flutter",
+            "args": [
+                "build",
+                "ios",
+                "-t",
+                "lib/main_prod.dart",
+                "--release",
+                "--no-codesign"
+            ],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": false
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "📦 Flutter: Get Dependencies",
+            "type": "shell",
+            "command": "flutter",
+            "args": [
+                "pub",
+                "get"
+            ],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": false
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "🧹 Flutter: Clean Project",
+            "type": "shell",
+            "command": "flutter",
+            "args": [
+                "clean"
+            ],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": false
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "🔍 Flutter: Analyze",
+            "type": "shell",
+            "command": "flutter",
+            "args": [
+                "analyze"
+            ],
+            "group": "test",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": false
+            },
+            "problemMatcher": [
+                "$dart-analyze"
+            ]
+        },
+        {
+            "label": "🧪 Flutter: Test",
+            "type": "shell",
+            "command": "flutter",
+            "args": [
+                "test"
+            ],
+            "group": "test",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": false
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "🛠️ Build Script: Help",
+            "type": "shell",
+            "command": "./build_scripts.sh",
+            "args": [
+                "help"
+            ],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": false
+            },
+            "problemMatcher": []
+        }
+    ]
 }

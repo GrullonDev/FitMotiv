@@ -1,0 +1,14 @@
+{
+    "recommendations": [
+        "dart-code.dart-code",
+        "dart-code.flutter",
+        "ms-vscode.vscode-json",
+        "bradlc.vscode-tailwindcss",
+        "christian-kohler.path-intellisense",
+        "ms-vscode.vscode-typescript-next",
+        "usernamehw.errorlens",
+        "gruntfuggly.todo-tree",
+        "aaron-bond.better-comments"
+    ],
+    "unwantedRecommendations": []
+}

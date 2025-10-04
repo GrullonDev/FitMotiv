@@ -1,29 +1,13 @@
-# Miscellaneous
-*.class
-*.log
-*.pyc
-*.swp
-.DS_Store
-.atom/
-.build/
-.buildlog/
-.history
-.svn/
-.swiftpm/
-migrate_working_dir/
+# ===============================================
+# 🚫 FitMotiv - Archivos Excluidos del Repositorio
+# ===============================================
+# Este archivo define qué archivos y directorios
+# NO deben subirse al repositorio por seguridad
+# y buenas prácticas de desarrollo.
 
-# IntelliJ related
-*.iml
-*.ipr
-*.iws
-.idea/
-
-# The .vscode folder contains launch configuration and tasks you configure in
-# VS Code which you may wish to be included in version control, so this line
-# is commented out by default.
-#.vscode/
-
-# Flutter/Dart/Pub related
+# ===============================================
+# 📱 Flutter/Dart Core Files
+# ===============================================
 **/doc/api/
 **/ios/Flutter/.last_build_id
 .dart_tool/
@@ -32,17 +16,295 @@ migrate_working_dir/
 .pub-cache/
 .pub/
 /build/
+.packages
+.metadata
 
-# Symbolication related
-app.*.symbols
+# ===============================================
+# 🔐 Variables de Entorno y Configuración Sensible
+# ===============================================
+# CRÍTICO: Estos archivos contienen URLs, claves API
+# y configuraciones que NO deben ser públicas
+.env
+.env.*
+*.env
+.env.local
+.env.development
+.env.production
+.env.staging
+.env.test
 
-# Obfuscation related
-app.*.map.json
+# ===============================================
+# 🔥 Firebase y Servicios Cloud
+# ===============================================
+# Archivos de configuración de Firebase que contienen
+# claves y configuraciones específicas del proyecto
+/ios/Runner/GoogleService-Info.plist
+/android/app/google-services.json
+/ios/firebase_app_id_file.json
+firebase_options.dart
+/lib/firebase_options.dart
 
-# Android Studio will place build artifacts here
-/android/app/debug
-/android/app/profile
-/android/app/release
+# ===============================================
+# 🔑 Claves y Certificados (iOS)
+# ===============================================
+# Certificados de distribución y perfiles de aprovisionamiento
+*.p12
+*.p8
+*.mobileprovision
+*.cer
+*.certSigningRequest
+*.p7b
+AuthKey_*.p8
+/ios/Runner/Runner.entitlements
+/ios/Runner/Info.plist.backup
 
-# FVM Version Cache
+# ===============================================
+# 🔑 Claves y Certificados (Android)
+# ===============================================
+# Archivos de firma para releases de Android
+*.jks
+*.keystore
+key.properties
+/android/key.properties
+/android/app/upload-keystore.jks
+/android/app/release-keystore.jks
+signing.properties
+
+# ===============================================
+# 🏗️ Build Artifacts y Outputs
+# ===============================================
+# Archivos generados durante la compilación
+/android/app/debug/
+/android/app/profile/
+/android/app/release/
+/build/
+**/build/
+.dart_tool/build/
+/ios/build/
+/macos/build/
+/windows/build/
+/linux/build/
+/web/build/
+
+# ===============================================
+# 💻 IDEs y Editores
+# ===============================================
+
+# Android Studio / IntelliJ IDEA
+*.iml
+*.ipr
+*.iws
+.idea/
+android.iml
+*.hprof
+
+# VS Code (configuraciones personales)
+.vscode/settings.json
+.vscode/launch.json
+.vscode/tasks.json
+.vscode/*.code-workspace
+.vscode/c_cpp_properties.json
+
+# Xcode
+*.xcworkspace/xcuserdata/
+*.xcodeproj/xcuserdata/
+*.xcodeproj/project.xcworkspace/xcuserdata/
+DerivedData/
+build/
+*.mode1v3
+*.mode2v3
+*.perspectivev3
+*.pbxuser
+xcuserdata/
+
+# ===============================================
+# 🖥️ Sistema Operativo
+# ===============================================
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon?
+._*
+.Spotlight-V100
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+.fseventsd
+.TemporaryItems
+
+# Windows  
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+Desktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
+
+# Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+# ===============================================
+# 📦 Dependency Management
+# ===============================================
+# FVM (Flutter Version Manager)
 .fvm/
+
+# Node.js (si usas herramientas web)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.yarn/
+.pnp.*
+
+# ===============================================
+# 🗂️ Archivos Temporales y Cache
+# ===============================================
+.tmp/
+.temp/
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+.cache/
+.coverage/
+
+# Logs
+*.log
+logs/
+/build/logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# ===============================================
+# 🧪 Testing y Coverage
+# ===============================================
+coverage/
+.nyc_output/
+test_driver/screenshots/
+integration_test/screenshots/
+*.lcov
+coverage.xml
+
+# ===============================================
+# 📱 Archivos de Configuración Local
+# ===============================================
+# Configuraciones específicas de cada desarrollador
+local.properties
+/android/local.properties
+.flutter-plugins-dependencies
+gradle.properties.local
+
+# ===============================================
+# 🎯 Assets y Recursos Temporales
+# ===============================================
+# Archivos de backup y temporales de assets
+*.backup
+*.bak
+*.orig
+.backup/
+backup/
+
+# Archivos de imagen temporales
+*.tmp.png
+*.tmp.jpg
+*.tmp.jpeg
+*.tmp.gif
+*.tmp.svg
+
+# ===============================================
+# 🔄 Version Control y CI/CD
+# ===============================================
+.svn/
+.hg/
+.bzr/
+
+# GitHub Actions secrets (si usas)
+.github/secrets/
+
+# ===============================================
+# 🎨 Design y Assets Tools
+# ===============================================
+# Sketch, Figma exports, etc.
+*.sketch
+*.fig
+*.xd
+exports/
+design_assets/
+*.ai
+*.psd
+
+# ===============================================
+# 📊 Analytics y Crash Reports
+# ===============================================
+# Archivos de crash reports locales
+crash_logs/
+*.crash
+*.dSYM/
+*.dSYM.zip
+
+# ===============================================
+# ⚡ Performance y Profiling
+# ===============================================
+# Archivos de profiling y performance
+*.trace
+*.profile
+profiling/
+*.perf
+
+# ===============================================
+# 📝 Documentación Temporal
+# ===============================================
+# Archivos de documentación temporal o personal
+TODO.md
+NOTES.md
+.notes/
+drafts/
+
+# ===============================================
+# 🚀 Deployment y Distribution
+# ===============================================
+# Archivos de distribución temporal
+dist/
+release/
+*.apk.backup
+*.ipa.backup
+*.aab.backup
+
+# App Store Connect
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots
+fastlane/test_output
+fastlane/README.md.backup
+
+# ===============================================
+# 🎭 Mocks y Testing Data
+# ===============================================
+# Datos de prueba que no deben ser públicos
+test_data_private/
+mock_data_private/
+.test_env
+
+# ===============================================
+# 🔧 Tools y Scripts Personales
+# ===============================================
+# Scripts personales de cada desarrollador
+personal_scripts/
+.personal/
+my_*

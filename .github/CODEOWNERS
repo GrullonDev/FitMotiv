@@ -1,0 +1,31 @@
+# Global code owners
+* @GrullonDev
+
+# Main branch protection - only @GrullonDev can approve merges to main
+/main @GrullonDev
+
+# Critical files require @GrullonDev review
+.github/ @GrullonDev
+*.md @GrullonDev
+pubspec.yaml @GrullonDev
+android/app/build.gradle.kts @GrullonDev
+ios/Runner.xcodeproj/ @GrullonDev
+
+# Security sensitive files
+.env* @GrullonDev
+*.key @GrullonDev
+*.keystore @GrullonDev
+android/key.properties @GrullonDev
+
+# Configuration files
+.vscode/ @GrullonDev
+.gitignore @GrullonDev
+analysis_options.yaml @GrullonDev
+
+# Scripts
+scripts/ @GrullonDev
+*.sh @GrullonDev
+
+# Core architecture files
+lib/core/ @GrullonDev
+lib/main*.dart @GrullonDev
