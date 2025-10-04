@@ -163,6 +163,43 @@ class _RecipePreviewCard extends StatelessWidget {
               height: 90,
               width: double.infinity,
               fit: BoxFit.cover,
+              // Muestra un loader mientras descarga.
+              loadingBuilder: (context, child, loadingProgress) {
+                if (loadingProgress == null) return child;
+                final expected = loadingProgress.expectedTotalBytes;
+                final loaded = loadingProgress.cumulativeBytesLoaded;
+                final value = expected != null ? loaded / expected : null;
+                return Container(
+                  height: 90,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: AppColors.background.withValues(alpha: 0.2),
+                  ),
+                  child: SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      value: value,
+                    ),
+                  ),
+                );
+              },
+              // Fallback cuando no hay red / host no resuelve.
+              errorBuilder: (context, error, stack) {
+                return Container(
+                  height: 90,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: AppColors.background.withValues(alpha: 0.3),
+                  ),
+                  alignment: Alignment.center,
+                  child: Icon(
+                    Icons.image_not_supported_outlined,
+                    color: AppColors.textSecondary.withValues(alpha: 0.6),
+                  ),
+                );
+              },
             ),
           ),
           Padding(

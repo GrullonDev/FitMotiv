@@ -1,1 +1,1 @@
-// Legacy stub. See lib/features/dashboard/presentation/screens/home_screen.dart
+export 'presentation/screens/home_screen.dart';
