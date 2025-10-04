@@ -18,20 +18,60 @@
     Tabla de Contenidos
   </h2>
 </div>
-1. [<span style="color: #3498db;">⚙️</span> Configuración Inicial](#configuración-inicial)
-2. [<span style="color: #e74c3c;">🔗</span> Backend y URLs](#backend-y-urls)
-3. [<span style="color: #f39c12;">🏗️</span> Flavors y Entornos](#flavors-y-entornos)
-4. [<span style="color: #9b59b6;">💻</span> VS Code Setup](#vs-code-setup)
-5. [<span style="color: #2ecc71;">✨</span> Características](#características)
-6. [<span style="color: #34495e;">🛠️</span> Tecnologías](#tecnologías)
-7. [<span style="color: #16a085;">🏛️</span> Arquitectura y Estructura](#arquitectura-y-estructura)
-8. [<span style="color: #e67e22;">🚀</span> Instalación y Ejecución](#instalación-y-ejecución)
-9. [<span style="color: #8e44ad;">📝</span> Scripts de Build](#scripts-de-build)
-10. [<span style="color: #27ae60;">🔐</span> Variables de Entorno](#variables-de-entorno)
-11. [<span style="color: #c0392b;">🛡️</span> Archivos Sensibles](#archivos-sensibles-gitignore)
-12. [<span style="color: #f1c40f;">🔧</span> Troubleshooting](#troubleshooting)
-13. [<span style="color: #3498db;">🤝</span> Contribuciones](#contribuciones)
-14. [<span style="color: #95a5a6;">📄</span> Licencia](#licencia)
+
+<div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 25px; border-radius: 12px; margin: 20px 0; box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);">
+  
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; color: white;">
+    
+    <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 8px; backdrop-filter: blur(10px);">
+      <h4 style="margin: 0 0 10px 0; color: #f39c12; font-size: 16px; text-align: center;">🚀 Inicio Rápido</h4>
+      <div style="font-size: 14px; line-height: 1.8;">
+        <a href="#configuración-inicial" style="color: #ecf0f1; text-decoration: none; display: block; margin: 4px 0; padding: 3px 8px; border-radius: 4px; transition: background-color 0.3s;">⚙️ Configuración Inicial</a>
+        <a href="#backend-y-urls" style="color: #ecf0f1; text-decoration: none; display: block; margin: 4px 0; padding: 3px 8px; border-radius: 4px;">🔗 Backend y URLs</a>
+        <a href="#flavors-y-entornos" style="color: #ecf0f1; text-decoration: none; display: block; margin: 4px 0; padding: 3px 8px; border-radius: 4px;">🏗️ Flavors y Entornos</a>
+        <a href="#vs-code-setup" style="color: #ecf0f1; text-decoration: none; display: block; margin: 4px 0; padding: 3px 8px; border-radius: 4px;">💻 VS Code Setup</a>
+      </div>
+    </div>
+
+    <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 8px; backdrop-filter: blur(10px);">
+      <h4 style="margin: 0 0 10px 0; color: #2ecc71; font-size: 16px; text-align: center;">📚 Información del Proyecto</h4>
+      <div style="font-size: 14px; line-height: 1.8;">
+        <a href="#características" style="color: #ecf0f1; text-decoration: none; display: block; margin: 4px 0; padding: 3px 8px; border-radius: 4px;">✨ Características</a>
+        <a href="#tecnologías" style="color: #ecf0f1; text-decoration: none; display: block; margin: 4px 0; padding: 3px 8px; border-radius: 4px;">🛠️ Tecnologías</a>
+        <a href="#arquitectura-y-estructura" style="color: #ecf0f1; text-decoration: none; display: block; margin: 4px 0; padding: 3px 8px; border-radius: 4px;">🏛️ Arquitectura y Estructura</a>
+        <a href="#instalación-y-ejecución" style="color: #ecf0f1; text-decoration: none; display: block; margin: 4px 0; padding: 3px 8px; border-radius: 4px;">🚀 Instalación y Ejecución</a>
+      </div>
+    </div>
+
+    <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 8px; backdrop-filter: blur(10px);">
+      <h4 style="margin: 0 0 10px 0; color: #e74c3c; font-size: 16px; text-align: center;">� Herramientas y Scripts</h4>
+      <div style="font-size: 14px; line-height: 1.8;">
+        <a href="#scripts-de-build" style="color: #ecf0f1; text-decoration: none; display: block; margin: 4px 0; padding: 3px 8px; border-radius: 4px;">📝 Scripts de Build</a>
+        <a href="#variables-de-entorno" style="color: #ecf0f1; text-decoration: none; display: block; margin: 4px 0; padding: 3px 8px; border-radius: 4px;">🔐 Variables de Entorno</a>
+        <a href="#archivos-sensibles-gitignore" style="color: #ecf0f1; text-decoration: none; display: block; margin: 4px 0; padding: 3px 8px; border-radius: 4px;">�️ Archivos Sensibles</a>
+        <a href="#troubleshooting" style="color: #ecf0f1; text-decoration: none; display: block; margin: 4px 0; padding: 3px 8px; border-radius: 4px;">🔧 Troubleshooting</a>
+      </div>
+    </div>
+
+    <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 8px; backdrop-filter: blur(10px);">
+      <h4 style="margin: 0 0 10px 0; color: #9b59b6; font-size: 16px; text-align: center;">🤝 Colaboración</h4>
+      <div style="font-size: 14px; line-height: 1.8;">
+        <a href="#contribuciones" style="color: #ecf0f1; text-decoration: none; display: block; margin: 4px 0; padding: 3px 8px; border-radius: 4px;">🤝 Contribuciones</a>
+        <a href="#licencia" style="color: #ecf0f1; text-decoration: none; display: block; margin: 4px 0; padding: 3px 8px; border-radius: 4px;">📄 Licencia</a>
+        <a href="#contacto-y-soporte" style="color: #ecf0f1; text-decoration: none; display: block; margin: 4px 0; padding: 3px 8px; border-radius: 4px;">� Contacto y Soporte</a>
+        <a href="#gracias" style="color: #ecf0f1; text-decoration: none; display: block; margin: 4px 0; padding: 3px 8px; border-radius: 4px;">🎉 ¡Gracias!</a>
+      </div>
+    </div>
+
+  </div>
+
+  <div style="margin-top: 20px; text-align: center; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.2);">
+    <p style="color: #bdc3c7; margin: 0; font-size: 14px;">
+      💡 <strong>Navegación rápida:</strong> Usa <code style="background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 3px; color: #ecf0f1;">Ctrl+F</code> (o <code style="background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 3px; color: #ecf0f1;">Cmd+F</code> en Mac) para buscar secciones específicas
+    </p>
+  </div>
+
+</div>
 
 ---
 
@@ -526,7 +566,11 @@ flutter devices
 
 ---
 
----
+<div align="center" style="margin: 30px 0;">
+  <a href="#📋-tabla-de-contenidos" style="background: linear-gradient(135deg, #f1c40f 0%, #f39c12 100%); color: white; padding: 8px 16px; border-radius: 20px; text-decoration: none; font-size: 14px; box-shadow: 0 2px 10px rgba(241, 196, 15, 0.3);">
+    ⬆️ Volver al Índice
+  </a>
+</div>
 
 <div style="background: linear-gradient(135deg, #3498db 0%, #2980b9 100%); padding: 20px; border-radius: 10px; margin: 20px 0;">
   <h2 style="color: white; margin: 0;">
@@ -655,6 +699,12 @@ Consulta el archivo `LICENSE` para más detalles.
 
 ---
 
+<div align="center" style="margin: 20px 0;">
+  <a href="#📋-tabla-de-contenidos" style="background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%); color: white; padding: 8px 16px; border-radius: 20px; text-decoration: none; font-size: 14px; box-shadow: 0 2px 10px rgba(149, 165, 166, 0.3);">
+    ⬆️ Índice
+  </a>
+</div>
+
 ## 🎉 ¡Gracias!
 
 **FitMotiv** es un proyecto que busca ayudar a las personas a mantenerse activas y saludables. Tu contribución hace la diferencia.
@@ -695,4 +745,10 @@ Consulta el archivo `LICENSE` para más detalles.
       </span>
     </a>
   </div>
+</div>
+
+<div align="center" style="margin: 20px 0;">
+  <a href="#📋-tabla-de-contenidos" style="background: linear-gradient(135deg, #3498db 0%, #2980b9 100%); color: white; padding: 12px 24px; border-radius: 25px; text-decoration: none; font-weight: bold; box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3); transition: all 0.3s ease;">
+    ⬆️ Volver al Índice
+  </a>
 </div>
