@@ -6,21 +6,17 @@ import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 /// This service can be used across all modules (auth, fitness, nutrition, etc.)
 /// Follows Single Responsibility Principle by focusing only on HTTP communication
 class ApiService {
-  final Dio _dio;
-  final String baseUrl;
-
-  ApiService({
-    required Dio dio,
-    required this.baseUrl,
-  }) : _dio = dio {
+  ApiService({required Dio dio, required this.baseUrl}) : _dio = dio {
     _setupInterceptors();
   }
+  final Dio _dio;
+  final String baseUrl;
 
   /// Configure Dio interceptors for API communication
   void _setupInterceptors() {
     final cookieJar = CookieJar();
     _dio.interceptors.add(CookieManager(cookieJar));
-    
+
     _dio.interceptors.add(
       InterceptorsWrapper(
         onRequest: (options, handler) {
@@ -42,53 +38,53 @@ class ApiService {
   // ============================================================================
 
   /// POST /auth/register - Register a new user
-  Future<Response> register(Map<String, dynamic> userData) async {
-    return await _dio.post('$baseUrl/auth/register', data: userData);
+  Future<Response> register(Map<String, dynamic> json) async {
+    return await _dio.post('$baseUrl/default/register', data: json);
   }
 
   /// POST /auth/login - Login user
-  Future<Response> login(Map<String, dynamic> credentials) async {
-    return await _dio.post('$baseUrl/auth/login', data: credentials);
+  Future<Response> login(Map<String, dynamic> json) async {
+    return await _dio.post('$baseUrl/default/login', data: json);
   }
 
   /// POST /auth/logout - Logout user
   Future<Response> logout() async {
-    return await _dio.post('$baseUrl/auth/logout');
+    return await _dio.post('$baseUrl/default/logout');
   }
 
   /// POST /auth/change-password - Change user password
-  Future<Response> changePassword(Map<String, dynamic> passwordData) async {
-    return await _dio.post('$baseUrl/auth/change-password', data: passwordData);
+  Future<Response> changePassword(Map<String, dynamic> json) async {
+    return await _dio.post('$baseUrl/default/change-password', data: json);
   }
 
   /// GET /auth/verify-token - Verify authentication token
   Future<Response> verifyToken() async {
-    return await _dio.get('$baseUrl/auth/verify-token');
+    return await _dio.get('$baseUrl/default/verify-token');
   }
 
   /// POST /auth/refresh - Refresh authentication token
   Future<Response> refreshToken() async {
-    return await _dio.post('$baseUrl/auth/refresh');
+    return await _dio.post('$baseUrl/default/refresh');
   }
 
   /// POST /auth/forgot-password - Request password reset
   Future<Response> forgotPassword(Map<String, dynamic> emailData) async {
-    return await _dio.post('$baseUrl/auth/forgot-password', data: emailData);
+    return await _dio.post('$baseUrl/default/forgot-password', data: emailData);
   }
 
   /// POST /auth/reset-password - Reset password with token
   Future<Response> resetPassword(Map<String, dynamic> resetData) async {
-    return await _dio.post('$baseUrl/auth/reset-password', data: resetData);
+    return await _dio.post('$baseUrl/default/reset-password', data: resetData);
   }
 
   /// POST /auth/verify-email - Verify email address
   Future<Response> verifyEmail(Map<String, dynamic> verificationData) async {
-    return await _dio.post('$baseUrl/auth/verify-email', data: verificationData);
+    return await _dio.post('$baseUrl/default/verify-email', data: verificationData);
   }
 
   /// POST /auth/resend-verification - Resend email verification
   Future<Response> resendVerification(Map<String, dynamic> emailData) async {
-    return await _dio.post('$baseUrl/auth/resend-verification', data: emailData);
+    return await _dio.post('$baseUrl/default/resend-verification', data: emailData);
   }
 
   // ============================================================================
@@ -97,22 +93,22 @@ class ApiService {
 
   /// GET /auth/me - Get current user profile
   Future<Response> getCurrentUserProfile() async {
-    return await _dio.get('$baseUrl/auth/me');
+    return await _dio.get('$baseUrl/default/me');
   }
 
   /// PUT /auth/me - Update current user profile
   Future<Response> updateCurrentUserProfile(Map<String, dynamic> profileData) async {
-    return await _dio.put('$baseUrl/auth/me', data: profileData);
+    return await _dio.put('$baseUrl/default/me', data: profileData);
   }
 
   /// DELETE /auth/me - Delete current user account
   Future<Response> deleteCurrentUserAccount() async {
-    return await _dio.delete('$baseUrl/auth/me');
+    return await _dio.delete('$baseUrl/default/me');
   }
 
   /// POST /auth/me/reactivate - Reactivate current user account
   Future<Response> reactivateCurrentUserAccount() async {
-    return await _dio.post('$baseUrl/auth/me/reactivate');
+    return await _dio.post('$baseUrl/default/me/reactivate');
   }
 
   // ============================================================================

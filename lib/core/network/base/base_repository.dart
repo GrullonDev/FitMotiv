@@ -1,13 +1,15 @@
 import 'package:dartz/dartz.dart';
 
-import '../error_handlers/api_error_handler.dart';
+import 'package:fit_motiv/core/network/error_handlers/api_error_handler.dart';
 
 /// Generic base interface for all repositories in the application
 /// This interface provides common patterns that all repositories should follow
 /// Follows Dependency Inversion Principle by depending on abstractions
 abstract class BaseRepository {
   /// Handle common repository operations with error handling
-  Future<Either<ApiException, T>> handleRepositoryCall<T>(Future<Either<ApiException, T>> Function() repositoryCall);
+  Future<Either<ApiException, T>> handleRepositoryCall<T>(
+    Future<Either<ApiException, T>> Function() repositoryCall,
+  );
 }
 
 /// Base implementation of BaseRepository
@@ -72,7 +74,9 @@ abstract class BaseRepositoryImpl implements BaseRepository {
   }
 
   /// Handle paginated responses
-  Either<ApiException, Map<String, dynamic>> handlePaginatedResult(Either<ApiException, Map<String, dynamic>> result) {
+  Either<ApiException, Map<String, dynamic>> handlePaginatedResult(
+    Either<ApiException, Map<String, dynamic>> result,
+  ) {
     return result.fold((failure) => Left(failure), (data) {
       // Normalize paginated response structure
       if (data.containsKey('results') || data.containsKey('data')) {
@@ -81,7 +85,12 @@ abstract class BaseRepositoryImpl implements BaseRepository {
 
       // If response is already a list, wrap it with pagination info
       if (data['data'] is List) {
-        return Right({'results': data['data'], 'count': (data['data'] as List).length, 'next': null, 'previous': null});
+        return Right({
+          'results': data['data'],
+          'count': (data['data'] as List).length,
+          'next': null,
+          'previous': null,
+        });
       }
 
       return Right(data);
@@ -125,7 +134,10 @@ abstract class BaseRepositoryImpl implements BaseRepository {
           rawList = [];
         }
 
-        final models = rawList.cast<Map<String, dynamic>>().map(transformer).toList();
+        final models = rawList
+            .cast<Map<String, dynamic>>()
+            .map(transformer)
+            .toList();
 
         return Right(models);
       } catch (e, stackTrace) {

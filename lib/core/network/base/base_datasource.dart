@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
 
-import '../error_handlers/api_error_handler.dart';
+import 'package:fit_motiv/core/network/error_handlers/api_error_handler.dart';
 
 /// Generic base interface for all data sources in the application
 /// This interface provides common methods that all data sources should implement
@@ -19,7 +19,10 @@ abstract class BaseDataSource {
   });
 
   /// Generic method to make API calls that return raw data
-  Future<Either<ApiException, T>> makeApiCallWithTransform<T>(Future<T> Function() apiCall, {String? endpoint});
+  Future<Either<ApiException, T>> makeApiCallWithTransform<T>(
+    Future<T> Function() apiCall, {
+    String? endpoint,
+  });
 }
 
 /// Base implementation of BaseDataSource
@@ -35,7 +38,11 @@ abstract class BaseRemoteDataSource implements BaseDataSource {
       final result = await apiCall();
       return Right(result);
     } catch (e, stackTrace) {
-      final exception = ApiErrorHandler.handleGeneralError(e, stackTrace, endpoint: endpoint);
+      final exception = ApiErrorHandler.handleGeneralError(
+        e,
+        stackTrace,
+        endpoint: endpoint,
+      );
       return Left(exception);
     }
   }
@@ -49,18 +56,29 @@ abstract class BaseRemoteDataSource implements BaseDataSource {
       final result = await apiCall();
       return Right(result);
     } catch (e, stackTrace) {
-      final exception = ApiErrorHandler.handleGeneralError(e, stackTrace, endpoint: endpoint);
+      final exception = ApiErrorHandler.handleGeneralError(
+        e,
+        stackTrace,
+        endpoint: endpoint,
+      );
       return Left(exception);
     }
   }
 
   @override
-  Future<Either<ApiException, T>> makeApiCallWithTransform<T>(Future<T> Function() apiCall, {String? endpoint}) async {
+  Future<Either<ApiException, T>> makeApiCallWithTransform<T>(
+    Future<T> Function() apiCall, {
+    String? endpoint,
+  }) async {
     try {
       final result = await apiCall();
       return Right(result);
     } catch (e, stackTrace) {
-      final exception = ApiErrorHandler.handleGeneralError(e, stackTrace, endpoint: endpoint);
+      final exception = ApiErrorHandler.handleGeneralError(
+        e,
+        stackTrace,
+        endpoint: endpoint,
+      );
       return Left(exception);
     }
   }
@@ -114,7 +132,9 @@ abstract class BaseRemoteDataSource implements BaseDataSource {
 /// Follows Dependency Inversion Principle by depending on abstractions
 abstract class BaseRepository {
   /// Handle common repository operations with error handling
-  Future<Either<ApiException, T>> handleRepositoryCall<T>(Future<Either<ApiException, T>> Function() repositoryCall);
+  Future<Either<ApiException, T>> handleRepositoryCall<T>(
+    Future<Either<ApiException, T>> Function() repositoryCall,
+  );
 }
 
 /// Base implementation of BaseRepository
@@ -145,7 +165,9 @@ abstract class BaseRepositoryImpl implements BaseRepository {
   }
 
   /// Handle operations that should clear authentication on success
-  Either<ApiException, Map<String, dynamic>> handleLogoutResult(Either<ApiException, Map<String, dynamic>> result) {
+  Either<ApiException, Map<String, dynamic>> handleLogoutResult(
+    Either<ApiException, Map<String, dynamic>> result,
+  ) {
     return result.fold((failure) => Left(failure), (data) {
       // Here you could implement token clearing logic
       // Example: await _tokenStorage.clearToken();
