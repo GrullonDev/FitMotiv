@@ -1,4 +1,4 @@
-import '../entities/routine.dart';
+import 'package:fit_motiv/features/routines/domain/entities/routine.dart';
 
 class GetRoutines {
   Future<List<RoutineEntity>> call() async {

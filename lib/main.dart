@@ -7,7 +7,7 @@ void main() async {
 
   // Inicializar configuración para desarrollo por defecto
   await AppConfig.instance.initialize(flavor: AppFlavor.dev);
-  
+
   // Inicializar dependencias comunes
   await initializeApp();
 

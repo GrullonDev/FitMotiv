@@ -1,4 +1,4 @@
-import '../entities/meal_plan.dart';
+import 'package:fit_motiv/features/plans/domain/entities/meal_plan.dart';
 
 class GetMealPlans {
   Future<List<MealPlanEntity>> call() async {

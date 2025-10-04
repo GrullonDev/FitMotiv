@@ -1,4 +1,4 @@
-import '../entities/progress_record.dart';
+import 'package:fit_motiv/features/progress/domain/entities/progress_record.dart';
 
 class GetProgressRecords {
   Future<List<ProgressRecordEntity>> call() async {

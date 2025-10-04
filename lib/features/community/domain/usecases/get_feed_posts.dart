@@ -1,4 +1,4 @@
-import '../entities/post.dart';
+import 'package:fit_motiv/features/community/domain/entities/post.dart';
 
 class GetFeedPosts {
   Future<List<PostEntity>> call() async {

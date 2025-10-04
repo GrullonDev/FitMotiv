@@ -6,12 +6,12 @@ import 'package:animate_do/animate_do.dart';
 
 import 'package:fit_motiv/features/profile_settings/presentation/screens/settings_screen.dart';
 
-import '../../constants/app_colors.dart';
-import '../../constants/app_text_styles.dart';
-import '../../models/sample_data.dart';
-import '../../widgets/progress_card.dart';
-import '../../widgets/recipe_card.dart';
-import '../../widgets/workout_card.dart';
+import 'package:fit_motiv/constants/app_colors.dart';
+import 'package:fit_motiv/constants/app_text_styles.dart';
+import 'package:fit_motiv/models/sample_data.dart';
+import 'package:fit_motiv/widgets/progress_card.dart';
+import 'package:fit_motiv/widgets/recipe_card.dart';
+import 'package:fit_motiv/widgets/workout_card.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});

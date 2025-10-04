@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
-import '../constants/app_colors.dart';
-import '../constants/app_text_styles.dart';
+import 'package:fit_motiv/constants/app_colors.dart';
+import 'package:fit_motiv/constants/app_text_styles.dart';
 
 class ProgressCard extends StatelessWidget {
   const ProgressCard({super.key});

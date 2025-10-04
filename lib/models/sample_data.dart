@@ -1,10 +1,4 @@
 class WorkoutData {
-  final String name;
-  final String description;
-  final int duration; // in minutes
-  final String difficulty;
-  final List<String> equipment;
-  final String category;
 
   WorkoutData({
     required this.name,
@@ -14,16 +8,15 @@ class WorkoutData {
     required this.equipment,
     required this.category,
   });
+  final String name;
+  final String description;
+  final int duration; // in minutes
+  final String difficulty;
+  final List<String> equipment;
+  final String category;
 }
 
 class RecipeData {
-  final String name;
-  final String description;
-  final int prepTime; // in minutes
-  final int calories;
-  final double rating;
-  final List<String> ingredients;
-  final List<String> instructions;
 
   RecipeData({
     required this.name,
@@ -34,6 +27,13 @@ class RecipeData {
     required this.ingredients,
     required this.instructions,
   });
+  final String name;
+  final String description;
+  final int prepTime; // in minutes
+  final int calories;
+  final double rating;
+  final List<String> ingredients;
+  final List<String> instructions;
 }
 
 // Datos de ejemplo

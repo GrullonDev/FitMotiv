@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get_it/get_it.dart';
 
-import '../network/services/api_service.dart';
+import 'package:fit_motiv/core/network/services/api_service.dart';
 
 /// Core network dependency injection configuration
 /// This class provides generic network services that can be used across all modules
@@ -41,7 +41,8 @@ class NetworkDI {
           requestHeader: true,
           responseHeader: false,
           error: true,
-          logPrint: (object) => print('[API HTTP]: $object'), // ignore: avoid_print
+          logPrint: (object) =>
+              print('[API HTTP]: $object'), // ignore: avoid_print
         ),
       );
     }
@@ -63,7 +64,9 @@ class NetworkDI {
   /// Get timeout configuration
   static int _getTimeoutSeconds() {
     final isProd = dotenv.env['ENVIRONMENT'] == 'production';
-    final timeoutStr = isProd ? dotenv.env['PROD_TIMEOUT_SECONDS'] ?? '15' : dotenv.env['DEV_TIMEOUT_SECONDS'] ?? '30';
+    final timeoutStr = isProd
+        ? dotenv.env['PROD_TIMEOUT_SECONDS'] ?? '15'
+        : dotenv.env['DEV_TIMEOUT_SECONDS'] ?? '30';
 
     return int.tryParse(timeoutStr) ?? (isProd ? 15 : 30);
   }

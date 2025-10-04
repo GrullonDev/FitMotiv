@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
-import '../constants/app_colors.dart';
-import '../constants/app_text_styles.dart';
+import 'package:fit_motiv/constants/app_colors.dart';
+import 'package:fit_motiv/constants/app_text_styles.dart';
 
 class CustomBottomNavigationBar extends StatelessWidget {
-  final int selectedIndex;
-  final Function(int) onItemSelected;
 
   const CustomBottomNavigationBar({
     super.key,
     required this.selectedIndex,
     required this.onItemSelected,
   });
+  final int selectedIndex;
+  final Function(int) onItemSelected;
 
   @override
   Widget build(BuildContext context) {

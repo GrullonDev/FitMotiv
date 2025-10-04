@@ -3,8 +3,8 @@ import 'package:fit_motiv/constants/app_colors.dart';
 import 'package:fit_motiv/constants/app_text_styles.dart';
 
 class ProfileScreen extends StatelessWidget {
-  static const routeName = '/profile';
   const ProfileScreen({super.key});
+  static const routeName = '/profile';
 
   @override
   Widget build(BuildContext context) {
@@ -108,10 +108,10 @@ class ProfileScreen extends StatelessWidget {
 }
 
 class _GoalRow extends StatelessWidget {
+  const _GoalRow(this.title, this.value, this.subtitle);
   final String title;
   final String value;
   final String subtitle;
-  const _GoalRow(this.title, this.value, this.subtitle);
   @override
   Widget build(BuildContext context) {
     return ListTile(
@@ -130,8 +130,8 @@ class _GoalRow extends StatelessWidget {
 }
 
 class _RewardItem extends StatelessWidget {
-  final String title;
   const _RewardItem(this.title);
+  final String title;
   @override
   Widget build(BuildContext context) {
     return ListTile(

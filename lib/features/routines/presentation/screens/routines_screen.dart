@@ -67,10 +67,10 @@ class RoutinesScreen extends StatelessWidget {
 }
 
 class _RoutineCard extends StatelessWidget {
+  const _RoutineCard(this.title, this.duration, this.category);
   final String title;
   final int duration;
   final String category;
-  const _RoutineCard(this.title, this.duration, this.category);
 
   @override
   Widget build(BuildContext context) {

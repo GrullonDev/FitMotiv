@@ -2,18 +2,15 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 /// Enum para definir los diferentes flavors/entornos de la aplicación
-enum AppFlavor {
-  dev,
-  prod,
-}
+enum AppFlavor { dev, prod }
 
 /// Clase singleton que maneja la configuración de la aplicación
 /// según el flavor/entorno actual
 class AppConfig {
+
+  AppConfig._internal();
   static AppConfig? _instance;
   static AppConfig get instance => _instance ??= AppConfig._internal();
-  
-  AppConfig._internal();
 
   AppFlavor _flavor = AppFlavor.dev;
   bool _isInitialized = false;
@@ -22,7 +19,7 @@ class AppConfig {
   /// y carga las variables de entorno
   Future<void> initialize({required AppFlavor flavor}) async {
     _flavor = flavor;
-    
+
     try {
       await dotenv.load(fileName: '.env');
       _isInitialized = true;
@@ -42,7 +39,9 @@ class AppConfig {
   /// Obtiene la URL base del API según el flavor actual
   String get apiBaseUrl {
     if (!_isInitialized) {
-      throw Exception('AppConfig no ha sido inicializado. Llama a initialize() primero.');
+      throw Exception(
+        'AppConfig no ha sido inicializado. Llama a initialize() primero.',
+      );
     }
 
     switch (_flavor) {
@@ -71,7 +70,9 @@ class AppConfig {
 
   /// Configuración para timeouts de HTTP según el entorno
   Duration get httpTimeout {
-    return isDevelopment ? const Duration(seconds: 30) : const Duration(seconds: 15);
+    return isDevelopment
+        ? const Duration(seconds: 30)
+        : const Duration(seconds: 15);
   }
 
   /// Configuración para logging según el entorno
@@ -81,9 +82,13 @@ class AppConfig {
   String getApiUrl(String endpoint) {
     final baseUrl = apiBaseUrl;
     // Asegurar que no haya doble slash
-    final cleanEndpoint = endpoint.startsWith('/') ? endpoint.substring(1) : endpoint;
-    final cleanBaseUrl = baseUrl.endsWith('/') ? baseUrl.substring(0, baseUrl.length - 1) : baseUrl;
-    
+    final cleanEndpoint = endpoint.startsWith('/')
+        ? endpoint.substring(1)
+        : endpoint;
+    final cleanBaseUrl = baseUrl.endsWith('/')
+        ? baseUrl.substring(0, baseUrl.length - 1)
+        : baseUrl;
+
     return '$cleanBaseUrl/$cleanEndpoint';
   }
 }

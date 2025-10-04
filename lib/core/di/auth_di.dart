@@ -1,10 +1,10 @@
 import 'package:get_it/get_it.dart';
 
-import '../../features/auth/data/datasources/auth_datasource.dart';
-import '../../features/auth/data/datasources/auth_remote_datasource.dart';
-import '../../features/auth/data/repositories/auth_repository_impl.dart';
-import '../../features/auth/domain/repositories/auth_repository.dart';
-import '../network/services/api_service.dart';
+import 'package:fit_motiv/features/auth/data/datasources/auth_datasource.dart';
+import 'package:fit_motiv/features/auth/data/datasources/auth_remote_datasource.dart';
+import 'package:fit_motiv/features/auth/data/repositories/auth_repository_impl.dart';
+import 'package:fit_motiv/features/auth/domain/repositories/auth_repository.dart';
+import 'package:fit_motiv/core/network/services/api_service.dart';
 
 /// Authentication module dependency injection configuration
 /// This class follows the Dependency Injection principle and helps maintain
@@ -13,10 +13,14 @@ import '../network/services/api_service.dart';
 class AuthDI {
   static void init(GetIt sl) {
     // Register AuthDataSource
-    sl.registerLazySingleton<AuthDataSource>(() => AuthRemoteDataSource(apiService: sl<ApiService>()));
+    sl.registerLazySingleton<AuthDataSource>(
+      () => AuthRemoteDataSource(apiService: sl<ApiService>()),
+    );
 
     // Register AuthRepository
-    sl.registerLazySingleton<AuthRepository>(() => AuthRepositoryImpl(remoteDataSource: sl<AuthDataSource>()));
+    sl.registerLazySingleton<AuthRepository>(
+      () => AuthRepositoryImpl(remoteDataSource: sl<AuthDataSource>()),
+    );
 
     // Add Use Cases here when created
     // Example:

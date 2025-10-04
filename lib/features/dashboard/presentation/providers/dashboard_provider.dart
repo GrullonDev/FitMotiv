@@ -4,13 +4,13 @@ import 'package:fit_motiv/features/dashboard/domain/usecases/get_daily_quote.dar
 
 /// Provider para el dashboard que gestiona la cita diaria
 class DashboardProvider extends ChangeNotifier {
-  final GetDailyQuote getDailyQuote;
-  Quote? _quote;
-  bool _loading = false;
 
   DashboardProvider({required this.getDailyQuote}) {
     fetchQuote();
   }
+  final GetDailyQuote getDailyQuote;
+  Quote? _quote;
+  bool _loading = false;
 
   Quote? get quote => _quote;
   bool get loading => _loading;

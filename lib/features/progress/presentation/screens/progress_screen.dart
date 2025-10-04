@@ -40,8 +40,8 @@ class ProgressScreen extends StatelessWidget {
 }
 
 class _ProgressTab extends StatelessWidget {
-  final String period;
   const _ProgressTab({required this.period});
+  final String period;
 
   @override
   Widget build(BuildContext context) {
@@ -60,8 +60,8 @@ class _ProgressTab extends StatelessWidget {
 }
 
 class _ChartCard extends StatelessWidget {
-  final String period;
   const _ChartCard({required this.period});
+  final String period;
   @override
   Widget build(BuildContext context) {
     return Container(

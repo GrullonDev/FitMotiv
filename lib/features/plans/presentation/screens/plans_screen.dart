@@ -133,9 +133,9 @@ class _MealPlanCard extends StatelessWidget {
 }
 
 class _RecipePreviewCard extends StatelessWidget {
+  const _RecipePreviewCard({required this.title, required this.imageUrl});
   final String title;
   final String imageUrl;
-  const _RecipePreviewCard({required this.title, required this.imageUrl});
 
   @override
   Widget build(BuildContext context) {

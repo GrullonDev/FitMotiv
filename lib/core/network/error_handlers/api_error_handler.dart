@@ -4,14 +4,15 @@ import 'package:dio/dio.dart';
 /// Custom exception classes for API errors
 /// These exceptions can be used across all modules in the application
 abstract class ApiException implements Exception {
+
+  const ApiException(this.message, {this.statusCode, this.endpoint});
   final String message;
   final int? statusCode;
   final String? endpoint;
 
-  const ApiException(this.message, {this.statusCode, this.endpoint});
-
   @override
-  String toString() => 'ApiException: $message (Status: $statusCode, Endpoint: $endpoint)';
+  String toString() =>
+      'ApiException: $message (Status: $statusCode, Endpoint: $endpoint)';
 }
 
 class ServerException extends ApiException {
@@ -23,7 +24,11 @@ class NetworkException extends ApiException {
 }
 
 class UnauthorizedException extends ApiException {
-  const UnauthorizedException(super.message, {super.statusCode, super.endpoint});
+  const UnauthorizedException(
+    super.message, {
+    super.statusCode,
+    super.endpoint,
+  });
 }
 
 class ForbiddenException extends ApiException {
@@ -35,24 +40,42 @@ class NotFoundException extends ApiException {
 }
 
 class ValidationException extends ApiException {
+
+  const ValidationException(
+    super.message, {
+    super.statusCode,
+    super.endpoint,
+    this.errors,
+  });
   final Map<String, List<String>>? errors;
 
-  const ValidationException(super.message, {super.statusCode, super.endpoint, this.errors});
-
   @override
-  String toString() => 'ValidationException: $message (Errors: $errors, Status: $statusCode, Endpoint: $endpoint)';
+  String toString() =>
+      'ValidationException: $message (Errors: $errors, Status: $statusCode, Endpoint: $endpoint)';
 }
 
 class TokenExpiredException extends ApiException {
-  const TokenExpiredException(super.message, {super.statusCode, super.endpoint});
+  const TokenExpiredException(
+    super.message, {
+    super.statusCode,
+    super.endpoint,
+  });
 }
 
 class AccountDeactivatedException extends ApiException {
-  const AccountDeactivatedException(super.message, {super.statusCode, super.endpoint});
+  const AccountDeactivatedException(
+    super.message, {
+    super.statusCode,
+    super.endpoint,
+  });
 }
 
 class EmailNotVerifiedException extends ApiException {
-  const EmailNotVerifiedException(super.message, {super.statusCode, super.endpoint});
+  const EmailNotVerifiedException(
+    super.message, {
+    super.statusCode,
+    super.endpoint,
+  });
 }
 
 class RateLimitException extends ApiException {
@@ -64,11 +87,19 @@ class ConflictException extends ApiException {
 }
 
 class PaymentRequiredException extends ApiException {
-  const PaymentRequiredException(super.message, {super.statusCode, super.endpoint});
+  const PaymentRequiredException(
+    super.message, {
+    super.statusCode,
+    super.endpoint,
+  });
 }
 
 class TooManyRequestsException extends ApiException {
-  const TooManyRequestsException(super.message, {super.statusCode, super.endpoint});
+  const TooManyRequestsException(
+    super.message, {
+    super.statusCode,
+    super.endpoint,
+  });
 }
 
 /// Generic error handler for all API-related HTTP errors
@@ -89,7 +120,10 @@ class ApiErrorHandler {
         );
 
       case DioExceptionType.connectionError:
-        return NetworkException('Connection error. Please check your internet connection.', endpoint: endpoint);
+        return NetworkException(
+          'Connection error. Please check your internet connection.',
+          endpoint: endpoint,
+        );
 
       case DioExceptionType.badResponse:
         return _handleHttpError(error);
@@ -99,7 +133,10 @@ class ApiErrorHandler {
 
       case DioExceptionType.unknown:
       default:
-        return ServerException('An unexpected error occurred: ${error.message}', endpoint: endpoint);
+        return ServerException(
+          'An unexpected error occurred: ${error.message}',
+          endpoint: endpoint,
+        );
     }
   }
 
@@ -121,33 +158,59 @@ class ApiErrorHandler {
       if (data['errors'] is Map) {
         validationErrors = Map<String, List<String>>.from(
           data['errors'].map(
-            (key, value) => MapEntry(key.toString(), List<String>.from(value is List ? value : [value.toString()])),
+            (key, value) => MapEntry(
+              key.toString(),
+              List<String>.from(value is List ? value : [value.toString()]),
+            ),
           ),
         );
       }
 
       // Handle Django Rest Framework style errors
       if (data['non_field_errors'] is List) {
-        validationErrors = {'non_field_errors': List<String>.from(data['non_field_errors'])};
+        validationErrors = {
+          'non_field_errors': List<String>.from(data['non_field_errors']),
+        };
       }
     }
 
     switch (statusCode) {
       case 400:
         if (validationErrors != null) {
-          return ValidationException(message, statusCode: statusCode, endpoint: endpoint, errors: validationErrors);
+          return ValidationException(
+            message,
+            statusCode: statusCode,
+            endpoint: endpoint,
+            errors: validationErrors,
+          );
         }
-        return ServerException(message, statusCode: statusCode, endpoint: endpoint);
+        return ServerException(
+          message,
+          statusCode: statusCode,
+          endpoint: endpoint,
+        );
 
       case 401:
         // Check for specific unauthorized scenarios
         if (_isTokenExpired(message)) {
-          return TokenExpiredException(message, statusCode: statusCode, endpoint: endpoint);
+          return TokenExpiredException(
+            message,
+            statusCode: statusCode,
+            endpoint: endpoint,
+          );
         }
         if (_isEmailNotVerified(message)) {
-          return EmailNotVerifiedException(message, statusCode: statusCode, endpoint: endpoint);
+          return EmailNotVerifiedException(
+            message,
+            statusCode: statusCode,
+            endpoint: endpoint,
+          );
         }
-        return UnauthorizedException(message, statusCode: statusCode, endpoint: endpoint);
+        return UnauthorizedException(
+          message,
+          statusCode: statusCode,
+          endpoint: endpoint,
+        );
 
       case 402:
         return PaymentRequiredException(
@@ -158,22 +221,41 @@ class ApiErrorHandler {
 
       case 403:
         if (_isAccountDeactivated(message)) {
-          return AccountDeactivatedException(message, statusCode: statusCode, endpoint: endpoint);
+          return AccountDeactivatedException(
+            message,
+            statusCode: statusCode,
+            endpoint: endpoint,
+          );
         }
-        return ForbiddenException(message, statusCode: statusCode, endpoint: endpoint);
+        return ForbiddenException(
+          message,
+          statusCode: statusCode,
+          endpoint: endpoint,
+        );
 
       case 404:
-        return NotFoundException('The requested resource was not found.', statusCode: statusCode, endpoint: endpoint);
+        return NotFoundException(
+          'The requested resource was not found.',
+          statusCode: statusCode,
+          endpoint: endpoint,
+        );
 
       case 409:
         return ConflictException(
-          message.isEmpty ? 'Conflict occurred. Resource already exists or is in use.' : message,
+          message.isEmpty
+              ? 'Conflict occurred. Resource already exists or is in use.'
+              : message,
           statusCode: statusCode,
           endpoint: endpoint,
         );
 
       case 422:
-        return ValidationException(message, statusCode: statusCode, endpoint: endpoint, errors: validationErrors);
+        return ValidationException(
+          message,
+          statusCode: statusCode,
+          endpoint: endpoint,
+          errors: validationErrors,
+        );
 
       case 429:
         return TooManyRequestsException(
@@ -186,10 +268,18 @@ class ApiErrorHandler {
       case 502:
       case 503:
       case 504:
-        return ServerException('Server error. Please try again later.', statusCode: statusCode, endpoint: endpoint);
+        return ServerException(
+          'Server error. Please try again later.',
+          statusCode: statusCode,
+          endpoint: endpoint,
+        );
 
       default:
-        return ServerException(message, statusCode: statusCode, endpoint: endpoint);
+        return ServerException(
+          message,
+          statusCode: statusCode,
+          endpoint: endpoint,
+        );
     }
   }
 
@@ -226,7 +316,11 @@ class ApiErrorHandler {
   }
 
   /// Handle any general exception and convert to ApiException
-  static ApiException handleGeneralError(Object error, StackTrace stackTrace, {String? endpoint}) {
+  static ApiException handleGeneralError(
+    Object error,
+    StackTrace stackTrace, {
+    String? endpoint,
+  }) {
     if (error is DioException) {
       return handleDioError(error);
     }
@@ -235,7 +329,10 @@ class ApiErrorHandler {
       return error;
     }
 
-    return ServerException('An unexpected error occurred: ${error.toString()}', endpoint: endpoint);
+    return ServerException(
+      'An unexpected error occurred: ${error.toString()}',
+      endpoint: endpoint,
+    );
   }
 
   /// Get user-friendly error message for UI display
@@ -269,7 +366,9 @@ class ApiErrorHandler {
       case ServerException:
         return 'Server error. Please try again later.';
       default:
-        return exception.message.isNotEmpty ? exception.message : 'An unexpected error occurred.';
+        return exception.message.isNotEmpty
+            ? exception.message
+            : 'An unexpected error occurred.';
     }
   }
 }
@@ -290,7 +389,9 @@ extension ApiResponseExtension on Future<Response> {
 
   /// Convert Future<Response> to Future<Either<ApiException, T>>
   /// with custom data transformation
-  Future<Either<ApiException, T>> toEitherWithTransform<T>(T Function(dynamic data) transform) async {
+  Future<Either<ApiException, T>> toEitherWithTransform<T>(
+    T Function(dynamic data) transform,
+  ) async {
     try {
       final response = await this;
       final transformedData = transform(response.data);

@@ -1,13 +1,8 @@
 import 'package:flutter/material.dart';
-import '../constants/app_colors.dart';
-import '../constants/app_text_styles.dart';
+import 'package:fit_motiv/constants/app_colors.dart';
+import 'package:fit_motiv/constants/app_text_styles.dart';
 
 class StatsCard extends StatelessWidget {
-  final String title;
-  final String value;
-  final String unit;
-  final IconData icon;
-  final Color color;
 
   const StatsCard({
     super.key,
@@ -17,6 +12,11 @@ class StatsCard extends StatelessWidget {
     required this.icon,
     required this.color,
   });
+  final String title;
+  final String value;
+  final String unit;
+  final IconData icon;
+  final Color color;
 
   @override
   Widget build(BuildContext context) {
