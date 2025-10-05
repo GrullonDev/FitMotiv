@@ -1,3 +1,4 @@
+import 'package:fit_motiv/core/utils/snackbar_service.dart';
 import 'package:fit_motiv/features/auth/data/model/request/register_request.dart';
 import 'package:fit_motiv/features/auth/domain/repositories/auth_repository.dart';
 import 'package:flutter/material.dart';
@@ -90,14 +91,16 @@ class RegisterBloc extends ChangeNotifier {
       result.fold(
         (failure) {
           _isLoading = false;
-          // Extraer mensaje de error específico del failure
-          _errorMessage = _extractErrorMessage(failure);
+          // Mostrar SnackBar de error
+          SnackBarService.showError(failure.message);
           notifyListeners();
         },
         (userEntity) {
-          _isLoading = false;
           _userData = userEntity;
-          _successMessage = 'Account created successfully! Welcome to FitMotiv, ${fullNameController.text}!';
+
+          // Mostrar SnackBar de éxito
+          SnackBarService.showSuccess('Account created successfully! Welcome to FitMotiv, ${fullNameController.text}!');
+
           // Aquí podrías hacer acciones adicionales como:
           // - Guardar token de autenticación
           // - Enviar analytics
@@ -107,32 +110,13 @@ class RegisterBloc extends ChangeNotifier {
       );
     } catch (e) {
       _isLoading = false;
-      _errorMessage = 'Unexpected error occurred. Please try again later.\nDetails: ${e.toString()}';
+      final errorMessage = 'Unexpected error occurred. Please try again later';
+      _errorMessage = errorMessage;
+
+      // Mostrar SnackBar de error
+      SnackBarService.showError(errorMessage);
       notifyListeners();
     }
-  }
-
-  String _extractErrorMessage(dynamic failure) {
-    // Aquí implementas la lógica para extraer mensajes de error específicos
-    // basado en el tipo de failure que uses en tu arquitectura
-
-    if (failure == null) return 'Unknown error occurred';
-
-    // Si el failure tiene un mensaje específico
-    if (failure.toString().contains('email')) {
-      return 'Email address is already in use or invalid';
-    } else if (failure.toString().contains('username')) {
-      return 'Username is already taken';
-    } else if (failure.toString().contains('network')) {
-      return 'Network error. Please check your internet connection';
-    } else if (failure.toString().contains('server')) {
-      return 'Server error. Please try again later';
-    } else if (failure.toString().contains('validation')) {
-      return 'Please check your information and try again';
-    }
-
-    // Mensaje por defecto con detalles del error
-    return 'Registration failed: ${failure.toString()}';
   }
 
   bool _validateForm() {

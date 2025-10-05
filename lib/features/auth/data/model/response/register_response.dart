@@ -15,6 +15,7 @@ class RegisterResponse {
     required this.isVerify,
     required this.createdAt,
     required this.updatedAt,
+    this.message,
   });
 
   factory RegisterResponse.fromJson(Map<String, dynamic> json) {
@@ -34,6 +35,7 @@ class RegisterResponse {
       isVerify: json['isVerify'] ?? false,
       createdAt: json['createdAt'] ?? '',
       updatedAt: json['updatedAt'] ?? '',
+      message: json['detail'] as String?,
     );
   }
 
@@ -54,6 +56,7 @@ class RegisterResponse {
       'is_verified': isVerify,
       'created_at': createdAt,
       'updated_at': updatedAt,
+      'detail': message,
     };
   }
 
@@ -72,4 +75,5 @@ class RegisterResponse {
   final bool isVerify;
   final String createdAt;
   final String updatedAt;
+  final String? message;
 }

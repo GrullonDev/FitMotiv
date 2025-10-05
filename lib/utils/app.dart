@@ -1,3 +1,4 @@
+import 'package:fit_motiv/core/utils/snackbar_service.dart';
 import 'package:fit_motiv/features/auth/presentation/pages/forgot_password_screen.dart';
 import 'package:fit_motiv/features/auth/presentation/pages/login_screen.dart';
 import 'package:fit_motiv/features/auth/presentation/pages/onboarding_screen.dart';
@@ -16,6 +17,7 @@ class FitMotivApp extends StatelessWidget {
     return MaterialApp(
       title: 'FitMotiv',
       debugShowCheckedModeBanner: false,
+      scaffoldMessengerKey: SnackBarService.scaffoldMessengerKey,
       theme: ThemeData(
         primarySwatch: Colors.green,
         primaryColor: const Color(0xFF00D4A3),

@@ -1,6 +1,7 @@
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/dio.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
+import 'package:fit_motiv/core/network/utils/http_response_logger.dart';
 
 /// Generic API service that handles all HTTP requests for the application
 /// This service can be used across all modules (auth, fitness, nutrition, etc.)
@@ -11,6 +12,9 @@ class ApiService {
   }
   final Dio _dio;
   final String baseUrl;
+
+  /// HTTP status codes that indicate successful operations
+  static const List<int> _successCodes = [200, 201];
 
   /// Configure Dio interceptors for API communication
   void _setupInterceptors() {
@@ -24,13 +28,78 @@ class ApiService {
           options.headers['Accept'] = 'application/json';
           handler.next(options);
         },
+        onResponse: (response, handler) {
+          // Validate response status codes
+          if (!_isSuccessResponse(response.statusCode)) {
+            HttpResponseLogger.logError(
+              endpoint: response.requestOptions.path,
+              statusCode: response.statusCode,
+              errorMessage: 'Unexpected status code: ${response.statusCode}',
+            );
+            throw DioException(
+              requestOptions: response.requestOptions,
+              response: response,
+              type: DioExceptionType.badResponse,
+              message: 'Unexpected status code: ${response.statusCode}',
+            );
+          } else {
+            // Log successful responses
+            HttpResponseLogger.logSuccess(
+              endpoint: response.requestOptions.path,
+              statusCode: response.statusCode!,
+              operation: _getOperationFromMethod(response.requestOptions.method),
+            );
+          }
+          handler.next(response);
+        },
         onError: (error, handler) {
           // Log error for debugging purposes
-          print('API Error: ${error.message}'); // ignore: avoid_print
+          HttpResponseLogger.logError(
+            endpoint: error.requestOptions.path,
+            statusCode: error.response?.statusCode,
+            errorMessage: error.message,
+            errorData: error.response?.data,
+          );
           handler.next(error);
         },
       ),
     );
+  }
+
+  /// Check if the HTTP status code indicates a successful response
+  /// Returns true for 200 (OK) and 201 (Created)
+  bool _isSuccessResponse(int? statusCode) {
+    return statusCode != null && _successCodes.contains(statusCode);
+  }
+
+  /// Get operation description from HTTP method
+  String _getOperationFromMethod(String method) {
+    switch (method.toUpperCase()) {
+      case 'GET':
+        return 'fetch';
+      case 'POST':
+        return 'create/submit';
+      case 'PUT':
+        return 'update';
+      case 'PATCH':
+        return 'modify';
+      case 'DELETE':
+        return 'delete';
+      default:
+        return method.toLowerCase();
+    }
+  }
+
+  /// Validate response and throw descriptive error if needed
+  void _validateResponse(Response response, String operation) {
+    if (!_isSuccessResponse(response.statusCode)) {
+      throw DioException(
+        requestOptions: response.requestOptions,
+        response: response,
+        type: DioExceptionType.badResponse,
+        message: '$operation failed: Unexpected status code ${response.statusCode}',
+      );
+    }
   }
 
   // ============================================================================
@@ -38,13 +107,19 @@ class ApiService {
   // ============================================================================
 
   /// POST /auth/register - Register a new user
+  /// Expected status codes: 201 (Created) or 200 (OK)
   Future<Response> register(Map<String, dynamic> json) async {
-    return await _dio.post('$baseUrl/default/register', data: json);
+    final response = await _dio.post('$baseUrl/auth/register', data: json);
+    _validateResponse(response, 'User registration');
+    return response;
   }
 
   /// POST /auth/login - Login user
+  /// Expected status codes: 200 (OK)
   Future<Response> login(Map<String, dynamic> json) async {
-    return await _dio.post('$baseUrl/default/login', data: json);
+    final response = await _dio.post('$baseUrl/default/login', data: json);
+    _validateResponse(response, 'User login');
+    return response;
   }
 
   /// POST /auth/logout - Logout user
