@@ -2,7 +2,9 @@ import 'package:dartz/dartz.dart';
 import 'package:fit_motiv/core/network/base/base_repository.dart';
 import 'package:fit_motiv/core/network/error_handlers/api_error_handler.dart';
 import 'package:fit_motiv/features/auth/data/datasources/auth_datasource.dart';
+import 'package:fit_motiv/features/auth/data/model/request/login_request.dart';
 import 'package:fit_motiv/features/auth/data/model/request/register_request.dart';
+import 'package:fit_motiv/features/auth/data/model/response/login_response.dart';
 import 'package:fit_motiv/features/auth/data/model/response/register_response.dart';
 import 'package:fit_motiv/features/auth/domain/repositories/auth_repository.dart';
 
@@ -22,11 +24,10 @@ class AuthRepositoryImpl extends BaseRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<Either<ApiException, Map<String, dynamic>>> login(Map<String, dynamic> credentials) async {
+  Future<Either<ApiException, LoginResponse>> login(LoginRequest request) async {
     try {
-      final result = await _remoteDataSource.login(credentials);
-      // Handle successful login with token management
-      return await handleAuthenticationResult(Right(result));
+      final result = await _remoteDataSource.login(request);
+      return Right(result);
     } catch (error, stackTrace) {
       final apiException = ApiErrorHandler.handleGeneralError(error, stackTrace);
       return Left(apiException);
