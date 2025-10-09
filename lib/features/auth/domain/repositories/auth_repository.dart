@@ -1,8 +1,9 @@
 import 'package:dartz/dartz.dart';
-
 import 'package:fit_motiv/core/network/base/base_repository.dart';
 import 'package:fit_motiv/core/network/error_handlers/api_error_handler.dart';
+import 'package:fit_motiv/features/auth/data/model/request/login_request.dart';
 import 'package:fit_motiv/features/auth/data/model/request/register_request.dart';
+import 'package:fit_motiv/features/auth/data/model/response/login_response.dart';
 import 'package:fit_motiv/features/auth/data/model/response/register_response.dart';
 
 /// Abstract repository interface for authentication operations
@@ -12,53 +13,36 @@ import 'package:fit_motiv/features/auth/data/model/response/register_response.da
 /// Extends BaseRepository to inherit common functionality
 abstract class AuthRepository extends BaseRepository {
   // Authentication operations
-  Future<Either<ApiException, RegisterResponse>> register(
-    RegisterRequest request,
-  );
+  Future<Either<ApiException, RegisterResponse>> register(RegisterRequest request);
 
-  Future<Either<ApiException, Map<String, dynamic>>> login(
-    Map<String, dynamic> credentials,
-  );
+  Future<Either<ApiException, LoginResponse>> login(LoginRequest request);
 
   Future<Either<ApiException, Map<String, dynamic>>> logout();
 
-  Future<Either<ApiException, Map<String, dynamic>>> changePassword(
-    Map<String, dynamic> passwordData,
-  );
+  Future<Either<ApiException, Map<String, dynamic>>> changePassword(Map<String, dynamic> passwordData);
 
   Future<Either<ApiException, Map<String, dynamic>>> verifyToken();
 
   Future<Either<ApiException, Map<String, dynamic>>> refreshToken();
 
   // Password recovery operations
-  Future<Either<ApiException, Map<String, dynamic>>> forgotPassword(
-    Map<String, dynamic> emailData,
-  );
+  Future<Either<ApiException, Map<String, dynamic>>> forgotPassword(Map<String, dynamic> emailData);
 
-  Future<Either<ApiException, Map<String, dynamic>>> resetPassword(
-    Map<String, dynamic> resetData,
-  );
+  Future<Either<ApiException, Map<String, dynamic>>> resetPassword(Map<String, dynamic> resetData);
 
   // Email verification operations
-  Future<Either<ApiException, Map<String, dynamic>>> verifyEmail(
-    Map<String, dynamic> verificationData,
-  );
+  Future<Either<ApiException, Map<String, dynamic>>> verifyEmail(Map<String, dynamic> verificationData);
 
-  Future<Either<ApiException, Map<String, dynamic>>> resendVerification(
-    Map<String, dynamic> emailData,
-  );
+  Future<Either<ApiException, Map<String, dynamic>>> resendVerification(Map<String, dynamic> emailData);
 
   // User profile operations
   Future<Either<ApiException, Map<String, dynamic>>> getCurrentUserProfile();
 
-  Future<Either<ApiException, Map<String, dynamic>>> updateCurrentUserProfile(
-    Map<String, dynamic> profileData,
-  );
+  Future<Either<ApiException, Map<String, dynamic>>> updateCurrentUserProfile(Map<String, dynamic> profileData);
 
   Future<Either<ApiException, Map<String, dynamic>>> deleteCurrentUserAccount();
 
-  Future<Either<ApiException, Map<String, dynamic>>>
-  reactivateCurrentUserAccount();
+  Future<Either<ApiException, Map<String, dynamic>>> reactivateCurrentUserAccount();
 
   // Health check operations
   Future<Either<ApiException, Map<String, dynamic>>> healthCheck();
