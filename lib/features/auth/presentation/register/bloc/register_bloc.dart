@@ -96,6 +96,7 @@ class RegisterBloc extends ChangeNotifier {
           notifyListeners();
         },
         (userEntity) {
+          _isLoading = false;
           _userData = userEntity;
 
           // Mostrar SnackBar de éxito

@@ -1,5 +1,4 @@
 import 'package:fit_motiv/features/auth/presentation/register/bloc/register_bloc.dart';
-import 'package:fit_motiv/features/auth/presentation/register/widgets/register_success_dialog.dart';
 import 'package:fit_motiv/utils/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
 
@@ -26,14 +25,13 @@ class RegisterSubmitButton extends StatelessWidget {
     // Ejecutar registro
     await bloc.register();
 
-    // Si el registro fue exitoso, mostrar diálogo después de un delay
-    if (bloc.successMessage != null) {
+    // Si el registro fue exitoso, navegar al dashboard automáticamente
+    if (bloc.userData != null && context.mounted) {
+      // Esperar brevemente para que el usuario vea el SnackBar de éxito
+      await Future.delayed(const Duration(milliseconds: 1500));
       if (context.mounted) {
-        // Esperar un poco para que el usuario vea el mensaje de éxito
-        await Future.delayed(const Duration(seconds: 2));
-        if (context.mounted) {
-          showDialog(context: context, barrierDismissible: false, builder: (context) => const RegisterSuccessDialog());
-        }
+        // Navegar al home y limpiar todo el stack de navegación
+        Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
       }
     }
   }

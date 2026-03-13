@@ -2,6 +2,7 @@ import 'package:fit_motiv/core/utils/snackbar_service.dart';
 import 'package:fit_motiv/features/auth/presentation/pages/forgot_password_screen.dart';
 import 'package:fit_motiv/features/auth/presentation/pages/login_screen.dart';
 import 'package:fit_motiv/features/auth/presentation/pages/onboarding_screen.dart';
+import 'package:fit_motiv/features/auth/presentation/pages/splash_screen.dart';
 import 'package:fit_motiv/features/auth/presentation/register/pages/register_page.dart';
 import 'package:fit_motiv/features/dashboard/presentation/screens/home_screen.dart';
 import 'package:fit_motiv/features/profile_settings/presentation/screens/profile_screen.dart';
@@ -27,8 +28,9 @@ class FitMotivApp extends StatelessWidget {
         ),
         useMaterial3: true,
       ),
-      initialRoute: '/onboarding',
+      initialRoute: '/',
       routes: {
+        '/': (_) => const SplashScreen(),
         '/onboarding': (_) => const OnboardingScreen(),
         '/login': (_) => const LoginScreen(),
         '/register': (_) => const RegisterPage(),

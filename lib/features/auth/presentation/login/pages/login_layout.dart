@@ -31,6 +31,26 @@ class LoginLayout extends StatelessWidget {
               // Mensaje de error si existe
               if (model.errorMessage != null) MessageCard(message: model.errorMessage!, isError: true),
 
+              // Botón para reenviar verificación de email
+              if (model.isEmailNotConfirmed)
+                Padding(
+                  padding: const EdgeInsets.only(top: 12),
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: OutlinedButton.icon(
+                      onPressed: model.isLoading ? null : () => model.resendVerificationEmail(),
+                      icon: const Icon(Icons.email_outlined, size: 18),
+                      label: const Text('Resend Verification Email'),
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: Colors.orange.shade700,
+                        side: BorderSide(color: Colors.orange.shade400),
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      ),
+                    ),
+                  ),
+                ),
+
               const SizedBox(height: 24),
 
               // Botón de login

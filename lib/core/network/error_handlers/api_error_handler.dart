@@ -356,6 +356,22 @@ class ApiErrorHandler {
       );
     }
 
+    if (errorString.contains('email_not_confirmed')) {
+      return EmailNotVerifiedException(
+        'Please verify your email before signing in. Check your inbox for a confirmation link.',
+        statusCode: 400,
+        endpoint: endpoint,
+      );
+    }
+
+    if (errorString.contains('invalid_credentials') || errorString.contains('Invalid login credentials')) {
+      return UnauthorizedException(
+        'Invalid email or password. Please try again.',
+        statusCode: 401,
+        endpoint: endpoint,
+      );
+    }
+
     return ServerException(
       errorString.contains('Exception:') 
           ? errorString.replaceFirst('Exception:', '').trim()

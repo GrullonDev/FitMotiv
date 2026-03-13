@@ -43,12 +43,17 @@ class LoginBloc extends ChangeNotifier {
     notifyListeners();
   }
 
+  // Flag para mostrar opción de reenviar verificación
+  bool _isEmailNotConfirmed = false;
+  bool get isEmailNotConfirmed => _isEmailNotConfirmed;
+
   Future<void> login() async {
     if (!_validateForm()) return;
 
     _isLoading = true;
     _errorMessage = null;
     _successMessage = null;
+    _isEmailNotConfirmed = false;
     notifyListeners();
 
     try {
@@ -59,8 +64,19 @@ class LoginBloc extends ChangeNotifier {
       result.fold(
         (failure) {
           _isLoading = false;
-          _errorMessage = failure.message;
-          SnackBarService.showError(failure.message);
+
+          // Detectar si es error de email no confirmado
+          if (failure.message.toLowerCase().contains('email') &&
+              (failure.message.toLowerCase().contains('confirm') ||
+               failure.message.toLowerCase().contains('verify'))) {
+            _isEmailNotConfirmed = true;
+            _errorMessage = 'Please verify your email before signing in. Check your inbox for a confirmation link.';
+            SnackBarService.showWarning(_errorMessage!);
+          } else {
+            _errorMessage = failure.message;
+            SnackBarService.showError(failure.message);
+          }
+
           notifyListeners();
         },
         (response) {
@@ -74,9 +90,6 @@ class LoginBloc extends ChangeNotifier {
             _loginData = response;
             _successMessage = 'Login successful! Welcome back.';
             SnackBarService.showSuccess('Login successful! Welcome back.');
-
-            // Aquí podrías guardar los tokens en storage seguro
-            // TODO: Implementar almacenamiento de tokens
           }
 
           notifyListeners();
@@ -84,8 +97,42 @@ class LoginBloc extends ChangeNotifier {
       );
     } catch (error) {
       _isLoading = false;
-      _errorMessage = 'An unexpected error occurred. Please try again.';
-      SnackBarService.showError('An unexpected error occurred. Please try again.');
+      final errorStr = error.toString();
+
+      // Detectar error de email no confirmado desde excepción cruda de Supabase
+      if (errorStr.contains('email_not_confirmed')) {
+        _isEmailNotConfirmed = true;
+        _errorMessage = 'Please verify your email before signing in. Check your inbox for a confirmation link.';
+        SnackBarService.showWarning(_errorMessage!);
+      } else {
+        _errorMessage = 'An unexpected error occurred. Please try again.';
+        SnackBarService.showError(_errorMessage!);
+      }
+
+      notifyListeners();
+    }
+  }
+
+  /// Reenviar correo de verificación de email
+  Future<void> resendVerificationEmail() async {
+    final email = usernameController.text.trim();
+    if (email.isEmpty) {
+      SnackBarService.showError('Please enter your email first.');
+      return;
+    }
+
+    try {
+      _isLoading = true;
+      notifyListeners();
+
+      await _authRepository.resendVerification({'email': email});
+
+      _isLoading = false;
+      SnackBarService.showSuccess('Verification email sent! Check your inbox.');
+      notifyListeners();
+    } catch (e) {
+      _isLoading = false;
+      SnackBarService.showError('Could not resend verification email. Please try again later.');
       notifyListeners();
     }
   }

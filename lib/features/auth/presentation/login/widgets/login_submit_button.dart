@@ -25,69 +25,16 @@ class LoginSubmitButton extends StatelessWidget {
     // Ejecutar login
     await bloc.login();
 
-    // Si el login fue exitoso, navegar a la pantalla principal
+    // Si el login fue exitoso, navegar al dashboard automáticamente
     if (bloc.successMessage != null && bloc.loginData != null) {
       if (context.mounted) {
-        // TODO: Navegar a la pantalla principal o dashboard
-        // Navigator.pushReplacementNamed(context, '/dashboard');
-
-        // Por ahora solo mostramos un diálogo de éxito
-        await _showSuccessDialog(context);
+        // Esperar brevemente para que el usuario vea el SnackBar de éxito
+        await Future.delayed(const Duration(milliseconds: 1500));
+        if (context.mounted) {
+          // Navegar al home y limpiar todo el stack de navegación
+          Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
+        }
       }
     }
-  }
-
-  Future<void> _showSuccessDialog(BuildContext context) async {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                width: 80,
-                height: 80,
-                decoration: BoxDecoration(color: Colors.green.shade100, shape: BoxShape.circle),
-                child: Icon(Icons.check_circle, size: 50, color: Colors.green.shade600),
-              ),
-              const SizedBox(height: 24),
-              const Text(
-                'Welcome Back!',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black87),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 12),
-              const Text(
-                'You have successfully signed in. Ready to continue your fitness journey?',
-                style: TextStyle(fontSize: 16, color: Colors.grey),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 24),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                    // TODO: Navegar a dashboard cuando esté implementado
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green.shade600,
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                  ),
-                  child: const Text(
-                    'Continue',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
   }
 }

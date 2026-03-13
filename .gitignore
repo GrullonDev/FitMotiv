@@ -32,6 +32,8 @@
 .env.production
 .env.staging
 .env.test
+# Permitir el template para que otros devs sepan qué variables configurar
+!.env.example
 
 # ===============================================
 # 🔥 Firebase y Servicios Cloud
