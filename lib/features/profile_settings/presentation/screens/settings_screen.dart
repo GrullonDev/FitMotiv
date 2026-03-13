@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:fit_motiv/constants/app_colors.dart';
 import 'package:fit_motiv/constants/app_text_styles.dart';
 import 'package:fit_motiv/features/profile_settings/presentation/screens/profile_screen.dart';
+import 'package:provider/provider.dart';
+import 'package:fit_motiv/core/localization/locale_provider.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -59,6 +61,19 @@ class SettingsScreen extends StatelessWidget {
                   onChanged: (v) {},
                   activeThumbColor: AppColors.primary,
                 ),
+              ),
+              _buildSettingItem(
+                icon: Icons.language,
+                title: context.watch<LocaleProvider>().translate('language'),
+                subtitle: context.watch<LocaleProvider>().locale.languageCode == 'en' ? 'English' : 'Español',
+                onTap: () {
+                  final provider = context.read<LocaleProvider>();
+                  if (provider.locale.languageCode == 'en') {
+                    provider.setLocale(const Locale('es'));
+                  } else {
+                    provider.setLocale(const Locale('en'));
+                  }
+                },
               ),
             ],
           ),

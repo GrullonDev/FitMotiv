@@ -1,4 +1,5 @@
 import 'package:fit_motiv/features/community/data/datasources/community_supabase_datasource.dart';
+import 'package:fit_motiv/core/services/notification_service.dart';
 import 'package:fit_motiv/features/community/presentation/providers/community_provider.dart';
 import 'package:fit_motiv/features/dashboard/data/datasources/quote_local_datasource.dart';
 import 'package:fit_motiv/features/dashboard/data/datasources/quote_supabase_datasource.dart';
@@ -84,4 +85,9 @@ Future<void> init() async {
   sl.registerFactory<CommunityProvider>(
     () => CommunityProvider(datasource: sl<CommunitySupabaseDatasource>()),
   );
+
+  // ─────────────────────────────────────────
+  // Services
+  // ─────────────────────────────────────────
+  sl.registerLazySingleton<NotificationService>(() => NotificationService());
 }

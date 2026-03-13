@@ -1,10 +1,13 @@
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:fit_motiv/constants/app_colors.dart';
 import 'package:fit_motiv/constants/app_text_styles.dart';
+import 'package:fit_motiv/core/localization/locale_provider.dart';
 import 'package:fit_motiv/features/community/presentation/providers/community_provider.dart';
-import 'package:fit_motiv/features/community/presentation/screens/user_selection_screen.dart';
 import 'package:fit_motiv/features/community/presentation/screens/chat_room_screen.dart';
+import 'package:fit_motiv/features/community/presentation/screens/post_details_screen.dart';
+import 'package:fit_motiv/features/community/presentation/screens/user_selection_screen.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class CommunityScreen extends StatelessWidget {
   const CommunityScreen({super.key});
@@ -12,6 +15,7 @@ class CommunityScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<CommunityProvider>();
+    final l10n = context.watch<LocaleProvider>();
 
     return DefaultTabController(
       length: 3,
@@ -20,7 +24,7 @@ class CommunityScreen extends StatelessWidget {
         appBar: AppBar(
           backgroundColor: AppColors.background,
           elevation: 0,
-          title: Text('Community', style: AppTextStyles.heading3),
+          title: Text(l10n.translate('community'), style: AppTextStyles.heading3),
           centerTitle: true,
           actions: [
             IconButton(
@@ -32,17 +36,15 @@ class CommunityScreen extends StatelessWidget {
             labelColor: AppColors.primary,
             unselectedLabelColor: AppColors.textSecondary,
             indicatorColor: AppColors.primary,
-            tabs: const [
-              Tab(text: 'Feed'),
-              Tab(text: 'Members'),
-              Tab(text: 'Messages'),
+            tabs: [
+              Tab(text: l10n.translate('feed')),
+              Tab(text: l10n.translate('members')),
+              Tab(text: l10n.translate('messages')),
             ],
           ),
         ),
         body: provider.isLoading
-            ? const Center(
-                child: CircularProgressIndicator(color: AppColors.primary),
-              )
+            ? const Center(child: CircularProgressIndicator(color: AppColors.primary))
             : TabBarView(
                 children: [
                   _FeedTab(provider: provider),
@@ -50,6 +52,53 @@ class CommunityScreen extends StatelessWidget {
                   _MessagesTab(provider: provider),
                 ],
               ),
+        floatingActionButton: Builder(
+          builder: (context) {
+            final tabController = DefaultTabController.of(context);
+            return AnimatedBuilder(
+              animation: tabController,
+              builder: (context, child) {
+                // Solo mostrar en la pestaña de Feed (index 0)
+                if (tabController.index != 0) return const SizedBox.shrink();
+                return FloatingActionButton(
+                  onPressed: () => _showCreatePostDialog(context, provider),
+                  backgroundColor: AppColors.primary,
+                  child: const Icon(Icons.add, color: Colors.white),
+                );
+              },
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  void _showCreatePostDialog(BuildContext context, CommunityProvider provider) {
+    final controller = TextEditingController();
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Create Post'),
+        content: TextField(
+          controller: controller,
+          maxLines: 4,
+          decoration: const InputDecoration(hintText: "What's on your mind?", border: OutlineInputBorder()),
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
+          ElevatedButton(
+            onPressed: () async {
+              if (controller.text.trim().isNotEmpty) {
+                final success = await provider.createPost(controller.text.trim());
+                if (success && context.mounted) {
+                  Navigator.pop(context);
+                }
+              }
+            },
+            style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary),
+            child: const Text('Post', style: TextStyle(color: Colors.white)),
+          ),
+        ],
       ),
     );
   }
@@ -74,11 +123,7 @@ class _FeedTab extends StatelessWidget {
               child: Column(
                 children: [
                   const SizedBox(height: 80),
-                  Icon(
-                    Icons.forum_outlined,
-                    size: 64,
-                    color: AppColors.textSecondary.withValues(alpha: 0.4),
-                  ),
+                  Icon(Icons.forum_outlined, size: 64, color: AppColors.textSecondary.withValues(alpha: 0.4)),
                   const SizedBox(height: 16),
                   Text('No posts yet', style: AppTextStyles.heading4),
                   const SizedBox(height: 8),
@@ -105,9 +150,7 @@ class _FeedTab extends StatelessWidget {
         itemBuilder: (context, i) {
           final post = provider.posts[i];
           final profiles = post['profiles'] as Map<String, dynamic>?;
-          final authorName = profiles?['full_name'] as String? ??
-              profiles?['username'] as String? ??
-              'Anonymous';
+          final authorName = profiles?['full_name'] as String? ?? profiles?['username'] as String? ?? 'Anonymous';
           final content = post['content'] as String? ?? '';
           final likes = post['likes_count'] as int? ?? 0;
           final comments = post['comments_count'] as int? ?? 0;
@@ -132,17 +175,20 @@ class _FeedTab extends StatelessWidget {
             } catch (_) {}
           }
 
-          return Container(
-            padding: const EdgeInsets.all(16),
+          return InkWell(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => PostDetailsScreen(post: post)),
+              );
+            },
+            child: Container(
+              padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(16),
               boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withValues(alpha: 0.06),
-                  blurRadius: 8,
-                  offset: const Offset(0, 2),
-                ),
+                BoxShadow(color: Colors.grey.withValues(alpha: 0.06), blurRadius: 8, offset: const Offset(0, 2)),
               ],
             ),
             child: Column(
@@ -159,10 +205,7 @@ class _FeedTab extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            authorName,
-                            style: AppTextStyles.bodyMedium.copyWith(fontWeight: FontWeight.w600),
-                          ),
+                          Text(authorName, style: AppTextStyles.bodyMedium.copyWith(fontWeight: FontWeight.w600)),
                           if (timeAgo.isNotEmpty)
                             Text(timeAgo, style: AppTextStyles.bodySmall.copyWith(color: AppColors.textSecondary)),
                         ],
@@ -175,19 +218,65 @@ class _FeedTab extends StatelessWidget {
                 const SizedBox(height: 12),
                 Row(
                   children: [
-                    const Icon(Icons.favorite, size: 18, color: AppColors.primary),
-                    const SizedBox(width: 4),
-                    Text('$likes', style: AppTextStyles.bodySmall),
+                    InkWell(
+                      onTap: () => provider.toggleLike(post['id']),
+                      child: Row(
+                        children: [
+                          Icon(
+                            (post['is_liked'] ?? false) ? Icons.favorite : Icons.favorite_border,
+                            size: 18,
+                            color: (post['is_liked'] ?? false) ? Colors.red : AppColors.primary,
+                          ),
+                          const SizedBox(width: 4),
+                          Text('$likes', style: AppTextStyles.bodySmall),
+                        ],
+                      ),
+                    ),
                     const SizedBox(width: 16),
-                    const Icon(Icons.comment, size: 18, color: AppColors.textSecondary),
-                    const SizedBox(width: 4),
-                    Text('$comments', style: AppTextStyles.bodySmall),
+                    InkWell(
+                      onTap: () => _showCommentDialog(context, provider, post['id']),
+                      child: Row(
+                        children: [
+                          const Icon(Icons.mode_comment_outlined, size: 18, color: AppColors.textSecondary),
+                          const SizedBox(width: 4),
+                          Text('$comments', style: AppTextStyles.bodySmall),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
               ],
             ),
-          );
-        },
+          ),
+        );
+      },
+    ),
+    );
+  }
+
+  void _showCommentDialog(BuildContext context, CommunityProvider provider, String postId) {
+    final controller = TextEditingController();
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Add Comment'),
+        content: TextField(
+          controller: controller,
+          decoration: const InputDecoration(hintText: 'Write a comment...'),
+          maxLines: 3,
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
+          ElevatedButton(
+            onPressed: () {
+              if (controller.text.trim().isNotEmpty) {
+                provider.addComment(postId, controller.text.trim());
+                Navigator.pop(context);
+              }
+            },
+            child: const Text('Post'),
+          ),
+        ],
       ),
     );
   }
@@ -212,11 +301,7 @@ class _MembersTab extends StatelessWidget {
               child: Column(
                 children: [
                   const SizedBox(height: 80),
-                  Icon(
-                    Icons.people_outline,
-                    size: 64,
-                    color: AppColors.textSecondary.withValues(alpha: 0.4),
-                  ),
+                  Icon(Icons.people_outline, size: 64, color: AppColors.textSecondary.withValues(alpha: 0.4)),
                   const SizedBox(height: 16),
                   Text('No members yet', style: AppTextStyles.heading4),
                   const SizedBox(height: 8),
@@ -277,34 +362,46 @@ class _MembersTab extends StatelessWidget {
                   ),
               ],
             ),
-            title: Text(
-              name,
-              style: AppTextStyles.bodyMedium.copyWith(fontWeight: FontWeight.w600),
-            ),
-            subtitle: Text(
-              [activityLevel, fitnessGoal].where((s) => s.isNotEmpty).join(' • '),
-              style: AppTextStyles.bodySmall,
+            title: Text(name, style: AppTextStyles.bodyMedium.copyWith(fontWeight: FontWeight.w600)),
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  [activityLevel, fitnessGoal].where((s) => s.isNotEmpty).join(' • '),
+                  style: AppTextStyles.bodySmall,
+                ),
+                if (profile['latitude'] != null)
+                  Text(
+                    provider.getDistanceString(profile['latitude'], profile['longitude']),
+                    style: AppTextStyles.bodySmall.copyWith(color: AppColors.primary, fontWeight: FontWeight.bold),
+                  ),
+              ],
             ),
             trailing: OutlinedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ChatRoomScreen(userName: name),
-                  ),
-                );
+              onPressed: () async {
+                try {
+                  final conv = await provider.startConversation(profile['id']);
+                  if (!context.mounted) return;
+
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          ChatRoomScreen(userName: name, conversationId: conv['id'], otherUserId: profile['id']),
+                    ),
+                  );
+                } catch (e) {
+                  ScaffoldMessenger.of(
+                    context,
+                  ).showSnackBar(SnackBar(content: Text('Error starting conversation: $e')));
+                }
               },
               style: OutlinedButton.styleFrom(
                 side: const BorderSide(color: AppColors.primary),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
-                ),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                 padding: const EdgeInsets.symmetric(horizontal: 12),
               ),
-              child: const Text(
-                'Chat',
-                style: TextStyle(color: AppColors.primary, fontSize: 12),
-              ),
+              child: const Text('Chat', style: TextStyle(color: AppColors.primary, fontSize: 12)),
             ),
           );
         },
@@ -326,10 +423,7 @@ class _MessagesTab extends StatelessWidget {
           padding: const EdgeInsets.all(16.0),
           child: ElevatedButton.icon(
             onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const UserSelectionScreen()),
-              );
+              Navigator.push(context, MaterialPageRoute(builder: (context) => const UserSelectionScreen()));
             },
             icon: const Icon(Icons.add_comment),
             label: const Text('Start New Chat'),
@@ -342,28 +436,141 @@ class _MessagesTab extends StatelessWidget {
           ),
         ),
         Expanded(
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.chat_bubble_outline,
-                  size: 64,
-                  color: AppColors.textSecondary.withValues(alpha: 0.4),
+          child: provider.conversations.isEmpty
+              ? Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.chat_bubble_outline, size: 64, color: AppColors.textSecondary.withValues(alpha: 0.4)),
+                      const SizedBox(height: 16),
+                      Text('No conversations yet', style: AppTextStyles.heading4),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Start a conversation with a community member.',
+                        style: AppTextStyles.bodySmall,
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+                )
+              : ListView.separated(
+                  itemCount: provider.conversations.length,
+                  separatorBuilder: (_, __) => const Divider(height: 1, color: AppColors.surface, indent: 70),
+                  itemBuilder: (context, index) {
+                    final conv = provider.conversations[index];
+                    final currentUserId = provider.isLoading ? '' : Supabase.instance.client.auth.currentUser?.id;
+
+                    // Identificar al otro participante
+                    final isP1Other = conv['participant_1_id'] != currentUserId;
+                    final otherProfile = isP1Other ? conv['p1'] : conv['p2'];
+
+                    final otherId = otherProfile['id'] as String;
+                    final name = otherProfile['full_name'] as String? ?? otherProfile['username'] as String? ?? 'User';
+                    final lastMsg = conv['last_message_text'] as String? ?? 'No messages yet';
+                    final lastAt = conv['last_message_at'] as String? ?? '';
+                    final isOnline = otherProfile['is_online'] as bool? ?? false;
+
+                    final initials = name.isNotEmpty
+                        ? name.split(' ').map((e) => e.isNotEmpty ? e[0] : '').join().toUpperCase()
+                        : '?';
+                    final hasUnread = conv['unread_count'] != null && (conv['unread_count'] as int) > 0;
+
+                    return ListTile(
+                      onTap: () {
+                        // Marcar como leído (pendiente implementar en provider)
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                ChatRoomScreen(userName: name, conversationId: conv['id'], otherUserId: otherId),
+                          ),
+                        );
+                      },
+                      leading: Stack(
+                        children: [
+                          CircleAvatar(
+                            radius: 28,
+                            backgroundColor: AppColors.primary.withValues(alpha: 0.1),
+                            child: Text(
+                              initials,
+                              style: const TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          if (isOnline)
+                            Positioned(
+                              right: 0,
+                              bottom: 0,
+                              child: Container(
+                                width: 14,
+                                height: 14,
+                                decoration: BoxDecoration(
+                                  color: AppColors.success,
+                                  shape: BoxShape.circle,
+                                  border: Border.all(color: Colors.white, width: 2),
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
+                      title: Row(
+                        children: [
+                          Expanded(
+                            child: Text(name, style: AppTextStyles.bodyMedium.copyWith(fontWeight: FontWeight.bold)),
+                          ),
+                          if (lastAt.isNotEmpty)
+                            Text(
+                              _formatTime(lastAt),
+                              style: AppTextStyles.bodySmall.copyWith(
+                                fontSize: 10,
+                                color: hasUnread ? AppColors.primary : AppColors.textSecondary,
+                                fontWeight: hasUnread ? FontWeight.bold : FontWeight.normal,
+                              ),
+                            ),
+                        ],
+                      ),
+                      subtitle: Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              lastMsg,
+                              style: AppTextStyles.bodySmall.copyWith(
+                                color: hasUnread ? AppColors.textPrimary : AppColors.textSecondary,
+                                fontWeight: hasUnread ? FontWeight.w600 : FontWeight.normal,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          if (hasUnread)
+                            Container(
+                              margin: const EdgeInsets.only(left: 8),
+                              padding: const EdgeInsets.all(6),
+                              decoration: const BoxDecoration(color: AppColors.primary, shape: BoxShape.circle),
+                              child: Text(
+                                '${conv['unread_count']}',
+                                style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                        ],
+                      ),
+                    );
+                  },
                 ),
-                const SizedBox(height: 16),
-                Text('No conversations yet', style: AppTextStyles.heading4),
-                const SizedBox(height: 8),
-                Text(
-                  'Start a conversation with a community member.',
-                  style: AppTextStyles.bodySmall,
-                  textAlign: TextAlign.center,
-                ),
-              ],
-            ),
-          ),
         ),
       ],
     );
+  }
+
+  String _formatTime(String dateStr) {
+    try {
+      final date = DateTime.parse(dateStr);
+      final diff = DateTime.now().difference(date);
+      if (diff.inDays > 0) return '${diff.inDays}d';
+      if (diff.inHours > 0) return '${diff.inHours}h';
+      if (diff.inMinutes > 0) return '${diff.inMinutes}m';
+      return 'now';
+    } catch (_) {
+      return '';
+    }
   }
 }

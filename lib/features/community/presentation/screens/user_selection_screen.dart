@@ -133,13 +133,26 @@ class _UserSelectionScreenState extends State<UserSelectionScreen> {
                       isOnline ? 'Online' : activityLevel.isNotEmpty ? activityLevel : 'Offline',
                       style: AppTextStyles.bodySmall,
                     ),
-                    onTap: () {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => ChatRoomScreen(userName: name),
-                        ),
-                      );
+                    onTap: () async {
+                      try {
+                        final conv = await provider.startConversation(user['id']);
+                        if (!context.mounted) return;
+                        
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ChatRoomScreen(
+                              userName: name,
+                              conversationId: conv['id'],
+                              otherUserId: user['id'],
+                            ),
+                          ),
+                        );
+                      } catch (e) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Error starting conversation: $e')),
+                        );
+                      }
                     },
                   );
                 },

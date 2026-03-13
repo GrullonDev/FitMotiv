@@ -24,8 +24,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
       child: RefreshIndicator(
         color: AppColors.primary,
         onRefresh: () async {
-          await context.read<UserProfileProvider>().refreshProfile();
-          await context.read<DashboardProvider>().fetchQuote();
+          final profileProvider = context.read<UserProfileProvider>();
+          final dashboardProvider = context.read<DashboardProvider>();
+          
+          await profileProvider.refreshProfile();
+          await dashboardProvider.fetchQuote();
         },
         child: SingleChildScrollView(
           physics: const AlwaysScrollableScrollPhysics(),

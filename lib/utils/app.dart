@@ -8,14 +8,29 @@ import 'package:fit_motiv/features/dashboard/presentation/screens/home_screen.da
 import 'package:fit_motiv/features/profile_settings/presentation/screens/profile_screen.dart';
 import 'package:fit_motiv/features/profile_settings/presentation/screens/settings_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:provider/provider.dart';
+import 'package:fit_motiv/core/localization/locale_provider.dart';
 
 class FitMotivApp extends StatelessWidget {
   const FitMotivApp({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final localeProvider = context.watch<LocaleProvider>();
+
     return MaterialApp(
       title: 'FitMotiv',
+      locale: localeProvider.locale,
+      supportedLocales: const [
+        Locale('en'),
+        Locale('es'),
+      ],
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
       debugShowCheckedModeBanner: false,
       scaffoldMessengerKey: SnackBarService.scaffoldMessengerKey,
       theme: ThemeData(
