@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:fit_motiv/constants/app_colors.dart';
 import 'package:fit_motiv/constants/app_text_styles.dart';
+import 'package:fit_motiv/features/community/presentation/providers/community_provider.dart';
 import 'package:fit_motiv/features/community/presentation/screens/user_selection_screen.dart';
 import 'package:fit_motiv/features/community/presentation/screens/chat_room_screen.dart';
 
@@ -9,8 +11,10 @@ class CommunityScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final provider = context.watch<CommunityProvider>();
+
     return DefaultTabController(
-      length: 4,
+      length: 3,
       child: Scaffold(
         backgroundColor: AppColors.background,
         appBar: AppBar(
@@ -20,42 +24,302 @@ class CommunityScreen extends StatelessWidget {
           centerTitle: true,
           actions: [
             IconButton(
-              icon: const Icon(Icons.search, color: AppColors.textPrimary),
-              onPressed: () {},
+              icon: const Icon(Icons.refresh, color: AppColors.primary),
+              onPressed: () => provider.refreshAll(),
             ),
           ],
           bottom: TabBar(
             labelColor: AppColors.primary,
             unselectedLabelColor: AppColors.textSecondary,
             indicatorColor: AppColors.primary,
-            isScrollable: true,
             tabs: const [
-              Tab(text: 'All'),
-              Tab(text: 'Following'),
-              Tab(text: 'For You'),
+              Tab(text: 'Feed'),
+              Tab(text: 'Members'),
               Tab(text: 'Messages'),
             ],
           ),
         ),
-        body: TabBarView(
-          children: [
-            _buildFeed(),
-            _buildFeed(),
-            _buildFeed(),
-            _buildMessagesTab(context),
-          ],
-        ),
+        body: provider.isLoading
+            ? const Center(
+                child: CircularProgressIndicator(color: AppColors.primary),
+              )
+            : TabBarView(
+                children: [
+                  _FeedTab(provider: provider),
+                  _MembersTab(provider: provider),
+                  _MessagesTab(provider: provider),
+                ],
+              ),
       ),
     );
   }
+}
 
-  static Widget _buildMessagesTab(BuildContext context) {
-    // Mock conversations
-    final conversations = [
-      {'name': 'Sophia', 'lastMsg': 'Thanks for the routine!', 'time': '2m ago', 'unread': 2},
-      {'name': 'Ethan', 'lastMsg': 'Ready for today\'s run?', 'time': '15m ago', 'unread': 0},
-    ];
+/// Feed de posts
+class _FeedTab extends StatelessWidget {
+  const _FeedTab({required this.provider});
+  final CommunityProvider provider;
 
+  @override
+  Widget build(BuildContext context) {
+    if (provider.posts.isEmpty) {
+      return RefreshIndicator(
+        color: AppColors.primary,
+        onRefresh: () => provider.refreshAll(),
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: Padding(
+            padding: const EdgeInsets.all(32),
+            child: Center(
+              child: Column(
+                children: [
+                  const SizedBox(height: 80),
+                  Icon(
+                    Icons.forum_outlined,
+                    size: 64,
+                    color: AppColors.textSecondary.withValues(alpha: 0.4),
+                  ),
+                  const SizedBox(height: 16),
+                  Text('No posts yet', style: AppTextStyles.heading4),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Be the first to share something with the community!',
+                    style: AppTextStyles.bodySmall,
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
+    return RefreshIndicator(
+      color: AppColors.primary,
+      onRefresh: () => provider.refreshAll(),
+      child: ListView.separated(
+        padding: const EdgeInsets.all(16),
+        itemCount: provider.posts.length,
+        separatorBuilder: (_, __) => const SizedBox(height: 16),
+        itemBuilder: (context, i) {
+          final post = provider.posts[i];
+          final profiles = post['profiles'] as Map<String, dynamic>?;
+          final authorName = profiles?['full_name'] as String? ??
+              profiles?['username'] as String? ??
+              'Anonymous';
+          final content = post['content'] as String? ?? '';
+          final likes = post['likes_count'] as int? ?? 0;
+          final comments = post['comments_count'] as int? ?? 0;
+          final createdAt = post['created_at'] as String? ?? '';
+
+          final initials = authorName.isNotEmpty
+              ? authorName.split(' ').map((e) => e.isNotEmpty ? e[0] : '').join().toUpperCase()
+              : '?';
+
+          String timeAgo = '';
+          if (createdAt.isNotEmpty) {
+            try {
+              final date = DateTime.parse(createdAt);
+              final diff = DateTime.now().difference(date);
+              if (diff.inDays > 0) {
+                timeAgo = '${diff.inDays}d ago';
+              } else if (diff.inHours > 0) {
+                timeAgo = '${diff.inHours}h ago';
+              } else {
+                timeAgo = '${diff.inMinutes}m ago';
+              }
+            } catch (_) {}
+          }
+
+          return Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withValues(alpha: 0.06),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    CircleAvatar(
+                      backgroundColor: AppColors.primary.withValues(alpha: 0.1),
+                      child: Text(initials, style: const TextStyle(color: AppColors.primary, fontSize: 14)),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            authorName,
+                            style: AppTextStyles.bodyMedium.copyWith(fontWeight: FontWeight.w600),
+                          ),
+                          if (timeAgo.isNotEmpty)
+                            Text(timeAgo, style: AppTextStyles.bodySmall.copyWith(color: AppColors.textSecondary)),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                Text(content, style: AppTextStyles.bodyMedium),
+                const SizedBox(height: 12),
+                Row(
+                  children: [
+                    const Icon(Icons.favorite, size: 18, color: AppColors.primary),
+                    const SizedBox(width: 4),
+                    Text('$likes', style: AppTextStyles.bodySmall),
+                    const SizedBox(width: 16),
+                    const Icon(Icons.comment, size: 18, color: AppColors.textSecondary),
+                    const SizedBox(width: 4),
+                    Text('$comments', style: AppTextStyles.bodySmall),
+                  ],
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+/// Lista de miembros de la comunidad
+class _MembersTab extends StatelessWidget {
+  const _MembersTab({required this.provider});
+  final CommunityProvider provider;
+
+  @override
+  Widget build(BuildContext context) {
+    if (provider.profiles.isEmpty) {
+      return RefreshIndicator(
+        color: AppColors.primary,
+        onRefresh: () => provider.refreshAll(),
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: Padding(
+            padding: const EdgeInsets.all(32),
+            child: Center(
+              child: Column(
+                children: [
+                  const SizedBox(height: 80),
+                  Icon(
+                    Icons.people_outline,
+                    size: 64,
+                    color: AppColors.textSecondary.withValues(alpha: 0.4),
+                  ),
+                  const SizedBox(height: 16),
+                  Text('No members yet', style: AppTextStyles.heading4),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Members will appear here as people join.',
+                    style: AppTextStyles.bodySmall,
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
+    return RefreshIndicator(
+      color: AppColors.primary,
+      onRefresh: () => provider.refreshAll(),
+      child: ListView.separated(
+        padding: const EdgeInsets.all(16),
+        itemCount: provider.profiles.length,
+        separatorBuilder: (_, __) => const Divider(height: 1, color: AppColors.surface),
+        itemBuilder: (context, index) {
+          final profile = provider.profiles[index];
+          final name = (profile['full_name'] as String? ?? '').isNotEmpty
+              ? profile['full_name'] as String
+              : profile['username'] as String? ?? 'User';
+          final fitnessGoal = profile['fitness_goal'] as String? ?? '';
+          final activityLevel = profile['activity_level'] as String? ?? '';
+          final isOnline = profile['is_online'] as bool? ?? false;
+
+          final initials = name.isNotEmpty
+              ? name.split(' ').map((e) => e.isNotEmpty ? e[0] : '').join().toUpperCase()
+              : '?';
+
+          return ListTile(
+            contentPadding: const EdgeInsets.symmetric(vertical: 4),
+            leading: Stack(
+              children: [
+                CircleAvatar(
+                  backgroundColor: AppColors.primary.withValues(alpha: 0.1),
+                  child: Text(initials, style: const TextStyle(color: AppColors.primary)),
+                ),
+                if (isOnline)
+                  Positioned(
+                    right: 0,
+                    bottom: 0,
+                    child: Container(
+                      width: 12,
+                      height: 12,
+                      decoration: BoxDecoration(
+                        color: AppColors.success,
+                        shape: BoxShape.circle,
+                        border: Border.all(color: Colors.white, width: 2),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+            title: Text(
+              name,
+              style: AppTextStyles.bodyMedium.copyWith(fontWeight: FontWeight.w600),
+            ),
+            subtitle: Text(
+              [activityLevel, fitnessGoal].where((s) => s.isNotEmpty).join(' • '),
+              style: AppTextStyles.bodySmall,
+            ),
+            trailing: OutlinedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ChatRoomScreen(userName: name),
+                  ),
+                );
+              },
+              style: OutlinedButton.styleFrom(
+                side: const BorderSide(color: AppColors.primary),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+              ),
+              child: const Text(
+                'Chat',
+                style: TextStyle(color: AppColors.primary, fontSize: 12),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+/// Tab de mensajes
+class _MessagesTab extends StatelessWidget {
+  const _MessagesTab({required this.provider});
+  final CommunityProvider provider;
+
+  @override
+  Widget build(BuildContext context) {
     return Column(
       children: [
         Padding(
@@ -78,160 +342,28 @@ class CommunityScreen extends StatelessWidget {
           ),
         ),
         Expanded(
-          child: ListView.separated(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            itemCount: conversations.length,
-            separatorBuilder: (_, __) => const Divider(height: 1, color: AppColors.surface),
-            itemBuilder: (context, index) {
-              final conv = conversations[index];
-              final name = conv['name'] as String;
-              final lastMsg = conv['lastMsg'] as String;
-              final time = conv['time'] as String;
-              final unread = conv['unread'] as int;
-
-              return ListTile(
-                contentPadding: EdgeInsets.zero,
-                leading: CircleAvatar(
-                  backgroundColor: AppColors.primary.withValues(alpha: 0.1),
-                  child: Text(name[0], style: const TextStyle(color: AppColors.primary)),
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.chat_bubble_outline,
+                  size: 64,
+                  color: AppColors.textSecondary.withValues(alpha: 0.4),
                 ),
-                title: Text(name, style: AppTextStyles.bodyMedium.copyWith(fontWeight: FontWeight.bold)),
-                subtitle: Text(lastMsg, style: AppTextStyles.bodySmall),
-                trailing: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Text(time, style: AppTextStyles.bodySmall.copyWith(fontSize: 10)),
-                    if (unread > 0)
-                      Container(
-                        margin: const EdgeInsets.only(top: 4),
-                        padding: const EdgeInsets.all(6),
-                        decoration: const BoxDecoration(color: AppColors.primary, shape: BoxShape.circle),
-                        child: Text('$unread', style: const TextStyle(color: Colors.white, fontSize: 10)),
-                      ),
-                  ],
+                const SizedBox(height: 16),
+                Text('No conversations yet', style: AppTextStyles.heading4),
+                const SizedBox(height: 8),
+                Text(
+                  'Start a conversation with a community member.',
+                  style: AppTextStyles.bodySmall,
+                  textAlign: TextAlign.center,
                 ),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ChatRoomScreen(userName: name),
-                    ),
-                  );
-                },
-              );
-            },
+              ],
+            ),
           ),
         ),
       ],
-    );
-  }
-
-  static Widget _buildFeed() {
-    final posts = [
-      {
-        'name': 'Sophia',
-        'time': '10 min ago',
-        'content':
-            'Just completed my first week of the beginner’s routine! Feeling energized and ready for more. #fitnessjourney',
-        'likes': 23,
-        'comments': 5,
-      },
-      {
-        'name': 'Ethan',
-        'time': '25 min ago',
-        'content':
-            'Hit a new personal best on my run today! Consistency pays off. #running #progress',
-        'likes': 18,
-        'comments': 3,
-      },
-      {
-        'name': 'Olivia',
-        'time': '40 min ago',
-        'content':
-            'Trying out a new healthy recipe tonight. Wish me luck! #healthyeating #cooking',
-        'likes': 32,
-        'comments': 8,
-      },
-    ];
-    return ListView.separated(
-      padding: const EdgeInsets.all(16),
-      itemCount: posts.length,
-      separatorBuilder: (_, __) => const SizedBox(height: 24),
-      itemBuilder: (context, i) {
-        final post = posts[i];
-        final initials = (post['name'] as String)
-            .split(' ')
-            .map((e) => e[0])
-            .join();
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                CircleAvatar(
-                  backgroundColor: AppColors.primary.withValues(alpha: 0.1),
-                  child: Text(
-                    initials,
-                    style: AppTextStyles.bodyMedium.copyWith(
-                      color: AppColors.primary,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      post['name'] as String,
-                      style: AppTextStyles.bodyMedium.copyWith(
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    Text(
-                      post['time'] as String,
-                      style: AppTextStyles.bodySmall.copyWith(
-                        color: AppColors.textSecondary,
-                      ),
-                    ),
-                  ],
-                ),
-                const Spacer(),
-                IconButton(
-                  icon: const Icon(
-                    Icons.more_horiz,
-                    color: AppColors.textSecondary,
-                  ),
-                  onPressed: () {},
-                ),
-              ],
-            ),
-            const SizedBox(height: 8),
-            Text(post['content'] as String, style: AppTextStyles.bodyMedium),
-            const SizedBox(height: 12),
-            Row(
-              children: [
-                const Icon(Icons.favorite, size: 20, color: AppColors.primary),
-                const SizedBox(width: 4),
-                Text('${post['likes']}', style: AppTextStyles.bodySmall),
-                const SizedBox(width: 16),
-                const Icon(
-                  Icons.comment,
-                  size: 20,
-                  color: AppColors.textSecondary,
-                ),
-                const SizedBox(width: 4),
-                Text('${post['comments']}', style: AppTextStyles.bodySmall),
-                const SizedBox(width: 4),
-                IconButton(
-                  icon: const Icon(Icons.share, color: AppColors.textSecondary),
-                  onPressed: () {},
-                ),
-              ],
-            ),
-          ],
-        );
-      },
     );
   }
 }

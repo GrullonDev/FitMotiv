@@ -1,6 +1,10 @@
 import 'package:fit_motiv/core/config/app_config.dart';
 import 'package:fit_motiv/core/di/injection_container.dart' as di;
+import 'package:fit_motiv/features/community/presentation/providers/community_provider.dart';
 import 'package:fit_motiv/features/dashboard/presentation/providers/dashboard_provider.dart';
+import 'package:fit_motiv/features/profile_settings/presentation/providers/user_profile_provider.dart';
+import 'package:fit_motiv/features/progress/presentation/providers/progress_provider.dart';
+import 'package:fit_motiv/features/routines/presentation/providers/workout_provider.dart';
 import 'package:fit_motiv/utils/app.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -12,7 +16,13 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-      providers: [ChangeNotifierProvider(create: (_) => di.sl<DashboardProvider>())],
+      providers: [
+        ChangeNotifierProvider(create: (_) => di.sl<DashboardProvider>()),
+        ChangeNotifierProvider(create: (_) => di.sl<UserProfileProvider>()),
+        ChangeNotifierProvider(create: (_) => di.sl<WorkoutProvider>()),
+        ChangeNotifierProvider(create: (_) => di.sl<ProgressProvider>()),
+        ChangeNotifierProvider(create: (_) => di.sl<CommunityProvider>()),
+      ],
       child: const FitMotivApp(),
     );
   }

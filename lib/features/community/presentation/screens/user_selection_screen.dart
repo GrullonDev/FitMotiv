@@ -1,20 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:fit_motiv/constants/app_colors.dart';
 import 'package:fit_motiv/constants/app_text_styles.dart';
+import 'package:fit_motiv/features/community/presentation/providers/community_provider.dart';
 import 'package:fit_motiv/features/community/presentation/screens/chat_room_screen.dart';
 
-class UserSelectionScreen extends StatelessWidget {
+class UserSelectionScreen extends StatefulWidget {
   const UserSelectionScreen({super.key});
 
   @override
+  State<UserSelectionScreen> createState() => _UserSelectionScreenState();
+}
+
+class _UserSelectionScreenState extends State<UserSelectionScreen> {
+  String _searchQuery = '';
+
+  @override
   Widget build(BuildContext context) {
-    // Mock users for demonstration
-    final users = [
-      {'name': 'Sophia Aris', 'status': 'Active 5m ago', 'level': 'Pro'},
-      {'name': 'Ethan Hunt', 'status': 'Online', 'level': 'Expert'},
-      {'name': 'Olivia Smith', 'status': 'Offline', 'level': 'Intermediate'},
-      {'name': 'Jackson Hole', 'status': 'Active 1h ago', 'level': 'Beginner'},
-    ];
+    final provider = context.watch<CommunityProvider>();
+    final allProfiles = provider.profiles;
+    
+    // Filtrar por búsqueda
+    final filtered = _searchQuery.isEmpty
+        ? allProfiles
+        : allProfiles.where((p) {
+            final name = (p['full_name'] as String? ?? '').toLowerCase();
+            final username = (p['username'] as String? ?? '').toLowerCase();
+            return name.contains(_searchQuery) || username.contains(_searchQuery);
+          }).toList();
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -33,6 +46,7 @@ class UserSelectionScreen extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: TextField(
+              onChanged: (value) => setState(() => _searchQuery = value.toLowerCase()),
               decoration: InputDecoration(
                 hintText: "Search users...",
                 prefixIcon: const Icon(Icons.search),
@@ -45,43 +59,92 @@ class UserSelectionScreen extends StatelessWidget {
               ),
             ),
           ),
-          Expanded(
-            child: ListView.separated(
-              itemCount: users.length,
-              separatorBuilder: (_, __) => const Divider(height: 1, color: AppColors.surface),
-              itemBuilder: (context, index) {
-                final user = users[index];
-                final name = user['name'] as String;
-                final status = user['status'] as String;
-                final level = user['level'] as String;
-
-                return ListTile(
-                  leading: CircleAvatar(
-                    backgroundColor: AppColors.primary.withValues(alpha: 0.1),
-                    child: Text(name[0], style: const TextStyle(color: AppColors.primary)),
-                  ),
-                  title: Text(name, style: AppTextStyles.bodyMedium.copyWith(fontWeight: FontWeight.bold)),
-                  subtitle: Text(status, style: AppTextStyles.bodySmall),
-                  trailing: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: AppColors.primary.withValues(alpha: 0.05),
-                      borderRadius: BorderRadius.circular(8),
+          if (provider.isLoading)
+            const Expanded(
+              child: Center(
+                child: CircularProgressIndicator(color: AppColors.primary),
+              ),
+            )
+          else if (filtered.isEmpty)
+            Expanded(
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.search_off,
+                      size: 48,
+                      color: AppColors.textSecondary.withValues(alpha: 0.4),
                     ),
-                    child: Text(level, style: AppTextStyles.bodySmall.copyWith(color: AppColors.primary, fontSize: 10)),
-                  ),
-                  onTap: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ChatRoomScreen(userName: name),
-                      ),
-                    );
-                  },
-                );
-              },
+                    const SizedBox(height: 12),
+                    Text(
+                      _searchQuery.isEmpty ? 'No users found' : 'No results for "$_searchQuery"',
+                      style: AppTextStyles.bodyMedium,
+                    ),
+                  ],
+                ),
+              ),
+            )
+          else
+            Expanded(
+              child: ListView.separated(
+                itemCount: filtered.length,
+                separatorBuilder: (_, __) => const Divider(height: 1, color: AppColors.surface),
+                itemBuilder: (context, index) {
+                  final user = filtered[index];
+                  final name = (user['full_name'] as String? ?? '').isNotEmpty
+                      ? user['full_name'] as String
+                      : user['username'] as String? ?? 'User';
+                  final activityLevel = user['activity_level'] as String? ?? '';
+                  final isOnline = user['is_online'] as bool? ?? false;
+
+                  final initials = name.isNotEmpty
+                      ? name.split(' ').map((e) => e.isNotEmpty ? e[0] : '').join().toUpperCase()
+                      : '?';
+
+                  return ListTile(
+                    leading: Stack(
+                      children: [
+                        CircleAvatar(
+                          backgroundColor: AppColors.primary.withValues(alpha: 0.1),
+                          child: Text(initials, style: const TextStyle(color: AppColors.primary)),
+                        ),
+                        if (isOnline)
+                          Positioned(
+                            right: 0,
+                            bottom: 0,
+                            child: Container(
+                              width: 12,
+                              height: 12,
+                              decoration: BoxDecoration(
+                                color: AppColors.success,
+                                shape: BoxShape.circle,
+                                border: Border.all(color: Colors.white, width: 2),
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
+                    title: Text(
+                      name,
+                      style: AppTextStyles.bodyMedium.copyWith(fontWeight: FontWeight.bold),
+                    ),
+                    subtitle: Text(
+                      isOnline ? 'Online' : activityLevel.isNotEmpty ? activityLevel : 'Offline',
+                      style: AppTextStyles.bodySmall,
+                    ),
+                    onTap: () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ChatRoomScreen(userName: name),
+                        ),
+                      );
+                    },
+                  );
+                },
+              ),
             ),
-          ),
         ],
       ),
     );

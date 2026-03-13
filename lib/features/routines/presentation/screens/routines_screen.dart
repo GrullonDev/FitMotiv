@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:fit_motiv/constants/app_colors.dart';
 import 'package:fit_motiv/constants/app_text_styles.dart';
-import 'package:fit_motiv/models/sample_data.dart';
+import 'package:fit_motiv/features/routines/presentation/providers/workout_provider.dart';
 
 class RoutinesScreen extends StatelessWidget {
   const RoutinesScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final all = SampleData.workouts;
-    final cardio = all.where((w) => w.category == 'Cardio').toList();
-    final strength = all.where((w) => w.category == 'Strength').toList();
-    final flexibility = all.where((w) => w.category == 'Flexibility').toList();
+    final provider = context.watch<WorkoutProvider>();
+
     return DefaultTabController(
       length: 4,
       child: Scaffold(
@@ -21,6 +20,12 @@ class RoutinesScreen extends StatelessWidget {
           elevation: 0,
           centerTitle: true,
           title: Text('Routines', style: AppTextStyles.heading3),
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.refresh, color: AppColors.primary),
+              onPressed: () => provider.refreshWorkouts(),
+            ),
+          ],
           bottom: TabBar(
             isScrollable: true,
             labelColor: AppColors.primary,
@@ -34,43 +39,156 @@ class RoutinesScreen extends StatelessWidget {
             ],
           ),
         ),
-        body: TabBarView(
+        body: provider.isLoading
+            ? const Center(
+                child: CircularProgressIndicator(color: AppColors.primary),
+              )
+            : provider.workouts.isEmpty
+                ? _buildEmptyState(provider)
+                : TabBarView(
+                    children: [
+                      _buildGrid(provider.getByCategory('All'), provider),
+                      _buildGrid(provider.getByCategory('Cardio'), provider),
+                      _buildGrid(provider.getByCategory('Strength'), provider),
+                      _buildGrid(provider.getByCategory('Flexibility'), provider),
+                    ],
+                  ),
+      ),
+    );
+  }
+
+  Widget _buildEmptyState(WorkoutProvider provider) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(32),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            _buildGrid(all),
-            _buildGrid(cardio),
-            _buildGrid(strength),
-            _buildGrid(flexibility),
+            Icon(
+              Icons.fitness_center_outlined,
+              size: 64,
+              color: AppColors.textSecondary.withValues(alpha: 0.5),
+            ),
+            const SizedBox(height: 16),
+            Text('No routines yet', style: AppTextStyles.heading4),
+            const SizedBox(height: 8),
+            Text(
+              'Workouts will appear here once you create them\nor they are added to the database.',
+              style: AppTextStyles.bodySmall,
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 24),
+            ElevatedButton.icon(
+              onPressed: () => provider.refreshWorkouts(),
+              icon: const Icon(Icons.refresh),
+              label: const Text('Refresh'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primary,
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+            ),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildGrid(List workouts) {
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: GridView.builder(
-        itemCount: workouts.length,
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          mainAxisSpacing: 16,
-          crossAxisSpacing: 16,
-          childAspectRatio: 0.75,
+  Widget _buildGrid(List<Map<String, dynamic>> workouts, WorkoutProvider provider) {
+    if (workouts.isEmpty) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.search_off,
+              size: 48,
+              color: AppColors.textSecondary.withValues(alpha: 0.4),
+            ),
+            const SizedBox(height: 12),
+            Text(
+              'No workouts in this category',
+              style: AppTextStyles.bodyMedium,
+            ),
+          ],
         ),
-        itemBuilder: (context, index) {
-          final w = workouts[index];
-          return _RoutineCard(w.name, w.duration, w.category);
-        },
+      );
+    }
+
+    return RefreshIndicator(
+      color: AppColors.primary,
+      onRefresh: () => provider.refreshWorkouts(),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: GridView.builder(
+          itemCount: workouts.length,
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            mainAxisSpacing: 16,
+            crossAxisSpacing: 16,
+            childAspectRatio: 0.75,
+          ),
+          itemBuilder: (context, index) {
+            final w = workouts[index];
+            return _RoutineCard(
+              title: w['name'] as String? ?? 'Untitled',
+              duration: w['duration'] as int? ?? 0,
+              category: w['category'] as String? ?? 'General',
+              difficulty: w['difficulty'] as String? ?? '',
+              description: w['description'] as String? ?? '',
+            );
+          },
+        ),
       ),
     );
   }
 }
 
 class _RoutineCard extends StatelessWidget {
-  const _RoutineCard(this.title, this.duration, this.category);
+  const _RoutineCard({
+    required this.title,
+    required this.duration,
+    required this.category,
+    required this.difficulty,
+    required this.description,
+  });
   final String title;
   final int duration;
   final String category;
+  final String difficulty;
+  final String description;
+
+  IconData get _categoryIcon {
+    switch (category.toLowerCase()) {
+      case 'cardio':
+        return Icons.directions_run;
+      case 'strength':
+        return Icons.fitness_center;
+      case 'flexibility':
+        return Icons.self_improvement;
+      case 'core':
+        return Icons.sports_gymnastics;
+      case 'full body':
+        return Icons.accessibility_new;
+      default:
+        return Icons.sports;
+    }
+  }
+
+  Color get _difficultyColor {
+    switch (difficulty.toLowerCase()) {
+      case 'beginner':
+        return AppColors.success;
+      case 'intermediate':
+        return Colors.orange;
+      case 'advanced':
+        return AppColors.error;
+      default:
+        return AppColors.textSecondary;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -94,29 +212,72 @@ class _RoutineCard extends StatelessWidget {
             child: Container(
               height: 100,
               color: AppColors.primary.withValues(alpha: 0.1),
-              child: const Center(
+              child: Center(
                 child: Icon(
-                  Icons.directions_run,
+                  _categoryIcon,
                   size: 48,
                   color: AppColors.primary,
                 ),
               ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(8),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(title, style: AppTextStyles.bodyMedium),
-                const SizedBox(height: 4),
-                Text(
-                  '$duration min • $category',
-                  style: AppTextStyles.bodySmall.copyWith(
-                    color: AppColors.textSecondary,
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: AppTextStyles.bodyMedium.copyWith(
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.textPrimary,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                ),
-              ],
+                  const Spacer(),
+                  Row(
+                    children: [
+                      Text(
+                        '$duration min',
+                        style: AppTextStyles.bodySmall.copyWith(
+                          color: AppColors.textSecondary,
+                        ),
+                      ),
+                      const SizedBox(width: 6),
+                      Text('•', style: AppTextStyles.bodySmall),
+                      const SizedBox(width: 6),
+                      Expanded(
+                        child: Text(
+                          category,
+                          style: AppTextStyles.bodySmall.copyWith(
+                            color: AppColors.textSecondary,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 4),
+                  if (difficulty.isNotEmpty)
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                      decoration: BoxDecoration(
+                        color: _difficultyColor.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      child: Text(
+                        difficulty,
+                        style: AppTextStyles.bodySmall.copyWith(
+                          color: _difficultyColor,
+                          fontSize: 10,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                ],
+              ),
             ),
           ),
         ],
