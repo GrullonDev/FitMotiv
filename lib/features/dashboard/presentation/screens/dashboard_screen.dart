@@ -10,6 +10,7 @@ import 'package:fit_motiv/features/profile_settings/presentation/screens/setting
 import 'package:fit_motiv/widgets/progress_card.dart';
 import 'package:fit_motiv/widgets/recipe_card.dart';
 import 'package:fit_motiv/widgets/workout_card.dart';
+import 'package:fit_motiv/core/localization/locale_provider.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -120,11 +121,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: Theme.of(context).cardTheme.color ?? Colors.white,
                   borderRadius: BorderRadius.circular(12),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.grey.withValues(alpha: 0.1),
+                      color: Colors.black.withValues(alpha: 0.05),
                       spreadRadius: 1,
                       blurRadius: 10,
                       offset: const Offset(0, 2),
@@ -136,10 +137,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     context,
                     MaterialPageRoute(builder: (_) => const SettingsScreen()),
                   ),
-                  child: const Icon(
+                  child: Icon(
                     Icons.settings,
                     size: 24,
-                    color: Color(0xFF6B7280),
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
                 ),
               ),
@@ -165,7 +166,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             Expanded(
               child: _MiniStatCard(
                 icon: Icons.monitor_weight_outlined,
-                label: 'Weight',
+                label: context.watch<LocaleProvider>().translate('weight'),
                 value: '${profile.weight.toStringAsFixed(1)} lbs',
                 color: const Color(0xFF4ECDC4),
               ),
@@ -176,7 +177,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             Expanded(
               child: _MiniStatCard(
                 icon: Icons.height,
-                label: 'Height',
+                label: context.watch<LocaleProvider>().translate('height'),
                 value: '${profile.height.toStringAsFixed(2)} m',
                 color: const Color(0xFF45B7D1),
               ),
@@ -214,11 +215,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
         width: double.infinity,
         padding: const EdgeInsets.all(24),
         decoration: BoxDecoration(
-          gradient: AppColors.quoteGradient,
+          gradient: AppColors.getQuoteGradient(context),
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
-              color: Colors.grey.withValues(alpha: 0.1),
+              color: Colors.black.withValues(alpha: 0.05),
               spreadRadius: 1,
               blurRadius: 10,
               offset: const Offset(0, 2),
@@ -286,11 +287,11 @@ class _MiniStatCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).cardTheme.color ?? Colors.white,
         borderRadius: BorderRadius.circular(14),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withValues(alpha: 0.08),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -311,7 +312,6 @@ class _MiniStatCard extends StatelessWidget {
             value,
             style: AppTextStyles.bodySmall.copyWith(
               fontWeight: FontWeight.w600,
-              color: AppColors.textPrimary,
               fontSize: 11,
             ),
             textAlign: TextAlign.center,

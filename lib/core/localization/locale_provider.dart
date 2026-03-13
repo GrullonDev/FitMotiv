@@ -29,7 +29,15 @@ class LocaleProvider extends ChangeNotifier {
     // Basic translation map for core elements
     final Map<String, Map<String, String>> localizedValues = {
       'en': {
+        'home': 'Home',
+        'plans': 'Plans',
+        'routines': 'Routines',
+        'progress': 'Progress',
         'community': 'Community',
+        'profile': 'Profile',
+        'nutrition': 'Nutrition',
+        'weight': 'Weight',
+        'height': 'Height',
         'feed': 'Feed',
         'members': 'Members',
         'messages': 'Messages',
@@ -43,9 +51,20 @@ class LocaleProvider extends ChangeNotifier {
         'post': 'Post',
         'chat': 'Chat',
         'start_new_chat': 'Start New Chat',
+        'refresh': 'Refresh',
+        'body_metrics': 'Body Metrics',
+        'account_info': 'Account Info',
       },
       'es': {
+        'home': 'Inicio',
+        'plans': 'Planes',
+        'routines': 'Rutinas',
+        'progress': 'Progreso',
         'community': 'Comunidad',
+        'profile': 'Perfil',
+        'nutrition': 'Nutrición',
+        'weight': 'Peso',
+        'height': 'Altura',
         'feed': 'Noticias',
         'members': 'Miembros',
         'messages': 'Mensajes',
@@ -59,6 +78,9 @@ class LocaleProvider extends ChangeNotifier {
         'post': 'Publicar',
         'chat': 'Chat',
         'start_new_chat': 'Iniciar nuevo chat',
+        'refresh': 'Refrescar',
+        'body_metrics': 'Métricas Corporales',
+        'account_info': 'Información de Cuenta',
       }
     };
 

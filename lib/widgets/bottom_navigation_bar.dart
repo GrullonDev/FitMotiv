@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:fit_motiv/constants/app_colors.dart';
 import 'package:fit_motiv/constants/app_text_styles.dart';
+import 'package:provider/provider.dart';
+import 'package:fit_motiv/core/localization/locale_provider.dart';
 
 class CustomBottomNavigationBar extends StatelessWidget {
 
@@ -14,12 +16,14 @@ class CustomBottomNavigationBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final localeProvider = context.watch<LocaleProvider>();
+
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withValues(alpha: 0.1),
+            color: Colors.black.withValues(alpha: 0.05),
             spreadRadius: 1,
             blurRadius: 10,
             offset: const Offset(0, -2),
@@ -34,37 +38,37 @@ class CustomBottomNavigationBar extends StatelessWidget {
             children: [
               _buildNavItem(
                 icon: Icons.home,
-                label: 'Home',
+                label: localeProvider.translate('home'),
                 index: 0,
                 isSelected: selectedIndex == 0,
               ),
               _buildNavItem(
                 icon: Icons.calendar_today,
-                label: 'Plans',
+                label: localeProvider.translate('plans'),
                 index: 1,
                 isSelected: selectedIndex == 1,
               ),
               _buildNavItem(
                 icon: Icons.directions_run,
-                label: 'Routines',
+                label: localeProvider.translate('routines'),
                 index: 2,
                 isSelected: selectedIndex == 2,
               ),
               _buildNavItem(
                 icon: Icons.trending_up,
-                label: 'Progress',
+                label: localeProvider.translate('progress'),
                 index: 3,
                 isSelected: selectedIndex == 3,
               ),
               _buildNavItem(
                 icon: Icons.group,
-                label: 'Community',
+                label: localeProvider.translate('community'),
                 index: 4,
                 isSelected: selectedIndex == 4,
               ),
               _buildNavItem(
                 icon: Icons.person,
-                label: 'Profile',
+                label: localeProvider.translate('profile'),
                 index: 5,
                 isSelected: selectedIndex == 5,
               ),

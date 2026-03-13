@@ -8,6 +8,7 @@ import 'package:fit_motiv/features/dashboard/presentation/providers/dashboard_pr
 import 'package:fit_motiv/features/profile_settings/presentation/providers/user_profile_provider.dart';
 import 'package:fit_motiv/features/progress/presentation/providers/progress_provider.dart';
 import 'package:fit_motiv/features/routines/presentation/providers/workout_provider.dart';
+import 'package:fit_motiv/core/theme/theme_provider.dart';
 import 'package:fit_motiv/core/localization/locale_provider.dart';
 import 'package:fit_motiv/utils/app.dart';
 import 'package:flutter/material.dart';
@@ -27,6 +28,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => di.sl<ProgressProvider>()),
         ChangeNotifierProvider(create: (_) => di.sl<CommunityProvider>()),
         ChangeNotifierProvider(create: (_) => LocaleProvider()),
+        ChangeNotifierProvider(create: (_) => ThemeProvider()),
       ],
       child: const FitMotivApp(),
     );

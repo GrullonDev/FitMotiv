@@ -20,10 +20,7 @@ class CommunityScreen extends StatelessWidget {
     return DefaultTabController(
       length: 3,
       child: Scaffold(
-        backgroundColor: AppColors.background,
         appBar: AppBar(
-          backgroundColor: AppColors.background,
-          elevation: 0,
           title: Text(l10n.translate('community'), style: AppTextStyles.heading3),
           centerTitle: true,
           actions: [
@@ -34,7 +31,7 @@ class CommunityScreen extends StatelessWidget {
           ],
           bottom: TabBar(
             labelColor: AppColors.primary,
-            unselectedLabelColor: AppColors.textSecondary,
+            unselectedLabelColor: Theme.of(context).colorScheme.onSurfaceVariant,
             indicatorColor: AppColors.primary,
             tabs: [
               Tab(text: l10n.translate('feed')),
@@ -185,10 +182,10 @@ class _FeedTab extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: Theme.of(context).cardTheme.color ?? Colors.white,
               borderRadius: BorderRadius.circular(16),
               boxShadow: [
-                BoxShadow(color: Colors.grey.withValues(alpha: 0.06), blurRadius: 8, offset: const Offset(0, 2)),
+                BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 8, offset: const Offset(0, 2)),
               ],
             ),
             child: Column(
@@ -324,7 +321,7 @@ class _MembersTab extends StatelessWidget {
       child: ListView.separated(
         padding: const EdgeInsets.all(16),
         itemCount: provider.profiles.length,
-        separatorBuilder: (_, __) => const Divider(height: 1, color: AppColors.surface),
+        separatorBuilder: (_, __) => Divider(height: 1, color: Theme.of(context).dividerColor),
         itemBuilder: (context, index) {
           final profile = provider.profiles[index];
           final name = (profile['full_name'] as String? ?? '').isNotEmpty
@@ -455,7 +452,7 @@ class _MessagesTab extends StatelessWidget {
                 )
               : ListView.separated(
                   itemCount: provider.conversations.length,
-                  separatorBuilder: (_, __) => const Divider(height: 1, color: AppColors.surface, indent: 70),
+                  separatorBuilder: (_, __) => Divider(height: 1, color: Theme.of(context).dividerColor, indent: 70),
                   itemBuilder: (context, index) {
                     final conv = provider.conversations[index];
                     final currentUserId = provider.isLoading ? '' : Supabase.instance.client.auth.currentUser?.id;

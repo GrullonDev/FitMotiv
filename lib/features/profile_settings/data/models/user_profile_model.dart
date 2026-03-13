@@ -13,6 +13,7 @@ class UserProfileModel {
     required this.weight,
     required this.avatarUrl,
     required this.createdAt,
+    required this.initialWeight,
   });
 
   factory UserProfileModel.fromMap(Map<String, dynamic> map) {
@@ -29,6 +30,7 @@ class UserProfileModel {
       weight: _parseToDouble(map['weight']),
       avatarUrl: map['avatar_url'] as String? ?? '',
       createdAt: map['created_at'] as String? ?? '',
+      initialWeight: _parseToDouble(map['initial_weight']),
     );
   }
 
@@ -44,6 +46,16 @@ class UserProfileModel {
   final double weight; // in pounds
   final String avatarUrl;
   final String createdAt;
+  final double initialWeight;
+
+  /// Progreso de peso
+  double get weightDifference => weight - initialWeight;
+  double get weightProgressPercent {
+    if (initialWeight == 0) return 0.0;
+    // Simple logic: if losing weight is the goal, progress is difference / (initial - target)
+    // For now just return a percentage based on current vs initial
+    return (weight / initialWeight).clamp(0.0, 2.0);
+  }
 
   /// Nombre para mostrar: usa fullName si disponible, si no username, si no email
   String get displayName {

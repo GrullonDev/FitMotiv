@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:fit_motiv/core/localization/locale_provider.dart';
+import 'package:fit_motiv/core/theme/theme_provider.dart';
 
 class FitMotivApp extends StatelessWidget {
   const FitMotivApp({super.key});
@@ -18,6 +19,7 @@ class FitMotivApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final localeProvider = context.watch<LocaleProvider>();
+    final themeProvider = context.watch<ThemeProvider>();
 
     return MaterialApp(
       title: 'FitMotiv',
@@ -33,15 +35,63 @@ class FitMotivApp extends StatelessWidget {
       ],
       debugShowCheckedModeBanner: false,
       scaffoldMessengerKey: SnackBarService.scaffoldMessengerKey,
+      themeMode: themeProvider.themeMode,
       theme: ThemeData(
-        primarySwatch: Colors.green,
-        primaryColor: const Color(0xFF00D4A3),
-        scaffoldBackgroundColor: const Color(0xFFF8FAFB),
+        useMaterial3: true,
+        brightness: Brightness.light,
         colorScheme: ColorScheme.fromSeed(
           seedColor: const Color(0xFF00D4A3),
-          brightness: Brightness.light,
+          primary: const Color(0xFF00D4A3),
+          surface: Colors.white,
+          onSurface: const Color(0xFF1A1A1A),
+          onSurfaceVariant: const Color(0xFF6B7280),
         ),
+        scaffoldBackgroundColor: const Color(0xFFF8FAFB),
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          centerTitle: true,
+          titleTextStyle: TextStyle(
+            color: Color(0xFF1A1A1A),
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+          iconTheme: IconThemeData(color: Color(0xFF1A1A1A)),
+        ),
+        cardTheme: CardThemeData(
+          color: Colors.white,
+          elevation: 2,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        ),
+      ),
+      darkTheme: ThemeData(
         useMaterial3: true,
+        brightness: Brightness.dark,
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color(0xFF00D4A3),
+          brightness: Brightness.dark,
+          primary: const Color(0xFF00D4A3),
+          surface: const Color(0xFF1E1E1E),
+          onSurface: Colors.white,
+          onSurfaceVariant: const Color(0xFF9CA3AF),
+        ),
+        scaffoldBackgroundColor: const Color(0xFF121212),
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          centerTitle: true,
+          titleTextStyle: TextStyle(
+            color: Colors.white,
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+          iconTheme: IconThemeData(color: Colors.white),
+        ),
+        cardTheme: CardThemeData(
+          color: const Color(0xFF1E1E1E),
+          elevation: 2,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        ),
       ),
       initialRoute: '/',
       routes: {

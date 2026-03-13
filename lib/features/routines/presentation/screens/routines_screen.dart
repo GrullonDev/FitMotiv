@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:fit_motiv/constants/app_colors.dart';
 import 'package:fit_motiv/constants/app_text_styles.dart';
 import 'package:fit_motiv/features/routines/presentation/providers/workout_provider.dart';
+import 'package:fit_motiv/core/localization/locale_provider.dart';
 
 class RoutinesScreen extends StatelessWidget {
   const RoutinesScreen({super.key});
@@ -14,12 +15,9 @@ class RoutinesScreen extends StatelessWidget {
     return DefaultTabController(
       length: 4,
       child: Scaffold(
-        backgroundColor: AppColors.background,
         appBar: AppBar(
-          backgroundColor: AppColors.background,
-          elevation: 0,
           centerTitle: true,
-          title: Text('Routines', style: AppTextStyles.heading3),
+          title: Text(context.watch<LocaleProvider>().translate('routines'), style: AppTextStyles.heading3),
           actions: [
             IconButton(
               icon: const Icon(Icons.refresh, color: AppColors.primary),
@@ -29,7 +27,7 @@ class RoutinesScreen extends StatelessWidget {
           bottom: TabBar(
             isScrollable: true,
             labelColor: AppColors.primary,
-            unselectedLabelColor: AppColors.textSecondary,
+            unselectedLabelColor: Theme.of(context).colorScheme.onSurfaceVariant,
             indicatorColor: AppColors.primary,
             tabs: const [
               Tab(text: 'All'),
@@ -194,11 +192,11 @@ class _RoutineCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.cardBackground,
+        color: Theme.of(context).cardTheme.color ?? Colors.white,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withValues(alpha: 0.1),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -231,7 +229,6 @@ class _RoutineCard extends StatelessWidget {
                     title,
                     style: AppTextStyles.bodyMedium.copyWith(
                       fontWeight: FontWeight.w600,
-                      color: AppColors.textPrimary,
                     ),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,

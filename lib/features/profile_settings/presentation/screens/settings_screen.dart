@@ -11,17 +11,14 @@ class SettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
       appBar: AppBar(
         title: Text('Settings', style: AppTextStyles.heading3),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        iconTheme: const IconThemeData(color: AppColors.textPrimary),
       ),
       body: ListView(
         padding: const EdgeInsets.all(20),
         children: [
           _buildSection(
+            context: context,
             title: 'Profile',
             items: [
               _buildSettingItem(
@@ -43,6 +40,7 @@ class SettingsScreen extends StatelessWidget {
           ),
           const SizedBox(height: 24),
           _buildSection(
+            context: context,
             title: 'Preferences',
             items: [
               _buildSettingItem(
@@ -79,6 +77,7 @@ class SettingsScreen extends StatelessWidget {
           ),
           const SizedBox(height: 24),
           _buildSection(
+            context: context,
             title: 'Support',
             items: [
               _buildSettingItem(
@@ -100,7 +99,7 @@ class SettingsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildSection({required String title, required List<Widget> items}) =>
+  Widget _buildSection({required BuildContext context, required String title, required List<Widget> items}) =>
       Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -108,11 +107,11 @@ class SettingsScreen extends StatelessWidget {
           const SizedBox(height: 12),
           Container(
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: Theme.of(context).cardTheme.color ?? Colors.white,
               borderRadius: BorderRadius.circular(12),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.grey.withValues(alpha: 0.1),
+                  color: Colors.black.withValues(alpha: 0.05),
                   spreadRadius: 1,
                   blurRadius: 10,
                   offset: const Offset(0, 2),

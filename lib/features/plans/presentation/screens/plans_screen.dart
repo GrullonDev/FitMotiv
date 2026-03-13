@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:fit_motiv/constants/app_colors.dart';
 import 'package:fit_motiv/constants/app_text_styles.dart';
+import 'package:provider/provider.dart';
+import 'package:fit_motiv/core/localization/locale_provider.dart';
 
 class PlansScreen extends StatelessWidget {
   const PlansScreen({super.key});
@@ -10,16 +12,12 @@ class PlansScreen extends StatelessWidget {
     return DefaultTabController(
       length: 3,
       child: Scaffold(
-        backgroundColor: AppColors.background,
         appBar: AppBar(
-          backgroundColor: AppColors.background,
-          elevation: 0,
-          title: Text('Nutrition', style: AppTextStyles.heading3),
+          title: Text(context.watch<LocaleProvider>().translate('nutrition'), style: AppTextStyles.heading3),
           bottom: TabBar(
             labelColor: AppColors.primary,
-            unselectedLabelColor: AppColors.textSecondary,
+            unselectedLabelColor: Theme.of(context).colorScheme.onSurfaceVariant,
             indicatorColor: AppColors.primary,
-            indicatorWeight: 3,
             tabs: const [
               Tab(text: 'Meal Plans'),
               Tab(text: 'Recipes'),
@@ -29,102 +27,108 @@ class PlansScreen extends StatelessWidget {
         ),
         body: TabBarView(
           children: [
-            SingleChildScrollView(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Your Personalized Meal Plan',
-                    style: AppTextStyles.heading4,
-                  ),
-                  const SizedBox(height: 16),
-                  const _MealPlanCard(),
-                  const SizedBox(height: 32),
-                  Text(
-                    'Explore Healthy Recipes',
-                    style: AppTextStyles.heading4,
-                  ),
-                  const SizedBox(height: 16),
-                  SizedBox(
-                    height: 160,
-                    child: ListView(
-                      scrollDirection: Axis.horizontal,
-                      children: const [
-                        _RecipePreviewCard(
-                          title: 'Quick & Easy Salads',
-                          imageUrl: 'https://via.placeholder.com/150',
-                        ),
-                        _RecipePreviewCard(
-                          title: 'Lean Protein Dishes',
-                          imageUrl: 'https://via.placeholder.com/150',
-                        ),
-                        _RecipePreviewCard(
-                          title: 'Refreshing Smoothies',
-                          imageUrl: 'https://via.placeholder.com/150',
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Center(
-              child: Text('Recipes content', style: AppTextStyles.bodyLarge),
-            ),
-            Center(child: Text('Tips content', style: AppTextStyles.bodyLarge)),
+            _buildMealPlansTab(),
+            _buildRecipesTab(),
+            _buildTipsTab(),
           ],
         ),
       ),
     );
   }
+
+  Widget _buildMealPlansTab() {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('Personalized Meal Plans', style: AppTextStyles.heading4),
+          const SizedBox(height: 16),
+          const _MealPlanCard(
+            title: 'Weight Loss Plan',
+            description: 'Focus on calorie deficit and high protein.',
+            calories: '1,500 - 1,800 kcal',
+          ),
+          const SizedBox(height: 16),
+          const _MealPlanCard(
+            title: 'Muscle Building',
+            description: 'High carb and high protein for bulk.',
+            calories: '2,500 - 3,000 kcal',
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildRecipesTab() {
+    return ListView(
+      padding: const EdgeInsets.all(20),
+      children: const [
+        _RecipePreviewCard(
+          title: 'Avocado Toast with Egg',
+          time: '15 min',
+          calories: '320 kcal',
+          imageUrl: 'https://images.unsplash.com/photo-1525351484163-7529414344d8?q=80&w=500&auto=format&fit=crop',
+        ),
+        SizedBox(height: 16),
+        _RecipePreviewCard(
+          title: 'Quinoa Salad',
+          time: '20 min',
+          calories: '450 kcal',
+          imageUrl: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=500&auto=format&fit=crop',
+        ),
+      ],
+    );
+  }
+
+  Widget _buildTipsTab() {
+    return const Center(child: Text('Coming Soon...'));
+  }
 }
 
 class _MealPlanCard extends StatelessWidget {
-  const _MealPlanCard();
+  const _MealPlanCard({
+    required this.title,
+    required this.description,
+    required this.calories,
+  });
+
+  final String title;
+  final String description;
+  final String calories;
+
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: double.infinity,
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: AppColors.cardBackground,
+        color: Theme.of(context).cardTheme.color ?? Colors.white,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withValues(alpha: 0.1),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 10,
-            offset: const Offset(0, 2),
+            offset: const Offset(0, 4),
           ),
         ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Week 1',
-            style: AppTextStyles.bodySmall.copyWith(
-              color: AppColors.textSecondary,
-            ),
-          ),
-          const SizedBox(height: 4),
-          Text('Balanced Diet for Weight Loss', style: AppTextStyles.heading3),
+          Text(title, style: AppTextStyles.heading4.copyWith(color: AppColors.primary)),
           const SizedBox(height: 8),
-          Text(
-            'A 7-day plan with delicious and nutritious meals to kickstart your journey.',
-            style: AppTextStyles.bodyMedium,
-          ),
+          Text(description, style: AppTextStyles.bodyMedium),
+          const SizedBox(height: 8),
+          Text(calories, style: AppTextStyles.bodySmall.copyWith(fontWeight: FontWeight.bold)),
           const SizedBox(height: 16),
           ElevatedButton(
             onPressed: () {},
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.primary,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              padding: const EdgeInsets.symmetric(vertical: 12),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
             ),
-            child: Text('View Plan', style: AppTextStyles.buttonText),
+            child: const Text('View Plan', style: TextStyle(color: Colors.white)),
           ),
         ],
       ),
@@ -133,78 +137,68 @@ class _MealPlanCard extends StatelessWidget {
 }
 
 class _RecipePreviewCard extends StatelessWidget {
-  const _RecipePreviewCard({required this.title, required this.imageUrl});
+  const _RecipePreviewCard({
+    required this.title,
+    required this.time,
+    required this.calories,
+    required this.imageUrl,
+  });
+
   final String title;
+  final String time;
+  final String calories;
   final String imageUrl;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 140,
-      margin: const EdgeInsets.only(right: 16),
+      clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
-        color: AppColors.cardBackground,
+        color: Theme.of(context).cardTheme.color ?? Colors.white,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withValues(alpha: 0.1),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
           ),
         ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ClipRRect(
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-            child: Image.network(
-              imageUrl,
-              height: 90,
-              width: double.infinity,
-              fit: BoxFit.cover,
-              // Muestra un loader mientras descarga.
-              loadingBuilder: (context, child, loadingProgress) {
-                if (loadingProgress == null) return child;
-                final expected = loadingProgress.expectedTotalBytes;
-                final loaded = loadingProgress.cumulativeBytesLoaded;
-                final value = expected != null ? loaded / expected : null;
-                return Container(
-                  height: 90,
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    color: AppColors.background.withValues(alpha: 0.2),
-                  ),
-                  child: SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      value: value,
+          Stack(
+            children: [
+              Image.network(
+                imageUrl,
+                height: 150,
+                width: double.infinity,
+                fit: BoxFit.cover,
+                loadingBuilder: (context, child, loadingProgress) {
+                  if (loadingProgress == null) return child;
+                  return Container(
+                    height: 150,
+                    alignment: Alignment.center,
+                    decoration: const BoxDecoration(color: AppColors.surface),
+                    child: const SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(strokeWidth: 2),
                     ),
-                  ),
-                );
-              },
-              // Fallback cuando no hay red / host no resuelve.
-              errorBuilder: (context, error, stack) {
-                return Container(
-                  height: 90,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: AppColors.background.withValues(alpha: 0.3),
-                  ),
+                  );
+                },
+                errorBuilder: (context, error, stackTrace) => Container(
+                  height: 150,
+                  decoration: const BoxDecoration(color: AppColors.surface),
                   alignment: Alignment.center,
-                  child: Icon(
-                    Icons.image_not_supported_outlined,
-                    color: AppColors.textSecondary.withValues(alpha: 0.6),
-                  ),
-                );
-              },
-            ),
+                  child: const Icon(Icons.broken_image, color: AppColors.primary),
+                ),
+              ),
+            ],
           ),
           Padding(
-            padding: const EdgeInsets.all(8),
-            child: Text(title, style: AppTextStyles.bodyMedium),
+            padding: const EdgeInsets.all(16),
+            child: Text(title, style: AppTextStyles.bodyLarge.copyWith(fontWeight: FontWeight.bold)),
           ),
         ],
       ),

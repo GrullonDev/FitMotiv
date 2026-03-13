@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'dart:io';
+import 'package:image_picker/image_picker.dart';
 import 'package:fit_motiv/features/profile_settings/data/datasources/profile_supabase_datasource.dart';
 import 'package:fit_motiv/features/profile_settings/data/models/user_profile_model.dart';
 
@@ -62,6 +64,42 @@ class UserProfileProvider extends ChangeNotifier {
       return false;
     }
   }
+
+  /// Selecciona una imagen y la sube como avatar
+  Future<bool> pickAndUploadAvatar() async {
+    try {
+      final ImagePicker picker = ImagePicker();
+      final XFile? image = await picker.pickImage(
+        source: ImageSource.gallery,
+        imageQuality: 70, // Compresión básica
+        maxWidth: 512,
+        maxHeight: 512,
+      );
+
+      if (image == null) return false;
+
+      _isLoading = true;
+      notifyListeners();
+
+      final url = await _datasource.uploadAvatar(File(image.path));
+      await updateProfile({'avatar_url': url});
+      
+      return true;
+    } catch (e) {
+      _error = e.toString();
+      debugPrint('❌ Error uploading avatar: $e');
+      return false;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  /// Diferencia de peso
+  double get weightDifference => _profile?.weightDifference ?? 0.0;
+  
+  /// Porcentaje de progreso
+  double get weightProgressPercent => _profile?.weightProgressPercent ?? 0.0;
 
   /// Limpia el perfil (para logout)
   void clearProfile() {

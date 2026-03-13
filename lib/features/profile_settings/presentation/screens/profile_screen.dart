@@ -3,6 +3,9 @@ import 'package:provider/provider.dart';
 import 'package:fit_motiv/constants/app_colors.dart';
 import 'package:fit_motiv/constants/app_text_styles.dart';
 import 'package:fit_motiv/features/profile_settings/presentation/providers/user_profile_provider.dart';
+import 'package:fit_motiv/core/localization/locale_provider.dart';
+import 'package:fit_motiv/core/theme/theme_provider.dart';
+import 'package:percent_indicator/linear_percent_indicator.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -13,14 +16,11 @@ class ProfileScreen extends StatelessWidget {
     final provider = context.watch<UserProfileProvider>();
     final profile = provider.profile;
     final isLoading = provider.isLoading;
+    final l10n = context.watch<LocaleProvider>();
 
     return Scaffold(
-      backgroundColor: AppColors.background,
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        iconTheme: const IconThemeData(color: AppColors.textPrimary),
-        title: Text('My Profile', style: AppTextStyles.heading3),
+        title: Text(context.watch<LocaleProvider>().translate('profile'), style: AppTextStyles.heading3),
         centerTitle: true,
         actions: [
           IconButton(
@@ -44,15 +44,19 @@ class ProfileScreen extends StatelessWidget {
                     children: [
                       _buildProfileHeader(context, provider),
                       const SizedBox(height: 24),
-                      _buildInfoSection(profile.bio, profile.activityLevel, profile.fitnessGoal),
+                      _buildWeightProgress(context, profile),
                       const SizedBox(height: 24),
-                      Text('Body Metrics', style: AppTextStyles.heading4),
-                      const SizedBox(height: 12),
-                      _buildMetricsCard(profile.weight, profile.height, profile.age),
+                      _buildInfoSection(context, profile.bio, profile.activityLevel, profile.fitnessGoal),
                       const SizedBox(height: 24),
-                      Text('Account Info', style: AppTextStyles.heading4),
+                      _buildSettingsSection(context),
+                      const SizedBox(height: 24),
+                      Text(l10n.translate('body_metrics'), style: AppTextStyles.heading4),
                       const SizedBox(height: 12),
-                      _buildAccountCard(profile.email, profile.username, profile.memberSince),
+                      _buildMetricsCard(context, profile.weight, profile.height, profile.age),
+                      const SizedBox(height: 24),
+                      Text(l10n.translate('account_info'), style: AppTextStyles.heading4),
+                      const SizedBox(height: 12),
+                      _buildAccountCard(context, profile.email, profile.username, profile.memberSince),
                     ],
                   ),
                 ),
@@ -107,34 +111,65 @@ class ProfileScreen extends StatelessWidget {
     return Center(
       child: Column(
         children: [
-          // Avatar con gradient
-          Container(
-            width: 112,
-            height: 112,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [AppColors.primary, AppColors.primary.withValues(alpha: 0.6)],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-              borderRadius: BorderRadius.circular(32),
-              boxShadow: [
-                BoxShadow(
-                  color: AppColors.primary.withValues(alpha: 0.3),
-                  blurRadius: 20,
-                  offset: const Offset(0, 8),
+          // Avatar con gradient o imagen
+          GestureDetector(
+            onTap: () => provider.pickAndUploadAvatar(),
+            child: Stack(
+              children: [
+                Container(
+                  width: 120,
+                  height: 120,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    gradient: LinearGradient(
+                      colors: [AppColors.primary, AppColors.primary.withValues(alpha: 0.6)],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors.primary.withValues(alpha: 0.3),
+                        blurRadius: 20,
+                        offset: const Offset(0, 8),
+                      ),
+                    ],
+                    image: profile.avatarUrl.isNotEmpty
+                        ? DecorationImage(
+                            image: NetworkImage(profile.avatarUrl),
+                            fit: BoxFit.cover,
+                          )
+                        : null,
+                  ),
+                  child: profile.avatarUrl.isEmpty
+                      ? Center(
+                          child: Text(
+                            profile.initials,
+                            style: const TextStyle(
+                              fontSize: 40,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                        )
+                      : null,
+                ),
+                Positioned(
+                  bottom: 0,
+                  right: 0,
+                  child: Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: const BoxDecoration(
+                      color: AppColors.primary,
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(
+                      Icons.camera_alt,
+                      color: Colors.white,
+                      size: 20,
+                    ),
+                  ),
                 ),
               ],
-            ),
-            child: Center(
-              child: Text(
-                profile.initials,
-                style: const TextStyle(
-                  fontSize: 36,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
             ),
           ),
           const SizedBox(height: 16),
@@ -161,12 +196,69 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildInfoSection(String bio, String activityLevel, String fitnessGoal) {
+  Widget _buildWeightProgress(BuildContext context, dynamic profile) {
+    final diff = profile.weightDifference;
+    final isLosing = diff < 0;
+    
+    return _card(
+      context: context,
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                   Text('Weight Progress', style: AppTextStyles.bodyLarge.copyWith(fontWeight: FontWeight.bold)),
+                   Container(
+                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                     decoration: BoxDecoration(
+                       color: (isLosing ? Colors.green : Colors.orange).withValues(alpha: 0.1),
+                       borderRadius: BorderRadius.circular(8),
+                     ),
+                     child: Text(
+                       '${diff.toStringAsFixed(1)} lbs',
+                       style: TextStyle(
+                         color: isLosing ? Colors.green : Colors.orange,
+                         fontWeight: FontWeight.bold,
+                       ),
+                     ),
+                   ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              LinearPercentIndicator(
+                lineHeight: 12.0,
+                percent: profile.weightProgressPercent.clamp(0.0, 1.0),
+                backgroundColor: AppColors.primary.withValues(alpha: 0.1),
+                progressColor: AppColors.primary,
+                barRadius: const Radius.circular(6),
+                animation: true,
+              ),
+              const SizedBox(height: 12),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('Start: ${profile.initialWeight} lbs', style: AppTextStyles.bodySmall),
+                  Text('Goal: ${profile.weight} lbs', style: AppTextStyles.bodySmall),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildInfoSection(BuildContext context, String bio, String activityLevel, String fitnessGoal) {
     if (bio.isEmpty && activityLevel.isEmpty && fitnessGoal.isEmpty) {
       return const SizedBox.shrink();
     }
 
     return _card(
+      context: context,
       children: [
         if (bio.isNotEmpty)
           _InfoRow(icon: Icons.person_outline, label: 'Bio', value: bio),
@@ -182,8 +274,9 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildMetricsCard(double weight, double height, int age) {
+  Widget _buildMetricsCard(BuildContext context, double weight, double height, int age) {
     return _card(
+      context: context,
       children: [
         if (weight > 0)
           _InfoRow(
@@ -209,8 +302,9 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildAccountCard(String email, String username, String memberSince) {
+  Widget _buildAccountCard(BuildContext context, String email, String username, String memberSince) {
     return _card(
+      context: context,
       children: [
         _InfoRow(icon: Icons.email_outlined, label: 'Email', value: email),
         if (username.isNotEmpty) ...[
@@ -221,14 +315,113 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _card({required List<Widget> children}) => Container(
+  Widget _buildSettingsSection(BuildContext context) {
+    final localeProvider = context.watch<LocaleProvider>();
+    final themeProvider = context.watch<ThemeProvider>();
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('App Settings', style: AppTextStyles.heading4),
+        const SizedBox(height: 12),
+        _card(
+          context: context,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.language, color: AppColors.primary),
+              title: Text(localeProvider.translate('language')),
+              subtitle: Text(localeProvider.locale.languageCode == 'en' ? 'English' : 'Español'),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () => _showLanguageDialog(context, localeProvider),
+            ),
+            const Divider(height: 1),
+            ListTile(
+              leading: const Icon(Icons.palette_outlined, color: AppColors.primary),
+              title: const Text('Theme'),
+              subtitle: Text(themeProvider.themeMode.name.toUpperCase()),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () => _showThemeDialog(context, themeProvider),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  void _showLanguageDialog(BuildContext context, LocaleProvider provider) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(provider.translate('language')),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              title: const Text('English'),
+              onTap: () {
+                provider.setLocale(const Locale('en'));
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              title: const Text('Español'),
+              onTap: () {
+                provider.setLocale(const Locale('es'));
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showThemeDialog(BuildContext context, ThemeProvider provider) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Choose Theme'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              title: const Text('System'),
+              leading: const Icon(Icons.brightness_auto),
+              onTap: () {
+                provider.setThemeMode(ThemeMode.system);
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              title: const Text('Light'),
+              leading: const Icon(Icons.light_mode),
+              onTap: () {
+                provider.setThemeMode(ThemeMode.light);
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              title: const Text('Dark'),
+              leading: const Icon(Icons.dark_mode),
+              onTap: () {
+                provider.setThemeMode(ThemeMode.dark);
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _card({required BuildContext context, required List<Widget> children}) => Container(
     padding: const EdgeInsets.all(8),
     decoration: BoxDecoration(
-      color: Colors.white,
+      color: Theme.of(context).cardTheme.color ?? Colors.white,
       borderRadius: BorderRadius.circular(16),
       boxShadow: [
         BoxShadow(
-          color: Colors.grey.withValues(alpha: 0.08),
+          color: Colors.black.withValues(alpha: 0.05),
           spreadRadius: 1,
           blurRadius: 12,
           offset: const Offset(0, 4),
@@ -263,15 +456,12 @@ class _InfoRow extends StatelessWidget {
       ),
       title: Text(
         label,
-        style: AppTextStyles.bodySmall.copyWith(
-          color: AppColors.textSecondary,
-        ),
+        style: AppTextStyles.bodySmall,
       ),
       subtitle: Text(
         value,
         style: AppTextStyles.bodyMedium.copyWith(
           fontWeight: FontWeight.w500,
-          color: AppColors.textPrimary,
         ),
       ),
     );
