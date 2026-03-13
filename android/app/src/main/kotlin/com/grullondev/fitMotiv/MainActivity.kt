@@ -1,4 +1,4 @@
-package com.example.fit_motiv
+package com.grullondev.fitMotiv
 
 import io.flutter.embedding.android.FlutterActivity
 
