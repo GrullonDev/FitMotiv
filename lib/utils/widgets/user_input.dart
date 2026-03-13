@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 
 class UserInput extends StatefulWidget {
-  const UserInput({super.key, required this.hint, this.obscureText = false, this.controller, this.onChanged});
+  const UserInput({super.key, required this.hint, this.obscureText = false, this.controller, this.onChanged, this.keyboardType});
   final String hint;
   final bool obscureText;
   final TextEditingController? controller;
   final ValueChanged<String>? onChanged;
+  final TextInputType? keyboardType;
 
   @override
   State<UserInput> createState() => _UserInputState();
@@ -26,6 +27,7 @@ class _UserInputState extends State<UserInput> {
       controller: widget.controller,
       obscureText: _isObscured,
       onChanged: widget.onChanged,
+      keyboardType: widget.keyboardType,
       decoration: InputDecoration(
         hintText: widget.hint,
         filled: true,

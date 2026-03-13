@@ -144,6 +144,35 @@ class RegisterBloc extends ChangeNotifier {
       return false;
     }
 
+    final email = emailController.text.trim();
+    final emailRegex = RegExp(r"^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
+    if (!emailRegex.hasMatch(email)) {
+      _errorMessage = 'El formato del email no es válido';
+      notifyListeners();
+      return false;
+    }
+
+    final age = int.tryParse(ageController.text.trim());
+    if (age == null || age <= 0 || age > 120) {
+      _errorMessage = 'Por favor ingresa una edad válida (1-120)';
+      notifyListeners();
+      return false;
+    }
+
+    final height = double.tryParse(heightController.text.trim());
+    if (height == null || height <= 0 || height > 2.5) {
+      _errorMessage = 'Por favor ingresa una altura en metros (ej. 1.70)';
+      notifyListeners();
+      return false;
+    }
+
+    final weight = double.tryParse(weightController.text.trim());
+    if (weight == null || weight <= 0 || weight > 1000) {
+      _errorMessage = 'Por favor ingresa un peso válido en libras';
+      notifyListeners();
+      return false;
+    }
+
     if (usernameController.text.trim().isEmpty) {
       _errorMessage = 'El nombre de usuario es requerido';
       notifyListeners();

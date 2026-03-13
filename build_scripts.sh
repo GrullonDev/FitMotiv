@@ -17,7 +17,9 @@ show_help() {
     echo "  run-dev         - Ejecutar app en modo desarrollo"
     echo "  run-prod        - Ejecutar app en modo producción"
     echo "  install         - Instalar dependencias"
-    echo "  clean           - Limpiar proyecto"
+    echo "  clean           - Limpieza estándar (fvm flutter clean + pub get)"
+    echo "  deep-clean      - Limpieza profunda (borra Pods, .dart_tool + reinstall)"
+    echo "  ultra-clean     - Limpieza máxima (borra TODO, incluso fvm local, sin reinstall)"
     echo "  help            - Mostrar esta ayuda"
     echo ""
 }
@@ -25,25 +27,110 @@ show_help() {
 # Función para instalar dependencias
 install_deps() {
     echo "📦 Instalando dependencias..."
-    flutter pub get
+    if command -v fvm &> /dev/null && [ -f .fvmrc ]; then
+        fvm flutter pub get
+    else
+        flutter pub get
+    fi
 }
 
 # Función para limpiar proyecto
 clean_project() {
+    local deep=$1
+    local install=$2
     echo "🧹 Limpiando proyecto..."
-    flutter clean
-    flutter pub get
+    
+    # Determinar comando base (preferir fvm)
+    local flutter_cmd="flutter"
+    if command -v fvm &> /dev/null && [ -f .fvmrc ]; then
+        flutter_cmd="fvm flutter"
+    fi
+
+    # Limpieza estándar de Flutter
+    $flutter_cmd clean
+
+    if [ "$deep" == "deep" ] || [ "$deep" == "ultra" ]; then
+        echo "🚿 Realizando limpieza PROFUNDA (Deep Clean)..."
+        
+        # Eliminar carpetas que se pueden regenerar
+        echo "🗑️ Eliminando .dart_tool, Pods, build, etc."
+        rm -rf .dart_tool
+        rm -rf build
+        rm -rf .flutter-plugins
+        rm -rf .flutter-plugins-dependencies
+        rm -rf .pub-cache/
+        
+        # iOS
+        if [ -d "ios" ]; then
+            echo "🍎 Limpiando iOS Pods..."
+            rm -rf ios/Pods
+            rm -rf ios/.symlinks
+            rm -rf ios/Podfile.lock
+            rm -rf ios/Flutter/Flutter.framework
+            rm -rf ios/Flutter/Flutter.podspec
+        fi
+
+        # macOS
+        if [ -d "macos" ]; then
+            echo "💻 Limpiando macOS Pods..."
+            rm -rf macos/Pods
+            rm -rf macos/.symlinks
+            rm -rf macos/Podfile.lock
+        fi
+
+        # Android
+        if [ -d "android" ]; then
+            echo "🤖 Limpiando Android build artifacts..."
+            rm -rf android/.gradle
+            rm -rf android/app/build
+        fi
+
+        # Sistema
+        echo "🧹 Eliminando archivos temporales del sistema (.DS_Store, etc.)..."
+        find . -name ".DS_Store" -delete
+        find . -name "*.log" -delete
+    fi
+
+    if [ "$deep" == "ultra" ]; then
+        echo "🔥 Realizando limpieza ULTRA (Eliminando cache de fvm locally if exists)..."
+        # Ojo: esto borra el SDK local de fvm en este proyecto si está configurado para estar aquí
+        if [ -d ".fvm/versions" ]; then
+            rm -rf .fvm/versions
+        fi
+    fi
+
+    if [ "$install" != "no-install" ]; then
+        echo "📦 Reinstalando dependencias..."
+        $flutter_cmd pub get
+        
+        if ([ "$deep" == "deep" ] || [ "$deep" == "ultra" ]) && [ -d "ios" ] && [[ "$OSTYPE" == "darwin"* ]]; then
+            echo "🍎 Reinstalando Pods de iOS..."
+            if command -v pod &> /dev/null; then
+                cd ios && pod install && cd ..
+            fi
+        fi
+    else
+        echo "⚠️  No se reinstalaron dependencias. El proyecto ocupará el mínimo espacio posible."
+    fi
+
+    echo "✅ Proyecto limpio y listo."
 }
+
+# Determinar comando base (preferir fvm si está configurado)
+FLUTTER="flutter"
+if command -v fvm &> /dev/null && [ -f .fvmrc ]; then
+    FLUTTER="fvm flutter"
+fi
 
 # Función para ejecutar en desarrollo
 run_dev() {
     echo "🏃‍♂️ Ejecutando en modo desarrollo..."
     if [[ "$OSTYPE" == "darwin"* ]]; then
         # macOS/iOS - sin flavor para evitar problemas con Xcode schemes
-        flutter run -t lib/main_dev.dart
+        $FLUTTER run -t lib/main_dev.dart
     else
         # Android - con flavor
-        flutter run -t lib/main_dev.dart --flavor dev
+        $FLUTTER run -t lib/main_dev.dart --flavor dev
     fi
 }
 
@@ -52,44 +139,44 @@ run_prod() {
     echo "🏃‍♂️ Ejecutando en modo producción..."
     if [[ "$OSTYPE" == "darwin"* ]]; then
         # macOS/iOS - sin flavor
-        flutter run -t lib/main_prod.dart
+        $FLUTTER run -t lib/main_prod.dart
     else
         # Android - con flavor
-        flutter run -t lib/main_prod.dart --flavor prod
+        $FLUTTER run -t lib/main_prod.dart --flavor prod
     fi
 }
 
 # Función para compilar APK de desarrollo
 build_dev_android() {
     echo "🤖 Compilando APK de desarrollo para Android..."
-    flutter build apk -t lib/main_dev.dart --flavor dev --debug
+    $FLUTTER build apk -t lib/main_dev.dart --flavor dev --debug
     echo "✅ APK de desarrollo generado en: build/app/outputs/flutter-apk/"
 }
 
 # Función para compilar APK de producción
 build_prod_android() {
     echo "🤖 Compilando APK de producción para Android..."
-    flutter build apk -t lib/main_prod.dart --flavor prod --release
+    $FLUTTER build apk -t lib/main_prod.dart --flavor prod --release
     echo "✅ APK de producción generado en: build/app/outputs/flutter-apk/"
 }
 
 # Función para compilar iOS desarrollo
 build_dev_ios() {
     echo "🍎 Compilando app de desarrollo para iOS..."
-    flutter build ios -t lib/main_dev.dart --debug --no-codesign
+    $FLUTTER build ios -t lib/main_dev.dart --debug --no-codesign
     echo "✅ App de desarrollo para iOS compilada"
 }
 
 # Función para compilar iOS producción
 build_prod_ios() {
     echo "🍎 Compilando app de producción para iOS..."
-    flutter build ios -t lib/main_prod.dart --release --no-codesign
+    $FLUTTER build ios -t lib/main_prod.dart --release --no-codesign
     echo "✅ App de producción para iOS compilada"
 }
 
-# Verificar si Flutter está instalado
-if ! command -v flutter &> /dev/null; then
-    echo "❌ Error: Flutter no está instalado o no está en el PATH"
+# Verificar si Flutter está instalado (o fvm)
+if ! command -v flutter &> /dev/null && ! command -v fvm &> /dev/null; then
+    echo "❌ Error: Ni Flutter ni FVM están instalados o no están en el PATH"
     exit 1
 fi
 
@@ -118,6 +205,12 @@ case "$1" in
         ;;
     "clean")
         clean_project
+        ;;
+    "deep-clean")
+        clean_project "deep"
+        ;;
+    "ultra-clean")
+        clean_project "ultra" "no-install"
         ;;
     "help"|"")
         show_help

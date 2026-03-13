@@ -20,7 +20,7 @@ class RegisterForm extends StatelessWidget {
         const SizedBox(height: 16),
 
         // Email
-        UserInput(hint: 'Enter your email', controller: bloc.emailController),
+        UserInput(hint: 'Enter your email', controller: bloc.emailController, keyboardType: TextInputType.emailAddress),
         const SizedBox(height: 16),
 
         // Contraseña
@@ -39,15 +39,15 @@ class RegisterForm extends StatelessWidget {
         Row(
           children: [
             Expanded(
-              child: UserInput(hint: 'Age', controller: bloc.ageController),
+              child: UserInput(hint: 'Age', controller: bloc.ageController, keyboardType: TextInputType.number),
             ),
             const SizedBox(width: 12),
             Expanded(
-              child: UserInput(hint: 'Height (cm)', controller: bloc.heightController),
+              child: UserInput(hint: 'Height (m)', controller: bloc.heightController, keyboardType: const TextInputType.numberWithOptions(decimal: true)),
             ),
             const SizedBox(width: 12),
             Expanded(
-              child: UserInput(hint: 'Weight (kg)', controller: bloc.weightController),
+              child: UserInput(hint: 'Weight (lb)', controller: bloc.weightController, keyboardType: TextInputType.number),
             ),
           ],
         ),

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:fit_motiv/constants/app_colors.dart';
 import 'package:fit_motiv/constants/app_text_styles.dart';
+import 'package:fit_motiv/features/community/presentation/screens/user_selection_screen.dart';
+import 'package:fit_motiv/features/community/presentation/screens/chat_room_screen.dart';
 
 class CommunityScreen extends StatelessWidget {
   const CommunityScreen({super.key});
@@ -8,7 +10,7 @@ class CommunityScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 3,
+      length: 4,
       child: Scaffold(
         backgroundColor: AppColors.background,
         appBar: AppBar(
@@ -26,15 +28,102 @@ class CommunityScreen extends StatelessWidget {
             labelColor: AppColors.primary,
             unselectedLabelColor: AppColors.textSecondary,
             indicatorColor: AppColors.primary,
+            isScrollable: true,
             tabs: const [
               Tab(text: 'All'),
               Tab(text: 'Following'),
               Tab(text: 'For You'),
+              Tab(text: 'Messages'),
             ],
           ),
         ),
-        body: TabBarView(children: List.generate(3, (_) => _buildFeed())),
+        body: TabBarView(
+          children: [
+            _buildFeed(),
+            _buildFeed(),
+            _buildFeed(),
+            _buildMessagesTab(context),
+          ],
+        ),
       ),
+    );
+  }
+
+  static Widget _buildMessagesTab(BuildContext context) {
+    // Mock conversations
+    final conversations = [
+      {'name': 'Sophia', 'lastMsg': 'Thanks for the routine!', 'time': '2m ago', 'unread': 2},
+      {'name': 'Ethan', 'lastMsg': 'Ready for today\'s run?', 'time': '15m ago', 'unread': 0},
+    ];
+
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: ElevatedButton.icon(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const UserSelectionScreen()),
+              );
+            },
+            icon: const Icon(Icons.add_comment),
+            label: const Text('Start New Chat'),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.primary,
+              foregroundColor: Colors.white,
+              minimumSize: const Size(double.infinity, 50),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            ),
+          ),
+        ),
+        Expanded(
+          child: ListView.separated(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            itemCount: conversations.length,
+            separatorBuilder: (_, __) => const Divider(height: 1, color: AppColors.surface),
+            itemBuilder: (context, index) {
+              final conv = conversations[index];
+              final name = conv['name'] as String;
+              final lastMsg = conv['lastMsg'] as String;
+              final time = conv['time'] as String;
+              final unread = conv['unread'] as int;
+
+              return ListTile(
+                contentPadding: EdgeInsets.zero,
+                leading: CircleAvatar(
+                  backgroundColor: AppColors.primary.withValues(alpha: 0.1),
+                  child: Text(name[0], style: const TextStyle(color: AppColors.primary)),
+                ),
+                title: Text(name, style: AppTextStyles.bodyMedium.copyWith(fontWeight: FontWeight.bold)),
+                subtitle: Text(lastMsg, style: AppTextStyles.bodySmall),
+                trailing: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(time, style: AppTextStyles.bodySmall.copyWith(fontSize: 10)),
+                    if (unread > 0)
+                      Container(
+                        margin: const EdgeInsets.only(top: 4),
+                        padding: const EdgeInsets.all(6),
+                        decoration: const BoxDecoration(color: AppColors.primary, shape: BoxShape.circle),
+                        child: Text('$unread', style: const TextStyle(color: Colors.white, fontSize: 10)),
+                      ),
+                  ],
+                ),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ChatRoomScreen(userName: name),
+                    ),
+                  );
+                },
+              );
+            },
+          ),
+        ),
+      ],
     );
   }
 

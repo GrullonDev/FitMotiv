@@ -8,6 +8,9 @@ class AppColors {
   static const Color textPrimary = Color(0xFF1A1A1A);
   static const Color textSecondary = Color(0xFF6B7280);
   static const Color progressBackground = Color(0xFFF3F4F6);
+  static const Color surface = Color(0xFFFFFFFF);
+  static const Color success = Color(0xFF10B981);
+  static const Color error = Color(0xFFEF4444);
 
   // Gradientes
   static const LinearGradient quoteGradient = LinearGradient(

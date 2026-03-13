@@ -91,4 +91,10 @@ class AppConfig {
 
     return '$cleanBaseUrl/$cleanEndpoint';
   }
+
+  /// URL de Supabase desde las variables de entorno
+  String get supabaseUrl => dotenv.env['SUPABASE_URL'] ?? '';
+
+  /// Anon Key de Supabase desde las variables de entorno
+  String get supabaseAnonKey => dotenv.env['SUPABASE_ANON_KEY'] ?? '';
 }

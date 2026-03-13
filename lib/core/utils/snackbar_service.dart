@@ -95,7 +95,7 @@ class SnackBarService {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       action: SnackBarAction(
         label: 'Dismiss',
-        textColor: textColor.withOpacity(0.8),
+        textColor: textColor.withValues(alpha: 0.8),
         onPressed: () {
           scaffoldMessenger.hideCurrentSnackBar();
         },

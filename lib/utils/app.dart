@@ -7,7 +7,6 @@ import 'package:fit_motiv/features/dashboard/presentation/screens/home_screen.da
 import 'package:fit_motiv/features/profile_settings/presentation/screens/profile_screen.dart';
 import 'package:fit_motiv/features/profile_settings/presentation/screens/settings_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class FitMotivApp extends StatelessWidget {
   const FitMotivApp({super.key});
@@ -22,8 +21,10 @@ class FitMotivApp extends StatelessWidget {
         primarySwatch: Colors.green,
         primaryColor: const Color(0xFF00D4A3),
         scaffoldBackgroundColor: const Color(0xFFF8FAFB),
-        textTheme: GoogleFonts.poppinsTextTheme(),
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF00D4A3), brightness: Brightness.light),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color(0xFF00D4A3),
+          brightness: Brightness.light,
+        ),
         useMaterial3: true,
       ),
       initialRoute: '/onboarding',

@@ -310,7 +310,7 @@ class ApiErrorHandler {
         lowercaseMessage.contains('disabled');
   }
 
-  /// Convert ApiException to Either<Failure, T> pattern for clean architecture
+  /// Convert ApiException to `Either<Failure, T>` pattern for clean architecture
   static Left<ApiException, T> toFailure<T>(ApiException exception) {
     return Left(exception);
   }
@@ -329,8 +329,37 @@ class ApiErrorHandler {
       return error;
     }
 
+    final errorString = error.toString();
+    
+    // Handle Supabase/GoTrue specific errors without depending on the library
+    if (errorString.contains('email_address_invalid')) {
+      return ValidationException(
+        'The email address provided is invalid or not allowed.',
+        statusCode: 400,
+        endpoint: endpoint,
+      );
+    }
+    
+    if (errorString.contains('user_already_exists')) {
+      return ConflictException(
+        'An account with this email already exists.',
+        statusCode: 409,
+        endpoint: endpoint,
+      );
+    }
+
+    if (errorString.contains('over_email_send_rate_limit')) {
+      return RateLimitException(
+        'Has realizado demasiados intentos en poco tiempo. Por favor, espera unos minutos antes de intentar de nuevo.',
+        statusCode: 429,
+        endpoint: endpoint,
+      );
+    }
+
     return ServerException(
-      'An unexpected error occurred: ${error.toString()}',
+      errorString.contains('Exception:') 
+          ? errorString.replaceFirst('Exception:', '').trim()
+          : 'An unexpected error occurred: $errorString',
       endpoint: endpoint,
     );
   }
@@ -338,32 +367,32 @@ class ApiErrorHandler {
   /// Get user-friendly error message for UI display
   static String getUserFriendlyMessage(ApiException exception) {
     switch (exception.runtimeType) {
-      case NetworkException:
+      case NetworkException _:
         return 'No internet connection. Please check your network settings.';
-      case UnauthorizedException:
+      case UnauthorizedException _:
         return 'Please log in to continue.';
-      case TokenExpiredException:
+      case TokenExpiredException _:
         return 'Your session has expired. Please log in again.';
-      case EmailNotVerifiedException:
+      case EmailNotVerifiedException _:
         return 'Please verify your email address before continuing.';
-      case AccountDeactivatedException:
+      case AccountDeactivatedException _:
         return 'Your account has been deactivated. Please contact support.';
-      case ValidationException:
+      case ValidationException _:
         final validationException = exception as ValidationException;
         if (validationException.errors?.isNotEmpty == true) {
           return validationException.errors!.values.first.first;
         }
         return exception.message;
-      case NotFoundException:
+      case NotFoundException _:
         return 'The requested item could not be found.';
-      case RateLimitException:
-      case TooManyRequestsException:
+      case RateLimitException _:
+      case TooManyRequestsException _:
         return 'Too many requests. Please wait a moment and try again.';
-      case PaymentRequiredException:
+      case PaymentRequiredException _:
         return 'Subscription required to access this feature.';
-      case ConflictException:
+      case ConflictException _:
         return 'This action conflicts with existing data.';
-      case ServerException:
+      case ServerException _:
         return 'Server error. Please try again later.';
       default:
         return exception.message.isNotEmpty
@@ -373,9 +402,9 @@ class ApiErrorHandler {
   }
 }
 
-/// Extension to add convenient error handling to Future<Response>
+/// Extension to add convenient error handling to `Future<Response>`
 extension ApiResponseExtension on Future<Response> {
-  /// Convert Future<Response> to Future<Either<ApiException, Response>>
+  /// Convert `Future<Response>` to `Future<Either<ApiException, Response>>`
   Future<Either<ApiException, Response>> toEither() async {
     try {
       final response = await this;
@@ -387,7 +416,7 @@ extension ApiResponseExtension on Future<Response> {
     }
   }
 
-  /// Convert Future<Response> to Future<Either<ApiException, T>>
+  /// Convert `Future<Response>` to `Future<Either<ApiException, T>>`
   /// with custom data transformation
   Future<Either<ApiException, T>> toEitherWithTransform<T>(
     T Function(dynamic data) transform,

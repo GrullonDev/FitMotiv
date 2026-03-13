@@ -1,20 +1,15 @@
 import 'package:get_it/get_it.dart';
 
 import 'package:fit_motiv/features/auth/data/datasources/auth_datasource.dart';
-import 'package:fit_motiv/features/auth/data/datasources/auth_remote_datasource.dart';
+import 'package:fit_motiv/features/auth/data/datasources/auth_supabase_datasource.dart';
 import 'package:fit_motiv/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:fit_motiv/features/auth/domain/repositories/auth_repository.dart';
-import 'package:fit_motiv/core/network/services/api_service.dart';
 
-/// Authentication module dependency injection configuration
-/// This class follows the Dependency Injection principle and helps maintain
-/// a clean separation of concerns for the authentication module
-/// Now uses the generic ApiService instead of a specific AuthService
 class AuthDI {
   static void init(GetIt sl) {
-    // Register AuthDataSource
+    // Register AuthDataSource (Supabase implementation)
     sl.registerLazySingleton<AuthDataSource>(
-      () => AuthRemoteDataSource(apiService: sl<ApiService>()),
+      () => AuthSupabaseDataSource(),
     );
 
     // Register AuthRepository

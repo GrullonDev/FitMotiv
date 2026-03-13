@@ -12,6 +12,7 @@ import 'package:fit_motiv/models/sample_data.dart';
 import 'package:fit_motiv/widgets/progress_card.dart';
 import 'package:fit_motiv/widgets/recipe_card.dart';
 import 'package:fit_motiv/widgets/workout_card.dart';
+import 'package:fit_motiv/features/assistant/presentation/screens/assistant_chat_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -35,22 +36,34 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildHeader(context),
-            const SizedBox(height: 30),
-            _buildProgressSection(),
-            const SizedBox(height: 30),
-            _buildQuoteSection(),
-            const SizedBox(height: 30),
-            _buildWorkoutSection(),
-            const SizedBox(height: 30),
-            _buildRecipeSection(),
-          ],
+    return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const AssistantChatScreen()),
+          );
+        },
+        backgroundColor: AppColors.primary,
+        child: const Icon(Icons.psychology, color: Colors.white),
+      ),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildHeader(context),
+              const SizedBox(height: 30),
+              _buildProgressSection(),
+              const SizedBox(height: 30),
+              _buildQuoteSection(),
+              const SizedBox(height: 30),
+              _buildWorkoutSection(),
+              const SizedBox(height: 30),
+              _buildRecipeSection(),
+            ],
+          ),
         ),
       ),
     );
@@ -174,4 +187,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
       ),
     );
   }
+
+
 }
