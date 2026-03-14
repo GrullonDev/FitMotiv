@@ -1,6 +1,5 @@
-import 'package:flutter/material.dart';
-import 'package:fit_motiv/constants/app_colors.dart';
 import 'package:fit_motiv/constants/app_text_styles.dart';
+import 'package:flutter/material.dart';
 
 class OnboardingScreen extends StatelessWidget {
   const OnboardingScreen({super.key});
@@ -8,7 +7,7 @@ class OnboardingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -18,11 +17,7 @@ class OnboardingScreen extends StatelessWidget {
               const SizedBox(),
               Column(
                 children: [
-                  Text(
-                    'Welcome to FitMotiv!',
-                    style: AppTextStyles.heading1,
-                    textAlign: TextAlign.center,
-                  ),
+                  Text('Welcome to FitMotiv!', style: AppTextStyles.heading1, textAlign: TextAlign.center),
                   const SizedBox(height: 16),
                   Text(
                     'Your journey to a healthier, happier you starts here. Get personalized plans, track your progress, and join our supportive community.',
@@ -36,14 +31,11 @@ class OnboardingScreen extends StatelessWidget {
                 child: SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: () =>
-                        Navigator.pushReplacementNamed(context, '/login'),
+                    onPressed: () => Navigator.pushReplacementNamed(context, '/login'),
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 16),
-                      backgroundColor: AppColors.primary,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
-                      ),
+                      backgroundColor: Theme.of(context).colorScheme.primary,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
                     ),
                     child: Text('Get Started', style: AppTextStyles.buttonText),
                   ),

@@ -11,6 +11,7 @@ class AppColors {
   static const Color surface = Color(0xFFFFFFFF);
   static const Color success = Color(0xFF10B981);
   static const Color error = Color(0xFFEF4444);
+  static const Color border = Color(0xFFE5E7EB);
 
   // Gradientes dinámicos
   static LinearGradient getQuoteGradient(BuildContext context) {
