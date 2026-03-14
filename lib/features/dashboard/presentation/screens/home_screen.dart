@@ -15,21 +15,30 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
-  static const List<Widget> _pages = [
-    DashboardScreen(),
-    PlansScreen(),
-    RoutinesScreen(),
-    ProgressScreen(),
-    CommunityScreen(),
-    ProfileScreen(),
-  ];
-  void _onItemSelected(int index) => setState(() => _selectedIndex = index);
+  
+  void _onItemSelected(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+  
   @override
-  Widget build(BuildContext context) => Scaffold(
-    body: _pages[_selectedIndex],
-    bottomNavigationBar: CustomBottomNavigationBar(
-      selectedIndex: _selectedIndex,
-      onItemSelected: _onItemSelected,
-    ),
-  );
+  Widget build(BuildContext context) {
+    final List<Widget> pages = [
+      const DashboardScreen(),
+      const PlansScreen(),
+      const RoutinesScreen(),
+      const ProgressScreen(),
+      const CommunityScreen(),
+      const ProfileScreen(),
+    ];
+
+    return Scaffold(
+      body: pages[_selectedIndex],
+      bottomNavigationBar: CustomBottomNavigationBar(
+        selectedIndex: _selectedIndex,
+        onItemSelected: _onItemSelected,
+      ),
+    );
+  }
 }

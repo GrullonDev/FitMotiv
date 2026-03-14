@@ -1,9 +1,9 @@
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:fit_motiv/constants/app_colors.dart';
 import 'package:fit_motiv/constants/app_text_styles.dart';
 import 'package:fit_motiv/features/community/presentation/providers/community_provider.dart';
 import 'package:fit_motiv/features/community/presentation/screens/chat_room_screen.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class UserSelectionScreen extends StatefulWidget {
   const UserSelectionScreen({super.key});
@@ -19,7 +19,7 @@ class _UserSelectionScreenState extends State<UserSelectionScreen> {
   Widget build(BuildContext context) {
     final provider = context.watch<CommunityProvider>();
     final allProfiles = provider.profiles;
-    
+
     // Filtrar por búsqueda
     final filtered = _searchQuery.isEmpty
         ? allProfiles
@@ -52,18 +52,13 @@ class _UserSelectionScreenState extends State<UserSelectionScreen> {
                 prefixIcon: const Icon(Icons.search),
                 filled: true,
                 fillColor: AppColors.surface,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide.none,
-                ),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
               ),
             ),
           ),
           if (provider.isLoading)
-            const Expanded(
-              child: Center(
-                child: CircularProgressIndicator(color: AppColors.primary),
-              ),
+            Expanded(
+              child: Center(child: CircularProgressIndicator(color: Theme.of(context).colorScheme.primary)),
             )
           else if (filtered.isEmpty)
             Expanded(
@@ -71,11 +66,7 @@ class _UserSelectionScreenState extends State<UserSelectionScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(
-                      Icons.search_off,
-                      size: 48,
-                      color: AppColors.textSecondary.withValues(alpha: 0.4),
-                    ),
+                    Icon(Icons.search_off, size: 48, color: AppColors.textSecondary.withValues(alpha: 0.4)),
                     const SizedBox(height: 12),
                     Text(
                       _searchQuery.isEmpty ? 'No users found' : 'No results for "$_searchQuery"',
@@ -106,8 +97,8 @@ class _UserSelectionScreenState extends State<UserSelectionScreen> {
                     leading: Stack(
                       children: [
                         CircleAvatar(
-                          backgroundColor: AppColors.primary.withValues(alpha: 0.1),
-                          child: Text(initials, style: const TextStyle(color: AppColors.primary)),
+                          backgroundColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
+                          child: Text(initials, style: TextStyle(color: Theme.of(context).colorScheme.primary)),
                         ),
                         if (isOnline)
                           Positioned(
@@ -125,33 +116,31 @@ class _UserSelectionScreenState extends State<UserSelectionScreen> {
                           ),
                       ],
                     ),
-                    title: Text(
-                      name,
-                      style: AppTextStyles.bodyMedium.copyWith(fontWeight: FontWeight.bold),
-                    ),
+                    title: Text(name, style: AppTextStyles.bodyMedium.copyWith(fontWeight: FontWeight.bold)),
                     subtitle: Text(
-                      isOnline ? 'Online' : activityLevel.isNotEmpty ? activityLevel : 'Offline',
+                      isOnline
+                          ? 'Online'
+                          : activityLevel.isNotEmpty
+                          ? activityLevel
+                          : 'Offline',
                       style: AppTextStyles.bodySmall,
                     ),
                     onTap: () async {
                       try {
                         final conv = await provider.startConversation(user['id']);
                         if (!context.mounted) return;
-                        
+
                         Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => ChatRoomScreen(
-                              userName: name,
-                              conversationId: conv['id'],
-                              otherUserId: user['id'],
-                            ),
+                            builder: (context) =>
+                                ChatRoomScreen(userName: name, conversationId: conv['id'], otherUserId: user['id']),
                           ),
                         );
                       } catch (e) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Error starting conversation: $e')),
-                        );
+                        ScaffoldMessenger.of(
+                          context,
+                        ).showSnackBar(SnackBar(content: Text('Error starting conversation: $e')));
                       }
                     },
                   );

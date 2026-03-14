@@ -25,14 +25,14 @@ class CommunityScreen extends StatelessWidget {
           centerTitle: true,
           actions: [
             IconButton(
-              icon: const Icon(Icons.refresh, color: AppColors.primary),
+              icon: Icon(Icons.refresh, color: Theme.of(context).colorScheme.primary),
               onPressed: () => provider.refreshAll(),
             ),
           ],
           bottom: TabBar(
-            labelColor: AppColors.primary,
+            labelColor: Theme.of(context).colorScheme.primary,
             unselectedLabelColor: Theme.of(context).colorScheme.onSurfaceVariant,
-            indicatorColor: AppColors.primary,
+            indicatorColor: Theme.of(context).colorScheme.primary,
             tabs: [
               Tab(text: l10n.translate('feed')),
               Tab(text: l10n.translate('members')),
@@ -41,7 +41,7 @@ class CommunityScreen extends StatelessWidget {
           ),
         ),
         body: provider.isLoading
-            ? const Center(child: CircularProgressIndicator(color: AppColors.primary))
+            ? Center(child: CircularProgressIndicator(color: Theme.of(context).colorScheme.primary))
             : TabBarView(
                 children: [
                   _FeedTab(provider: provider),
@@ -59,7 +59,7 @@ class CommunityScreen extends StatelessWidget {
                 if (tabController.index != 0) return const SizedBox.shrink();
                 return FloatingActionButton(
                   onPressed: () => _showCreatePostDialog(context, provider),
-                  backgroundColor: AppColors.primary,
+                  backgroundColor: Theme.of(context).colorScheme.primary,
                   child: const Icon(Icons.add, color: Colors.white),
                 );
               },
@@ -92,7 +92,7 @@ class CommunityScreen extends StatelessWidget {
                 }
               }
             },
-            style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary),
+            style: ElevatedButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.primary),
             child: const Text('Post', style: TextStyle(color: Colors.white)),
           ),
         ],
@@ -110,7 +110,7 @@ class _FeedTab extends StatelessWidget {
   Widget build(BuildContext context) {
     if (provider.posts.isEmpty) {
       return RefreshIndicator(
-        color: AppColors.primary,
+        color: Theme.of(context).colorScheme.primary,
         onRefresh: () => provider.refreshAll(),
         child: SingleChildScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
@@ -138,7 +138,7 @@ class _FeedTab extends StatelessWidget {
     }
 
     return RefreshIndicator(
-      color: AppColors.primary,
+      color: Theme.of(context).colorScheme.primary,
       onRefresh: () => provider.refreshAll(),
       child: ListView.separated(
         padding: const EdgeInsets.all(16),
@@ -174,80 +174,80 @@ class _FeedTab extends StatelessWidget {
 
           return InkWell(
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => PostDetailsScreen(post: post)),
-              );
+              Navigator.push(context, MaterialPageRoute(builder: (context) => PostDetailsScreen(post: post)));
             },
             child: Container(
               padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: Theme.of(context).cardTheme.color ?? Colors.white,
-              borderRadius: BorderRadius.circular(16),
-              boxShadow: [
-                BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 8, offset: const Offset(0, 2)),
-              ],
+              decoration: BoxDecoration(
+                color: Theme.of(context).cardTheme.color ?? Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 8, offset: const Offset(0, 2)),
+                ],
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      CircleAvatar(
+                        backgroundColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
+                        child: Text(
+                          initials,
+                          style: TextStyle(color: Theme.of(context).colorScheme.primary, fontSize: 14),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(authorName, style: AppTextStyles.bodyMedium.copyWith(fontWeight: FontWeight.w600)),
+                            if (timeAgo.isNotEmpty)
+                              Text(timeAgo, style: AppTextStyles.bodySmall.copyWith(color: AppColors.textSecondary)),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  Text(content, style: AppTextStyles.bodyMedium),
+                  const SizedBox(height: 12),
+                  Row(
+                    children: [
+                      InkWell(
+                        onTap: () => provider.toggleLike(post['id']),
+                        child: Row(
+                          children: [
+                            Icon(
+                              (post['is_liked'] ?? false) ? Icons.favorite : Icons.favorite_border,
+                              size: 18,
+                              color: (post['is_liked'] ?? false) ? Colors.red : Theme.of(context).colorScheme.primary,
+                            ),
+                            const SizedBox(width: 4),
+                            Text('$likes', style: AppTextStyles.bodySmall),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      InkWell(
+                        onTap: () => _showCommentDialog(context, provider, post['id']),
+                        child: Row(
+                          children: [
+                            const Icon(Icons.mode_comment_outlined, size: 18, color: AppColors.textSecondary),
+                            const SizedBox(width: 4),
+                            Text('$comments', style: AppTextStyles.bodySmall),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    CircleAvatar(
-                      backgroundColor: AppColors.primary.withValues(alpha: 0.1),
-                      child: Text(initials, style: const TextStyle(color: AppColors.primary, fontSize: 14)),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(authorName, style: AppTextStyles.bodyMedium.copyWith(fontWeight: FontWeight.w600)),
-                          if (timeAgo.isNotEmpty)
-                            Text(timeAgo, style: AppTextStyles.bodySmall.copyWith(color: AppColors.textSecondary)),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 12),
-                Text(content, style: AppTextStyles.bodyMedium),
-                const SizedBox(height: 12),
-                Row(
-                  children: [
-                    InkWell(
-                      onTap: () => provider.toggleLike(post['id']),
-                      child: Row(
-                        children: [
-                          Icon(
-                            (post['is_liked'] ?? false) ? Icons.favorite : Icons.favorite_border,
-                            size: 18,
-                            color: (post['is_liked'] ?? false) ? Colors.red : AppColors.primary,
-                          ),
-                          const SizedBox(width: 4),
-                          Text('$likes', style: AppTextStyles.bodySmall),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(width: 16),
-                    InkWell(
-                      onTap: () => _showCommentDialog(context, provider, post['id']),
-                      child: Row(
-                        children: [
-                          const Icon(Icons.mode_comment_outlined, size: 18, color: AppColors.textSecondary),
-                          const SizedBox(width: 4),
-                          Text('$comments', style: AppTextStyles.bodySmall),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    ),
+          );
+        },
+      ),
     );
   }
 
@@ -288,7 +288,7 @@ class _MembersTab extends StatelessWidget {
   Widget build(BuildContext context) {
     if (provider.profiles.isEmpty) {
       return RefreshIndicator(
-        color: AppColors.primary,
+        color: Theme.of(context).colorScheme.primary,
         onRefresh: () => provider.refreshAll(),
         child: SingleChildScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
@@ -316,7 +316,7 @@ class _MembersTab extends StatelessWidget {
     }
 
     return RefreshIndicator(
-      color: AppColors.primary,
+      color: Theme.of(context).colorScheme.primary,
       onRefresh: () => provider.refreshAll(),
       child: ListView.separated(
         padding: const EdgeInsets.all(16),
@@ -340,8 +340,8 @@ class _MembersTab extends StatelessWidget {
             leading: Stack(
               children: [
                 CircleAvatar(
-                  backgroundColor: AppColors.primary.withValues(alpha: 0.1),
-                  child: Text(initials, style: const TextStyle(color: AppColors.primary)),
+                  backgroundColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
+                  child: Text(initials, style: TextStyle(color: Theme.of(context).colorScheme.primary)),
                 ),
                 if (isOnline)
                   Positioned(
@@ -370,7 +370,10 @@ class _MembersTab extends StatelessWidget {
                 if (profile['latitude'] != null)
                   Text(
                     provider.getDistanceString(profile['latitude'], profile['longitude']),
-                    style: AppTextStyles.bodySmall.copyWith(color: AppColors.primary, fontWeight: FontWeight.bold),
+                    style: AppTextStyles.bodySmall.copyWith(
+                      color: Theme.of(context).colorScheme.primary,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
               ],
             ),
@@ -394,11 +397,11 @@ class _MembersTab extends StatelessWidget {
                 }
               },
               style: OutlinedButton.styleFrom(
-                side: const BorderSide(color: AppColors.primary),
+                side: BorderSide(color: Theme.of(context).colorScheme.primary),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                 padding: const EdgeInsets.symmetric(horizontal: 12),
               ),
-              child: const Text('Chat', style: TextStyle(color: AppColors.primary, fontSize: 12)),
+              child: Text('Chat', style: TextStyle(color: Theme.of(context).colorScheme.primary, fontSize: 12)),
             ),
           );
         },
@@ -425,7 +428,7 @@ class _MessagesTab extends StatelessWidget {
             icon: const Icon(Icons.add_comment),
             label: const Text('Start New Chat'),
             style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.primary,
+              backgroundColor: Theme.of(context).colorScheme.primary,
               foregroundColor: Colors.white,
               minimumSize: const Size(double.infinity, 50),
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -487,10 +490,13 @@ class _MessagesTab extends StatelessWidget {
                         children: [
                           CircleAvatar(
                             radius: 28,
-                            backgroundColor: AppColors.primary.withValues(alpha: 0.1),
+                            backgroundColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
                             child: Text(
                               initials,
-                              style: const TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold),
+                              style: TextStyle(
+                                color: Theme.of(context).colorScheme.primary,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
                           if (isOnline)
@@ -519,7 +525,7 @@ class _MessagesTab extends StatelessWidget {
                               _formatTime(lastAt),
                               style: AppTextStyles.bodySmall.copyWith(
                                 fontSize: 10,
-                                color: hasUnread ? AppColors.primary : AppColors.textSecondary,
+                                color: hasUnread ? Theme.of(context).colorScheme.primary : AppColors.textSecondary,
                                 fontWeight: hasUnread ? FontWeight.bold : FontWeight.normal,
                               ),
                             ),
@@ -542,7 +548,10 @@ class _MessagesTab extends StatelessWidget {
                             Container(
                               margin: const EdgeInsets.only(left: 8),
                               padding: const EdgeInsets.all(6),
-                              decoration: const BoxDecoration(color: AppColors.primary, shape: BoxShape.circle),
+                              decoration: BoxDecoration(
+                                color: Theme.of(context).colorScheme.primary,
+                                shape: BoxShape.circle,
+                              ),
                               child: Text(
                                 '${conv['unread_count']}',
                                 style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),

@@ -1,9 +1,9 @@
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:fit_motiv/constants/app_colors.dart';
 import 'package:fit_motiv/constants/app_text_styles.dart';
-import 'package:fit_motiv/features/routines/presentation/providers/workout_provider.dart';
 import 'package:fit_motiv/core/localization/locale_provider.dart';
+import 'package:fit_motiv/features/routines/presentation/providers/workout_provider.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class RoutinesScreen extends StatelessWidget {
   const RoutinesScreen({super.key});
@@ -20,15 +20,15 @@ class RoutinesScreen extends StatelessWidget {
           title: Text(context.watch<LocaleProvider>().translate('routines'), style: AppTextStyles.heading3),
           actions: [
             IconButton(
-              icon: const Icon(Icons.refresh, color: AppColors.primary),
+              icon: Icon(Icons.refresh, color: Theme.of(context).colorScheme.primary),
               onPressed: () => provider.refreshWorkouts(),
             ),
           ],
           bottom: TabBar(
             isScrollable: true,
-            labelColor: AppColors.primary,
+            labelColor: Theme.of(context).colorScheme.primary,
             unselectedLabelColor: Theme.of(context).colorScheme.onSurfaceVariant,
-            indicatorColor: AppColors.primary,
+            indicatorColor: Theme.of(context).colorScheme.primary,
             tabs: const [
               Tab(text: 'All'),
               Tab(text: 'Cardio'),
@@ -38,35 +38,29 @@ class RoutinesScreen extends StatelessWidget {
           ),
         ),
         body: provider.isLoading
-            ? const Center(
-                child: CircularProgressIndicator(color: AppColors.primary),
-              )
+            ? Center(child: CircularProgressIndicator(color: Theme.of(context).colorScheme.primary))
             : provider.workouts.isEmpty
-                ? _buildEmptyState(provider)
-                : TabBarView(
-                    children: [
-                      _buildGrid(provider.getByCategory('All'), provider),
-                      _buildGrid(provider.getByCategory('Cardio'), provider),
-                      _buildGrid(provider.getByCategory('Strength'), provider),
-                      _buildGrid(provider.getByCategory('Flexibility'), provider),
-                    ],
-                  ),
+            ? _buildEmptyState(context, provider)
+            : TabBarView(
+                children: [
+                  _buildGrid(context, provider.getByCategory('All'), provider),
+                  _buildGrid(context, provider.getByCategory('Cardio'), provider),
+                  _buildGrid(context, provider.getByCategory('Strength'), provider),
+                  _buildGrid(context, provider.getByCategory('Flexibility'), provider),
+                ],
+              ),
       ),
     );
   }
 
-  Widget _buildEmptyState(WorkoutProvider provider) {
+  Widget _buildEmptyState(BuildContext context, WorkoutProvider provider) {
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(32),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.fitness_center_outlined,
-              size: 64,
-              color: AppColors.textSecondary.withValues(alpha: 0.5),
-            ),
+            Icon(Icons.fitness_center_outlined, size: 64, color: AppColors.textSecondary.withValues(alpha: 0.5)),
             const SizedBox(height: 16),
             Text('No routines yet', style: AppTextStyles.heading4),
             const SizedBox(height: 8),
@@ -81,11 +75,9 @@ class RoutinesScreen extends StatelessWidget {
               icon: const Icon(Icons.refresh),
               label: const Text('Refresh'),
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primary,
+                backgroundColor: Theme.of(context).colorScheme.primary,
                 foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
               ),
             ),
           ],
@@ -94,29 +86,22 @@ class RoutinesScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildGrid(List<Map<String, dynamic>> workouts, WorkoutProvider provider) {
+  Widget _buildGrid(BuildContext context, List<Map<String, dynamic>> workouts, WorkoutProvider provider) {
     if (workouts.isEmpty) {
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.search_off,
-              size: 48,
-              color: AppColors.textSecondary.withValues(alpha: 0.4),
-            ),
+            Icon(Icons.search_off, size: 48, color: AppColors.textSecondary.withValues(alpha: 0.4)),
             const SizedBox(height: 12),
-            Text(
-              'No workouts in this category',
-              style: AppTextStyles.bodyMedium,
-            ),
+            Text('No workouts in this category', style: AppTextStyles.bodyMedium),
           ],
         ),
       );
     }
 
     return RefreshIndicator(
-      color: AppColors.primary,
+      color: Theme.of(context).colorScheme.primary,
       onRefresh: () => provider.refreshWorkouts(),
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -194,13 +179,7 @@ class _RoutineCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: Theme.of(context).cardTheme.color ?? Colors.white,
         borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 8, offset: const Offset(0, 2))],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -209,14 +188,8 @@ class _RoutineCard extends StatelessWidget {
             borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
             child: Container(
               height: 100,
-              color: AppColors.primary.withValues(alpha: 0.1),
-              child: Center(
-                child: Icon(
-                  _categoryIcon,
-                  size: 48,
-                  color: AppColors.primary,
-                ),
-              ),
+              color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
+              child: Center(child: Icon(_categoryIcon, size: 48, color: Theme.of(context).colorScheme.primary)),
             ),
           ),
           Expanded(
@@ -227,30 +200,21 @@ class _RoutineCard extends StatelessWidget {
                 children: [
                   Text(
                     title,
-                    style: AppTextStyles.bodyMedium.copyWith(
-                      fontWeight: FontWeight.w600,
-                    ),
+                    style: AppTextStyles.bodyMedium.copyWith(fontWeight: FontWeight.w600),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
                   const Spacer(),
                   Row(
                     children: [
-                      Text(
-                        '$duration min',
-                        style: AppTextStyles.bodySmall.copyWith(
-                          color: AppColors.textSecondary,
-                        ),
-                      ),
+                      Text('$duration min', style: AppTextStyles.bodySmall.copyWith(color: AppColors.textSecondary)),
                       const SizedBox(width: 6),
                       Text('•', style: AppTextStyles.bodySmall),
                       const SizedBox(width: 6),
                       Expanded(
                         child: Text(
                           category,
-                          style: AppTextStyles.bodySmall.copyWith(
-                            color: AppColors.textSecondary,
-                          ),
+                          style: AppTextStyles.bodySmall.copyWith(color: AppColors.textSecondary),
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),

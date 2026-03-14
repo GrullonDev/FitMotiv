@@ -23,7 +23,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: RefreshIndicator(
-        color: AppColors.primary,
+        color: Theme.of(context).colorScheme.primary,
         onRefresh: () async {
           final profileProvider = context.read<UserProfileProvider>();
           final dashboardProvider = context.read<DashboardProvider>();
@@ -92,14 +92,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     height: 44,
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
-                        colors: [AppColors.primary, AppColors.primary.withValues(alpha: 0.7)],
+                      colors: [Theme.of(context).colorScheme.primary, Theme.of(context).colorScheme.primary.withValues(alpha: 0.7)],
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                       ),
                       borderRadius: BorderRadius.circular(14),
                       boxShadow: [
                         BoxShadow(
-                          color: AppColors.primary.withValues(alpha: 0.3),
+                          color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.3),
                           blurRadius: 8,
                           offset: const Offset(0, 2),
                         ),
@@ -228,7 +228,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         ),
         child: Column(
           children: [
-            Icon(Icons.format_quote, size: 40, color: AppColors.primary),
+            Icon(Icons.format_quote, size: 40, color: Theme.of(context).colorScheme.primary),
             const SizedBox(height: 16),
             Text(
               '"$quoteText"',

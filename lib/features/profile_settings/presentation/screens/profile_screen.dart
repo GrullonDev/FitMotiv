@@ -24,19 +24,19 @@ class ProfileScreen extends StatelessWidget {
         centerTitle: true,
         actions: [
           IconButton(
-            icon: const Icon(Icons.refresh, color: AppColors.primary),
+            icon: Icon(Icons.refresh, color: Theme.of(context).colorScheme.primary),
             onPressed: () => provider.refreshProfile(),
           ),
         ],
       ),
       body: isLoading
-          ? const Center(
-              child: CircularProgressIndicator(color: AppColors.primary),
+          ? Center(
+              child: CircularProgressIndicator(color: Theme.of(context).colorScheme.primary),
             )
           : profile == null
               ? _buildErrorState(context, provider)
               : RefreshIndicator(
-                  color: AppColors.primary,
+                  color: Theme.of(context).colorScheme.primary,
                   onRefresh: () => provider.refreshProfile(),
                   child: ListView(
                     physics: const AlwaysScrollableScrollPhysics(),
@@ -92,7 +92,7 @@ class ProfileScreen extends StatelessWidget {
               icon: const Icon(Icons.refresh),
               label: const Text('Retry'),
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primary,
+                backgroundColor: Theme.of(context).colorScheme.primary,
                 foregroundColor: Colors.white,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
@@ -122,13 +122,13 @@ class ProfileScreen extends StatelessWidget {
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     gradient: LinearGradient(
-                      colors: [AppColors.primary, AppColors.primary.withValues(alpha: 0.6)],
+                      colors: [Theme.of(context).colorScheme.primary, Theme.of(context).colorScheme.primary.withValues(alpha: 0.6)],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: AppColors.primary.withValues(alpha: 0.3),
+                        color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.3),
                         blurRadius: 20,
                         offset: const Offset(0, 8),
                       ),
@@ -158,8 +158,8 @@ class ProfileScreen extends StatelessWidget {
                   right: 0,
                   child: Container(
                     padding: const EdgeInsets.all(8),
-                    decoration: const BoxDecoration(
-                      color: AppColors.primary,
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.primary,
                       shape: BoxShape.circle,
                     ),
                     child: const Icon(
@@ -179,7 +179,7 @@ class ProfileScreen extends StatelessWidget {
             Text(
               '@${profile.username}',
               style: AppTextStyles.bodyMedium.copyWith(
-                color: AppColors.primary,
+                color: Theme.of(context).colorScheme.primary,
               ),
             ),
           ],
@@ -232,8 +232,8 @@ class ProfileScreen extends StatelessWidget {
               LinearPercentIndicator(
                 lineHeight: 12.0,
                 percent: profile.weightProgressPercent.clamp(0.0, 1.0),
-                backgroundColor: AppColors.primary.withValues(alpha: 0.1),
-                progressColor: AppColors.primary,
+                backgroundColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
+                progressColor: Theme.of(context).colorScheme.primary,
                 barRadius: const Radius.circular(6),
                 animation: true,
               ),
@@ -328,7 +328,7 @@ class ProfileScreen extends StatelessWidget {
           context: context,
           children: [
             ListTile(
-              leading: const Icon(Icons.language, color: AppColors.primary),
+              leading: Icon(Icons.language, color: Theme.of(context).colorScheme.primary),
               title: Text(localeProvider.translate('language')),
               subtitle: Text(localeProvider.locale.languageCode == 'en' ? 'English' : 'Español'),
               trailing: const Icon(Icons.chevron_right),
@@ -336,7 +336,7 @@ class ProfileScreen extends StatelessWidget {
             ),
             const Divider(height: 1),
             ListTile(
-              leading: const Icon(Icons.palette_outlined, color: AppColors.primary),
+              leading: Icon(Icons.palette_outlined, color: Theme.of(context).colorScheme.primary),
               title: const Text('Theme'),
               subtitle: Text(themeProvider.themeMode.name.toUpperCase()),
               trailing: const Icon(Icons.chevron_right),
@@ -449,10 +449,10 @@ class _InfoRow extends StatelessWidget {
       leading: Container(
         padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
-          color: AppColors.primary.withValues(alpha: 0.1),
+          color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(10),
         ),
-        child: Icon(icon, color: AppColors.primary, size: 20),
+        child: Icon(icon, color: Theme.of(context).colorScheme.primary, size: 20),
       ),
       title: Text(
         label,

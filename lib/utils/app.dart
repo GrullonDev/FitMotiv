@@ -7,6 +7,8 @@ import 'package:fit_motiv/features/auth/presentation/register/pages/register_pag
 import 'package:fit_motiv/features/dashboard/presentation/screens/home_screen.dart';
 import 'package:fit_motiv/features/profile_settings/presentation/screens/profile_screen.dart';
 import 'package:fit_motiv/features/profile_settings/presentation/screens/settings_screen.dart';
+import 'package:fit_motiv/features/profile_settings/presentation/screens/notification_settings_screen.dart';
+import 'package:fit_motiv/features/profile_settings/presentation/screens/faq_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
@@ -38,10 +40,11 @@ class FitMotivApp extends StatelessWidget {
       themeMode: themeProvider.themeMode,
       theme: ThemeData(
         useMaterial3: true,
+        primaryColor: themeProvider.primaryColor,
         brightness: Brightness.light,
         colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF00D4A3),
-          primary: const Color(0xFF00D4A3),
+          seedColor: themeProvider.primaryColor,
+          primary: themeProvider.primaryColor,
           surface: Colors.white,
           onSurface: const Color(0xFF1A1A1A),
           onSurfaceVariant: const Color(0xFF6B7280),
@@ -66,11 +69,12 @@ class FitMotivApp extends StatelessWidget {
       ),
       darkTheme: ThemeData(
         useMaterial3: true,
+        primaryColor: themeProvider.primaryColor,
         brightness: Brightness.dark,
         colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF00D4A3),
+          seedColor: themeProvider.primaryColor,
           brightness: Brightness.dark,
-          primary: const Color(0xFF00D4A3),
+          primary: themeProvider.primaryColor,
           surface: const Color(0xFF1E1E1E),
           onSurface: Colors.white,
           onSurfaceVariant: const Color(0xFF9CA3AF),
@@ -103,6 +107,8 @@ class FitMotivApp extends StatelessWidget {
         '/home': (_) => const HomeScreen(),
         '/settings': (_) => const SettingsScreen(),
         '/profile': (_) => const ProfileScreen(),
+        '/notifications': (_) => const NotificationSettingsScreen(),
+        '/faq': (_) => const FAQScreen(),
       },
     );
   }

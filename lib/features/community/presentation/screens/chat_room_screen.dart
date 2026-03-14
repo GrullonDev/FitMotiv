@@ -1,17 +1,12 @@
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:fit_motiv/constants/app_colors.dart';
 import 'package:fit_motiv/constants/app_text_styles.dart';
 import 'package:fit_motiv/features/community/presentation/providers/community_provider.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ChatRoomScreen extends StatefulWidget {
-  const ChatRoomScreen({
-    super.key,
-    required this.userName,
-    required this.conversationId,
-    required this.otherUserId,
-  });
+  const ChatRoomScreen({super.key, required this.userName, required this.conversationId, required this.otherUserId});
 
   final String userName;
   final String conversationId;
@@ -48,16 +43,11 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     super.dispose();
   }
 
-
   void _sendMessage() {
     final text = _controller.text.trim();
     if (text.isEmpty) return;
 
-    _provider.sendMessage(
-      widget.conversationId,
-      widget.otherUserId,
-      text,
-    );
+    _provider.sendMessage(widget.conversationId, widget.otherUserId, text);
     _controller.clear();
   }
 
@@ -75,10 +65,10 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
           children: [
             CircleAvatar(
               radius: 18,
-              backgroundColor: AppColors.primary.withValues(alpha: 0.1),
+              backgroundColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
               child: Text(
                 widget.userName.isNotEmpty ? widget.userName[0].toUpperCase() : '?',
-                style: const TextStyle(color: AppColors.primary, fontSize: 14),
+                style: TextStyle(color: Theme.of(context).colorScheme.primary, fontSize: 14),
               ),
             ),
             const SizedBox(width: 12),
@@ -120,7 +110,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
         margin: const EdgeInsets.symmetric(vertical: 4),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         decoration: BoxDecoration(
-          color: isUser ? AppColors.primary : AppColors.surface,
+          color: isUser ? Theme.of(context).colorScheme.primary : AppColors.surface,
           borderRadius: BorderRadius.only(
             topLeft: const Radius.circular(16),
             topRight: const Radius.circular(16),
@@ -130,9 +120,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
         ),
         child: Text(
           text,
-          style: AppTextStyles.bodyMedium.copyWith(
-            color: isUser ? Colors.white : AppColors.textPrimary,
-          ),
+          style: AppTextStyles.bodyMedium.copyWith(color: isUser ? Colors.white : AppColors.textPrimary),
         ),
       ),
     );
@@ -144,11 +132,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
       decoration: BoxDecoration(
         color: AppColors.surface,
         boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            offset: const Offset(0, -2),
-            blurRadius: 10,
-          ),
+          BoxShadow(color: Colors.black.withValues(alpha: 0.05), offset: const Offset(0, -2), blurRadius: 10),
         ],
       ),
       child: SafeArea(
@@ -167,7 +151,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
               ),
             ),
             IconButton(
-              icon: const Icon(Icons.send, color: AppColors.primary),
+              icon: Icon(Icons.send, color: Theme.of(context).colorScheme.primary),
               onPressed: _sendMessage,
             ),
           ],

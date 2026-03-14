@@ -1,6 +1,5 @@
-import 'package:flutter/material.dart';
-import 'package:fit_motiv/constants/app_colors.dart';
 import 'package:fit_motiv/constants/app_text_styles.dart';
+import 'package:flutter/material.dart';
 
 class RecipeCard extends StatelessWidget {
   const RecipeCard({super.key});
@@ -28,10 +27,7 @@ class RecipeCard extends StatelessWidget {
             height: 180,
             width: double.infinity,
             decoration: BoxDecoration(
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(16),
-                topRight: Radius.circular(16),
-              ),
+              borderRadius: const BorderRadius.only(topLeft: Radius.circular(16), topRight: Radius.circular(16)),
               color: const Color(0xFFF3F4F6),
             ),
             child: Stack(
@@ -41,10 +37,7 @@ class RecipeCard extends StatelessWidget {
                   child: Container(
                     width: 120,
                     height: 120,
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF86EFAC),
-                      borderRadius: BorderRadius.circular(60),
-                    ),
+                    decoration: BoxDecoration(color: const Color(0xFF86EFAC), borderRadius: BorderRadius.circular(60)),
                     child: Stack(
                       children: [
                         // Aguacate base
@@ -108,23 +101,11 @@ class RecipeCard extends StatelessWidget {
                 const SizedBox(height: 16),
                 Row(
                   children: [
-                    _buildInfoChip(
-                      icon: Icons.access_time,
-                      text: '10 min',
-                      color: const Color(0xFF00D4A3),
-                    ),
+                    _buildInfoChip(icon: Icons.access_time, text: '10 min', color: const Color(0xFF00D4A3)),
                     const SizedBox(width: 12),
-                    _buildInfoChip(
-                      icon: Icons.local_fire_department,
-                      text: '320 cal',
-                      color: const Color(0xFFFF6B6B),
-                    ),
+                    _buildInfoChip(icon: Icons.local_fire_department, text: '320 cal', color: const Color(0xFFFF6B6B)),
                     const SizedBox(width: 12),
-                    _buildInfoChip(
-                      icon: Icons.star,
-                      text: '4.8',
-                      color: const Color(0xFFFFA726),
-                    ),
+                    _buildInfoChip(icon: Icons.star, text: '4.8', color: const Color(0xFFFFA726)),
                   ],
                 ),
                 const SizedBox(height: 16),
@@ -135,17 +116,13 @@ class RecipeCard extends StatelessWidget {
                       // Acción para ver la receta
                     },
                     style: OutlinedButton.styleFrom(
-                      side: BorderSide(color: AppColors.primary, width: 2),
+                      side: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2),
                       padding: const EdgeInsets.symmetric(vertical: 12),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                     ),
                     child: Text(
                       'View Recipe',
-                      style: AppTextStyles.buttonText.copyWith(
-                        color: AppColors.primary,
-                      ),
+                      style: AppTextStyles.buttonText.copyWith(color: Theme.of(context).colorScheme.primary),
                     ),
                   ),
                 ),
@@ -157,17 +134,10 @@ class RecipeCard extends StatelessWidget {
     );
   }
 
-  Widget _buildInfoChip({
-    required IconData icon,
-    required String text,
-    required Color color,
-  }) {
+  Widget _buildInfoChip({required IconData icon, required String text, required Color color}) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(6),
-      ),
+      decoration: BoxDecoration(color: color.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(6)),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [

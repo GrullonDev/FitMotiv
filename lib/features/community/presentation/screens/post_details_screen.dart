@@ -1,13 +1,12 @@
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:fit_motiv/constants/app_colors.dart';
 import 'package:fit_motiv/constants/app_text_styles.dart';
 import 'package:fit_motiv/features/community/presentation/providers/community_provider.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class PostDetailsScreen extends StatefulWidget {
-  final Map<String, dynamic> post;
-
   const PostDetailsScreen({super.key, required this.post});
+  final Map<String, dynamic> post;
 
   @override
   State<PostDetailsScreen> createState() => _PostDetailsScreenState();
@@ -46,7 +45,7 @@ class _PostDetailsScreenState extends State<PostDetailsScreen> {
     final profiles = post['profiles'] as Map<String, dynamic>?;
     final authorName = profiles?['full_name'] as String? ?? profiles?['username'] as String? ?? 'Anonymous';
     final content = post['content'] as String? ?? '';
-    
+
     final initials = authorName.isNotEmpty
         ? authorName.split(' ').map((e) => e.isNotEmpty ? e[0] : '').join().toUpperCase()
         : '?';
@@ -74,8 +73,8 @@ class _PostDetailsScreenState extends State<PostDetailsScreen> {
                   Row(
                     children: [
                       CircleAvatar(
-                        backgroundColor: AppColors.primary.withValues(alpha: 0.1),
-                        child: Text(initials, style: const TextStyle(color: AppColors.primary)),
+                        backgroundColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
+                        child: Text(initials, style: TextStyle(color: Theme.of(context).colorScheme.primary)),
                       ),
                       const SizedBox(width: 12),
                       Text(authorName, style: AppTextStyles.bodyMedium.copyWith(fontWeight: FontWeight.bold)),
@@ -86,13 +85,12 @@ class _PostDetailsScreenState extends State<PostDetailsScreen> {
                   const Divider(height: 32),
                   Text('Comments', style: AppTextStyles.heading4),
                   const SizedBox(height: 16),
-                  
+
                   // Comments List
                   if (provider.postComments.isEmpty)
-                    const Center(child: Padding(
-                      padding: EdgeInsets.all(32.0),
-                      child: Text('No comments yet. Be the first!'),
-                    ))
+                    const Center(
+                      child: Padding(padding: EdgeInsets.all(32.0), child: Text('No comments yet. Be the first!')),
+                    )
                   else
                     ListView.separated(
                       shrinkWrap: true,
@@ -102,16 +100,19 @@ class _PostDetailsScreenState extends State<PostDetailsScreen> {
                       itemBuilder: (context, index) {
                         final comment = provider.postComments[index];
                         final cProfiles = comment['profiles'] as Map<String, dynamic>?;
-                        final cAuthor = cProfiles?['full_name'] as String? ?? cProfiles?['username'] as String? ?? 'Anonymous';
-                        
+                        final cAuthor =
+                            cProfiles?['full_name'] as String? ?? cProfiles?['username'] as String? ?? 'Anonymous';
+
                         return Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             CircleAvatar(
                               radius: 14,
-                              backgroundColor: AppColors.primary.withValues(alpha: 0.05),
-                              child: Text(cAuthor.isNotEmpty ? cAuthor[0].toUpperCase() : '?', 
-                                style: const TextStyle(fontSize: 10, color: AppColors.primary)),
+                              backgroundColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.05),
+                              child: Text(
+                                cAuthor.isNotEmpty ? cAuthor[0].toUpperCase() : '?',
+                                style: TextStyle(fontSize: 10, color: Theme.of(context).colorScheme.primary),
+                              ),
                             ),
                             const SizedBox(width: 8),
                             Expanded(
@@ -131,19 +132,14 @@ class _PostDetailsScreenState extends State<PostDetailsScreen> {
               ),
             ),
           ),
-          
+
           // Comment Input
           Container(
-            padding: EdgeInsets.only(
-              left: 16, 
-              right: 16, 
-              top: 12, 
-              bottom: MediaQuery.of(context).padding.bottom + 12
-            ),
+            padding: EdgeInsets.only(left: 16, right: 16, top: 12, bottom: MediaQuery.of(context).padding.bottom + 12),
             decoration: BoxDecoration(
               color: AppColors.surface,
               boxShadow: [
-                BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10, offset: const Offset(0, -2))
+                BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10, offset: const Offset(0, -2)),
               ],
             ),
             child: Row(
@@ -154,10 +150,7 @@ class _PostDetailsScreenState extends State<PostDetailsScreen> {
                     decoration: InputDecoration(
                       hintText: 'Write a comment...',
                       hintStyle: AppTextStyles.bodySmall,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(24),
-                        borderSide: BorderSide.none,
-                      ),
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(24), borderSide: BorderSide.none),
                       filled: true,
                       fillColor: AppColors.background,
                       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -165,7 +158,7 @@ class _PostDetailsScreenState extends State<PostDetailsScreen> {
                   ),
                 ),
                 IconButton(
-                  icon: const Icon(Icons.send, color: AppColors.primary),
+                  icon: Icon(Icons.send, color: Theme.of(context).colorScheme.primary),
                   onPressed: _submitComment,
                 ),
               ],

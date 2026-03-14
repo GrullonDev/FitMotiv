@@ -1,9 +1,8 @@
+import 'package:fit_motiv/constants/app_text_styles.dart';
+import 'package:fit_motiv/features/profile_settings/presentation/providers/user_profile_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
-import 'package:fit_motiv/constants/app_colors.dart';
-import 'package:fit_motiv/constants/app_text_styles.dart';
 import 'package:provider/provider.dart';
-import 'package:fit_motiv/features/profile_settings/presentation/providers/user_profile_provider.dart';
 
 class ProgressCard extends StatelessWidget {
   const ProgressCard({super.key});
@@ -44,9 +43,7 @@ class ProgressCard extends StatelessWidget {
               Text('Weight Progress', style: AppTextStyles.heading4),
               Text(
                 '${absDiff.toStringAsFixed(1)} lbs ${isLosing ? 'lost' : 'gained'}',
-                style: AppTextStyles.heading4.copyWith(
-                  color: isLosing ? Colors.green : Colors.orange,
-                ),
+                style: AppTextStyles.heading4.copyWith(color: isLosing ? Colors.green : Colors.orange),
               ),
             ],
           ),
@@ -55,17 +52,17 @@ class ProgressCard extends StatelessWidget {
             padding: EdgeInsets.zero,
             lineHeight: 8.0,
             percent: progress.clamp(0.0, 1.0),
-            backgroundColor: AppColors.progressBackground,
-            progressColor: AppColors.primary,
+            backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
+            progressColor: Theme.of(context).colorScheme.primary,
             barRadius: const Radius.circular(4),
             animation: true,
             animationDuration: 1000,
           ),
           const SizedBox(height: 12),
           Text(
-            isLosing 
-              ? 'Great job! You\'ve lost ${absDiff.toStringAsFixed(1)} lbs since you started.'
-              : 'Keep pushing! You\'ve gained ${absDiff.toStringAsFixed(1)} lbs since you started.',
+            isLosing
+                ? 'Great job! You\'ve lost ${absDiff.toStringAsFixed(1)} lbs since you started.'
+                : 'Keep pushing! You\'ve gained ${absDiff.toStringAsFixed(1)} lbs since you started.',
             style: AppTextStyles.bodyMedium,
           ),
         ],

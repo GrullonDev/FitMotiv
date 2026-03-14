@@ -1,9 +1,9 @@
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:fit_motiv/constants/app_colors.dart';
 import 'package:fit_motiv/constants/app_text_styles.dart';
-import 'package:fit_motiv/features/progress/presentation/providers/progress_provider.dart';
 import 'package:fit_motiv/core/localization/locale_provider.dart';
+import 'package:fit_motiv/features/progress/presentation/providers/progress_provider.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ProgressScreen extends StatelessWidget {
   const ProgressScreen({super.key});
@@ -20,14 +20,14 @@ class ProgressScreen extends StatelessWidget {
           centerTitle: true,
           actions: [
             IconButton(
-              icon: const Icon(Icons.refresh, color: AppColors.primary),
+              icon: Icon(Icons.refresh, color: Theme.of(context).colorScheme.primary),
               onPressed: () => provider.refreshAll(),
             ),
           ],
           bottom: TabBar(
-            labelColor: AppColors.primary,
+            labelColor: Theme.of(context).colorScheme.primary,
             unselectedLabelColor: Theme.of(context).colorScheme.onSurfaceVariant,
-            indicatorColor: AppColors.primary,
+            indicatorColor: Theme.of(context).colorScheme.primary,
             tabs: const [
               Tab(text: 'Overview'),
               Tab(text: 'Weight'),
@@ -36,9 +36,7 @@ class ProgressScreen extends StatelessWidget {
           ),
         ),
         body: provider.isLoading
-            ? const Center(
-                child: CircularProgressIndicator(color: AppColors.primary),
-              )
+            ? Center(child: CircularProgressIndicator(color: Theme.of(context).colorScheme.primary))
             : TabBarView(
                 children: [
                   _OverviewTab(provider: provider),
@@ -59,7 +57,7 @@ class _OverviewTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
-      color: AppColors.primary,
+      color: Theme.of(context).colorScheme.primary,
       onRefresh: () => provider.refreshAll(),
       child: SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
@@ -75,7 +73,7 @@ class _OverviewTab extends StatelessWidget {
                     icon: Icons.fitness_center,
                     label: 'Workouts',
                     value: '${provider.totalSessions}',
-                    color: AppColors.primary,
+                    color: Theme.of(context).colorScheme.primary,
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -123,12 +121,7 @@ class _OverviewTab extends StatelessWidget {
             Text('Recent Sessions', style: AppTextStyles.heading4),
             const SizedBox(height: 12),
             if (provider.sessions.isEmpty)
-              _buildEmptyCard(
-                context,
-                'No sessions yet',
-                'Complete a workout to see your history.',
-                Icons.history,
-              )
+              _buildEmptyCard(context, 'No sessions yet', 'Complete a workout to see your history.', Icons.history)
             else
               ...provider.sessions.take(5).map((session) => _SessionCard(session: session)),
 
@@ -159,13 +152,7 @@ class _OverviewTab extends StatelessWidget {
       decoration: BoxDecoration(
         color: Theme.of(context).cardTheme.color ?? Colors.white,
         borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 8, offset: const Offset(0, 2))],
       ),
       child: Column(
         children: [
@@ -188,7 +175,7 @@ class _WeightTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
-      color: AppColors.primary,
+      color: Theme.of(context).colorScheme.primary,
       onRefresh: () => provider.refreshAll(),
       child: provider.weightLog.isEmpty
           ? SingleChildScrollView(
@@ -238,7 +225,7 @@ class _GoalsTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
-      color: AppColors.primary,
+      color: Theme.of(context).colorScheme.primary,
       onRefresh: () => provider.refreshAll(),
       child: provider.goals.isEmpty
           ? SingleChildScrollView(
@@ -250,11 +237,7 @@ class _GoalsTab extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const SizedBox(height: 80),
-                      Icon(
-                        Icons.flag_outlined,
-                        size: 64,
-                        color: AppColors.textSecondary.withValues(alpha: 0.4),
-                      ),
+                      Icon(Icons.flag_outlined, size: 64, color: AppColors.textSecondary.withValues(alpha: 0.4)),
                       const SizedBox(height: 16),
                       Text('No goals set', style: AppTextStyles.heading4),
                       const SizedBox(height: 8),
@@ -281,11 +264,7 @@ class _GoalsTab extends StatelessWidget {
                     color: Theme.of(context).cardTheme.color ?? Colors.white,
                     borderRadius: BorderRadius.circular(14),
                     boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.05),
-                        blurRadius: 8,
-                        offset: const Offset(0, 2),
-                      ),
+                      BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 8, offset: const Offset(0, 2)),
                     ],
                   ),
                   child: Row(
@@ -293,13 +272,14 @@ class _GoalsTab extends StatelessWidget {
                       Container(
                         padding: const EdgeInsets.all(10),
                         decoration: BoxDecoration(
-                          color: (isCompleted ? AppColors.success : AppColors.primary)
-                              .withValues(alpha: 0.1),
+                          color: (isCompleted ? AppColors.success : Theme.of(context).colorScheme.primary).withValues(
+                            alpha: 0.1,
+                          ),
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Icon(
                           isCompleted ? Icons.check_circle : Icons.flag_outlined,
-                          color: isCompleted ? AppColors.success : AppColors.primary,
+                          color: isCompleted ? AppColors.success : Theme.of(context).colorScheme.primary,
                           size: 24,
                         ),
                       ),
@@ -317,19 +297,13 @@ class _GoalsTab extends StatelessWidget {
                             ),
                             if ((goal['description'] as String? ?? '').isNotEmpty) ...[
                               const SizedBox(height: 2),
-                              Text(
-                                goal['description'] as String,
-                                style: AppTextStyles.bodySmall,
-                              ),
+                              Text(goal['description'] as String, style: AppTextStyles.bodySmall),
                             ],
                           ],
                         ),
                       ),
                       GestureDetector(
-                        onTap: () => provider.toggleGoal(
-                          goal['id'] as String,
-                          !isCompleted,
-                        ),
+                        onTap: () => provider.toggleGoal(goal['id'] as String, !isCompleted),
                         child: Icon(
                           isCompleted ? Icons.check_circle : Icons.radio_button_unchecked,
                           color: isCompleted ? AppColors.success : AppColors.textSecondary,
@@ -350,12 +324,7 @@ class _GoalsTab extends StatelessWidget {
 // ─────────────────────────────────────────
 
 class _StatBox extends StatelessWidget {
-  const _StatBox({
-    required this.icon,
-    required this.label,
-    required this.value,
-    required this.color,
-  });
+  const _StatBox({required this.icon, required this.label, required this.value, required this.color});
   final IconData icon;
   final String label;
   final String value;
@@ -368,23 +337,14 @@ class _StatBox extends StatelessWidget {
       decoration: BoxDecoration(
         color: Theme.of(context).cardTheme.color ?? Colors.white,
         borderRadius: BorderRadius.circular(14),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 8, offset: const Offset(0, 2))],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Icon(icon, color: color, size: 24),
           const SizedBox(height: 8),
-          Text(
-            value,
-            style: AppTextStyles.heading3.copyWith(color: color),
-          ),
+          Text(value, style: AppTextStyles.heading3.copyWith(color: color)),
           const SizedBox(height: 2),
           Text(label, style: AppTextStyles.bodySmall),
         ],
@@ -425,32 +385,24 @@ class _SessionCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: Theme.of(context).cardTheme.color ?? Colors.white,
         borderRadius: BorderRadius.circular(14),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 6,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 6, offset: const Offset(0, 2))],
       ),
       child: Row(
         children: [
           Container(
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: AppColors.primary.withValues(alpha: 0.1),
+              color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: const Icon(Icons.fitness_center, color: AppColors.primary, size: 20),
+            child: Icon(Icons.fitness_center, color: Theme.of(context).colorScheme.primary, size: 20),
           ),
           const SizedBox(width: 14),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(name, style: AppTextStyles.bodyMedium.copyWith(
-                  fontWeight: FontWeight.w600,
-                )),
+                Text(name, style: AppTextStyles.bodyMedium.copyWith(fontWeight: FontWeight.w600)),
                 const SizedBox(height: 2),
                 Text(
                   '${duration}min • ${calories}cal ${timeAgo.isNotEmpty ? "• $timeAgo" : ""}',
@@ -489,13 +441,7 @@ class _WeightEntry extends StatelessWidget {
       decoration: BoxDecoration(
         color: Theme.of(context).cardTheme.color ?? Colors.white,
         borderRadius: BorderRadius.circular(14),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 6,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 6, offset: const Offset(0, 2))],
       ),
       child: Row(
         children: [
@@ -514,17 +460,13 @@ class _WeightEntry extends StatelessWidget {
               children: [
                 Text(
                   '${weight.toStringAsFixed(1)} lbs',
-                  style: AppTextStyles.bodyMedium.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
+                  style: AppTextStyles.bodyMedium.copyWith(fontWeight: FontWeight.w600),
                 ),
-                if (notes.isNotEmpty)
-                  Text(notes, style: AppTextStyles.bodySmall),
+                if (notes.isNotEmpty) Text(notes, style: AppTextStyles.bodySmall),
               ],
             ),
           ),
-          if (dateStr.isNotEmpty)
-            Text(dateStr, style: AppTextStyles.bodySmall),
+          if (dateStr.isNotEmpty) Text(dateStr, style: AppTextStyles.bodySmall),
         ],
       ),
     );

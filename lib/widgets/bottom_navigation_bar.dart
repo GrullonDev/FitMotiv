@@ -1,16 +1,10 @@
-import 'package:flutter/material.dart';
-import 'package:fit_motiv/constants/app_colors.dart';
 import 'package:fit_motiv/constants/app_text_styles.dart';
-import 'package:provider/provider.dart';
 import 'package:fit_motiv/core/localization/locale_provider.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class CustomBottomNavigationBar extends StatelessWidget {
-
-  const CustomBottomNavigationBar({
-    super.key,
-    required this.selectedIndex,
-    required this.onItemSelected,
-  });
+  const CustomBottomNavigationBar({super.key, required this.selectedIndex, required this.onItemSelected});
   final int selectedIndex;
   final Function(int) onItemSelected;
 
@@ -37,36 +31,42 @@ class CustomBottomNavigationBar extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               _buildNavItem(
+                context,
                 icon: Icons.home,
                 label: localeProvider.translate('home'),
                 index: 0,
                 isSelected: selectedIndex == 0,
               ),
               _buildNavItem(
+                context,
                 icon: Icons.calendar_today,
                 label: localeProvider.translate('plans'),
                 index: 1,
                 isSelected: selectedIndex == 1,
               ),
               _buildNavItem(
+                context,
                 icon: Icons.directions_run,
                 label: localeProvider.translate('routines'),
                 index: 2,
                 isSelected: selectedIndex == 2,
               ),
               _buildNavItem(
+                context,
                 icon: Icons.trending_up,
                 label: localeProvider.translate('progress'),
                 index: 3,
                 isSelected: selectedIndex == 3,
               ),
               _buildNavItem(
+                context,
                 icon: Icons.group,
                 label: localeProvider.translate('community'),
                 index: 4,
                 isSelected: selectedIndex == 4,
               ),
               _buildNavItem(
+                context,
                 icon: Icons.person,
                 label: localeProvider.translate('profile'),
                 index: 5,
@@ -79,7 +79,8 @@ class CustomBottomNavigationBar extends StatelessWidget {
     );
   }
 
-  Widget _buildNavItem({
+  Widget _buildNavItem(
+    BuildContext context, {
     required IconData icon,
     required String label,
     required int index,
@@ -95,11 +96,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(
-                icon,
-                size: 22,
-                color: isSelected ? AppColors.primary : const Color(0xFF9CA3AF),
-              ),
+              Icon(icon, size: 22, color: isSelected ? Theme.of(context).colorScheme.primary : const Color(0xFF9CA3AF)),
               const SizedBox(height: 2),
               FittedBox(
                 child: Text(
@@ -107,9 +104,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
                   style: AppTextStyles.bodySmall.copyWith(
                     fontSize: 11,
                     fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-                    color: isSelected
-                        ? AppColors.primary
-                        : const Color(0xFF9CA3AF),
+                    color: isSelected ? Theme.of(context).colorScheme.primary : const Color(0xFF9CA3AF),
                   ),
                 ),
               ),

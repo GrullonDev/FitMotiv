@@ -1,6 +1,5 @@
-import 'package:flutter/material.dart';
-import 'package:fit_motiv/constants/app_colors.dart';
 import 'package:fit_motiv/constants/app_text_styles.dart';
+import 'package:flutter/material.dart';
 
 class WorkoutCard extends StatelessWidget {
   const WorkoutCard({super.key});
@@ -27,10 +26,7 @@ class WorkoutCard extends StatelessWidget {
             height: 200,
             width: double.infinity,
             decoration: BoxDecoration(
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(16),
-                topRight: Radius.circular(16),
-              ),
+              borderRadius: const BorderRadius.only(topLeft: Radius.circular(16), topRight: Radius.circular(16)),
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
@@ -43,11 +39,7 @@ class WorkoutCard extends StatelessWidget {
                 Positioned(
                   right: 30,
                   bottom: 20,
-                  child: Icon(
-                    Icons.fitness_center,
-                    size: 80,
-                    color: Colors.white.withValues(alpha: 0.3),
-                  ),
+                  child: Icon(Icons.fitness_center, size: 80, color: Colors.white.withValues(alpha: 0.3)),
                 ),
               ],
             ),
@@ -58,10 +50,7 @@ class WorkoutCard extends StatelessWidget {
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
               color: Theme.of(context).cardTheme.color ?? Colors.white,
-              borderRadius: const BorderRadius.only(
-                bottomLeft: Radius.circular(16),
-                bottomRight: Radius.circular(16),
-              ),
+              borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(16), bottomRight: Radius.circular(16)),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -69,20 +58,12 @@ class WorkoutCard extends StatelessWidget {
                 Row(
                   children: [
                     Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 4,
-                      ),
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                       decoration: BoxDecoration(
-                        color: AppColors.primary,
+                        color: Theme.of(context).colorScheme.primary,
                         borderRadius: BorderRadius.circular(6),
                       ),
-                      child: Text(
-                        '15 min',
-                        style: AppTextStyles.chipText.copyWith(
-                          color: Colors.white,
-                        ),
-                      ),
+                      child: Text('15 min', style: AppTextStyles.chipText.copyWith(color: Colors.white)),
                     ),
                   ],
                 ),
@@ -101,18 +82,13 @@ class WorkoutCard extends StatelessWidget {
                       // Acción para comenzar el workout
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primary,
+                      backgroundColor: Theme.of(context).colorScheme.primary,
                       foregroundColor: Colors.white,
                       padding: const EdgeInsets.symmetric(vertical: 12),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                       elevation: 0,
                     ),
-                    child: Text(
-                      'Start Workout',
-                      style: AppTextStyles.buttonText,
-                    ),
+                    child: Text('Start Workout', style: AppTextStyles.buttonText),
                   ),
                 ),
               ],

@@ -1,4 +1,3 @@
-import 'package:fit_motiv/constants/app_colors.dart';
 import 'package:fit_motiv/constants/app_text_styles.dart';
 import 'package:flutter/material.dart';
 
@@ -45,18 +44,20 @@ class CustomButton extends StatelessWidget {
         onPressed: isButtonDisabled ? null : onPressed,
         style: ElevatedButton.styleFrom(
           padding: padding,
-          backgroundColor: isButtonDisabled ? Colors.grey.shade400 : backgroundColor ?? AppColors.primary,
+          backgroundColor: isButtonDisabled
+              ? Colors.grey.shade400
+              : backgroundColor ?? Theme.of(context).colorScheme.primary,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(borderRadius)),
           elevation: isButtonDisabled ? 0 : elevation,
         ),
         child: isLoading
-            ? _buildLoadingContent()
+            ? _buildLoadingContent(context)
             : Text(text, style: textStyle ?? AppTextStyles.buttonText.copyWith(color: textColor ?? Colors.white)),
       ),
     );
   }
 
-  Widget _buildLoadingContent() {
+  Widget _buildLoadingContent(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -65,13 +66,15 @@ class CustomButton extends StatelessWidget {
           height: 20,
           child: CircularProgressIndicator(
             strokeWidth: 2,
-            valueColor: AlwaysStoppedAnimation<Color>(textColor ?? AppColors.background),
+            valueColor: AlwaysStoppedAnimation<Color>(textColor ?? Theme.of(context).scaffoldBackgroundColor),
           ),
         ),
         const SizedBox(width: 12),
         Text(
           loadingText ?? 'Loading...',
-          style: textStyle ?? AppTextStyles.buttonText.copyWith(color: textColor ?? AppColors.background),
+          style:
+              textStyle ??
+              AppTextStyles.buttonText.copyWith(color: textColor ?? Theme.of(context).scaffoldBackgroundColor),
         ),
       ],
     );
