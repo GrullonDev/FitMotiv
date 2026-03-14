@@ -54,31 +54,40 @@ class RecipeCard extends StatelessWidget {
               Expanded(
                 child: Stack(
                   children: [
+                    // Image with smooth Fade-in
                     Image.network(
                       imageUrl,
                       height: double.infinity,
                       width: double.infinity,
                       fit: BoxFit.cover,
+                      frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
+                        if (wasSynchronouslyLoaded) return child;
+                        return AnimatedOpacity(
+                          opacity: frame == null ? 0 : 1,
+                          duration: const Duration(milliseconds: 500),
+                          curve: Curves.easeOut,
+                          child: child,
+                        );
+                      },
                       loadingBuilder: (context, child, loadingProgress) {
                         if (loadingProgress == null) return child;
                         return Container(
-                          alignment: Alignment.center,
                           decoration: BoxDecoration(
-                            color: isDark ? Colors.black12 : Theme.of(context).colorScheme.surface,
+                            color: isDark ? Colors.white.withValues(alpha: 0.05) : Colors.grey[200],
                           ),
-                          child: SizedBox(
-                            width: 24,
-                            height: 24,
-                            child: CircularProgressIndicator(strokeWidth: 2, color: primaryColor),
+                          child: Center(
+                            child: Icon(
+                              Icons.restaurant_outlined,
+                              color: primaryColor.withValues(alpha: 0.2),
+                              size: 32,
+                            ),
                           ),
                         );
                       },
                       errorBuilder: (context, error, stackTrace) => Container(
-                        decoration: BoxDecoration(
-                          color: isDark ? Colors.black12 : Theme.of(context).colorScheme.surface,
-                        ),
+                        color: isDark ? Colors.white.withValues(alpha: 0.05) : Colors.grey[200],
                         alignment: Alignment.center,
-                        child: Icon(Icons.broken_image, color: primaryColor, size: 40),
+                        child: Icon(Icons.receipt_long_outlined, color: primaryColor.withValues(alpha: 0.3), size: 32),
                       ),
                     ),
                     Positioned(
@@ -87,7 +96,7 @@ class RecipeCard extends StatelessWidget {
                       child: Container(
                         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                         decoration: BoxDecoration(
-                          color: Colors.black.withValues(alpha: 0.6),
+                          color: Colors.black.withValues(alpha: 0.5),
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Row(
@@ -97,7 +106,7 @@ class RecipeCard extends StatelessWidget {
                             const SizedBox(width: 4),
                             Text(
                               time,
-                              style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold),
+                              style: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.w900, letterSpacing: 0.5),
                             ),
                           ],
                         ),
@@ -107,21 +116,35 @@ class RecipeCard extends StatelessWidget {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.all(12),
+                padding: const EdgeInsets.fromLTRB(16, 14, 16, 18),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
                       title,
-                      style: AppTextStyles.bodyMedium.copyWith(fontWeight: FontWeight.bold),
+                      style: AppTextStyles.bodyMedium.copyWith(
+                        fontWeight: FontWeight.w800,
+                        fontSize: 14,
+                        letterSpacing: 0.3,
+                      ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    const SizedBox(height: 4),
-                    Text(
-                      calories,
-                      style: AppTextStyles.bodySmall.copyWith(color: primaryColor, fontWeight: FontWeight.w600),
+                    const SizedBox(height: 6),
+                    Row(
+                      children: [
+                        Icon(Icons.bolt, size: 14, color: primaryColor),
+                        const SizedBox(width: 4),
+                        Text(
+                          calories,
+                          style: AppTextStyles.bodySmall.copyWith(
+                            color: primaryColor,
+                            fontWeight: FontWeight.w900,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),

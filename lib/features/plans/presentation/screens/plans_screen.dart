@@ -88,6 +88,7 @@ class PlansScreen extends StatelessWidget {
               calories: '1,500 - 1,800 kcal',
               icon: Icons.restaurant,
               badgeText: '7 ${l10n.translate('days')}',
+              imageUrl: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=500&auto=format&fit=crop',
               isRecommended: true,
             ),
             const SizedBox(height: 16),
@@ -97,6 +98,7 @@ class PlansScreen extends StatelessWidget {
               calories: '2,500 - 3,000 kcal',
               icon: Icons.fitness_center,
               badgeText: l10n.translate('advanced'),
+              imageUrl: 'https://images.unsplash.com/photo-1532384748853-8f54a8f476e2?q=80&w=500&auto=format&fit=crop',
               isRecommended: false,
             ),
           ] else
@@ -110,6 +112,7 @@ class PlansScreen extends StatelessWidget {
                     calories: '1,500 - 1,800 kcal',
                     icon: Icons.restaurant,
                     badgeText: '7 ${l10n.translate('days')}',
+                    imageUrl: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=500&auto=format&fit=crop',
                     isRecommended: true,
                   ),
                 ),
@@ -121,6 +124,7 @@ class PlansScreen extends StatelessWidget {
                     calories: '2,500 - 3,000 kcal',
                     icon: Icons.fitness_center,
                     badgeText: l10n.translate('advanced'),
+                    imageUrl: 'https://images.unsplash.com/photo-1532384748853-8f54a8f476e2?q=80&w=500&auto=format&fit=crop',
                     isRecommended: false,
                   ),
                 ),
@@ -162,8 +166,8 @@ class PlansScreen extends StatelessWidget {
             children: [
               _buildFilterChip(l10n.translate('vegan'), true, primaryColor),
               _buildFilterChip(l10n.translate('high_protein'), false, primaryColor),
-              _buildFilterChip(l10n.translate('easy'), false, primaryColor),
-              _buildFilterChip('Keto', false, primaryColor),
+              _buildFilterChip(l10n.translate('fast'), false, primaryColor),
+              _buildFilterChip(l10n.translate('keto'), false, primaryColor),
             ],
           ),
         ),
@@ -176,30 +180,30 @@ class PlansScreen extends StatelessWidget {
             mainAxisSpacing: 16,
             crossAxisSpacing: 16,
             childAspectRatio: isMobile ? 0.68 : 0.85,
-            children: const [
+            children: [
               RecipeCard(
-                title: 'Avocado Toast',
+                title: l10n.translate('avocado_toast'),
                 time: '15 min',
                 calories: '320 kcal',
                 imageUrl:
                     'https://images.unsplash.com/photo-1525351484163-7529414344d8?q=80&w=500&auto=format&fit=crop',
               ),
               RecipeCard(
-                title: 'Quinoa Salad',
+                title: l10n.translate('quinoa_salad'),
                 time: '20 min',
                 calories: '450 kcal',
                 imageUrl:
                     'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=500&auto=format&fit=crop',
               ),
               RecipeCard(
-                title: 'Berry Smoothie',
+                title: l10n.translate('berry_smoothie'),
                 time: '5 min',
                 calories: '250 kcal',
                 imageUrl:
-                    'https://images.unsplash.com/photo-1536304953400-025545a99971?q=80&w=500&auto=format&fit=crop',
+                    'https://images.unsplash.com/photo-1553530666-ba11a7da3888?q=80&w=500&auto=format&fit=crop',
               ),
               RecipeCard(
-                title: 'Grilled Salmon',
+                title: l10n.translate('grilled_salmon'),
                 time: '25 min',
                 calories: '550 kcal',
                 imageUrl:
@@ -249,15 +253,17 @@ class PlansScreen extends StatelessWidget {
               physics: const BouncingScrollPhysics(),
               children: [
                 _buildMythCard(
+                  context,
                   'Mito: Los carbohidratos después de las 6 PM engordan.',
                   'Realidad: El balance calórico total del día es lo que importa.',
-                  Colors.blue,
+                  const Color(0xFF3B82F6),
                   primaryColor,
                 ),
                 _buildMythCard(
+                  context,
                   'Mito: Beber agua con limón quema grasa.',
                   'Realidad: El agua con limón hidrata, pero no tiene propiedades quema grasa.',
-                  Colors.orange,
+                  const Color(0xFFF59E0B),
                   primaryColor,
                 ),
               ],
@@ -274,47 +280,85 @@ class PlansScreen extends StatelessWidget {
           const SizedBox(height: 32),
 
           // Articles
-          Text('Artículos Recomendados', style: AppTextStyles.heading4),
+          Text(l10n.translate('recommended_articles'), style: AppTextStyles.heading4),
           const SizedBox(height: 16),
           _buildArticleTile(
             'Cómo leer etiquetas nutricionales',
             'Aprende a diferenciar el marketing de la realidad.',
-            '5 min lectura',
+            '5 ${l10n.translate('read_time')}',
           ),
           _buildArticleTile(
             'La importancia de la hidratación',
             'Por qué el agua es tu mejor aliada en el gym.',
-            '4 min lectura',
+            '4 ${l10n.translate('read_time')}',
           ),
-          _buildArticleTile('Mejores snacks pre-entreno', 'Energía real para tus músculos.', '3 min lectura'),
+          _buildArticleTile('Mejores snacks pre-entreno', 'Energía real para tus músculos.', '3 ${l10n.translate('read_time')}'),
+          const SizedBox(height: 80), // Added bottom padding to ensure final card is visible
         ],
       ),
     );
   }
 
-  Widget _buildMythCard(String title, String description, Color color, Color primary) {
+  Widget _buildMythCard(BuildContext context, String title, String description, Color color, Color primary) {
+    final l10n = context.read<LocaleProvider>();
     return Container(
       margin: const EdgeInsets.only(right: 12),
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        gradient: LinearGradient(colors: [color.withValues(alpha: 0.8), color]),
-        borderRadius: BorderRadius.circular(24),
-      ),
-      child: SingleChildScrollView(
-        physics: const NeverScrollableScrollPhysics(), // Only scroll if absolutely necessary
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Icon(Icons.lightbulb_outline, color: Colors.white, size: 28),
-            const SizedBox(height: 12),
-            Text(
-              title,
-              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
-            ),
-            const SizedBox(height: 4),
-            Text(description, style: TextStyle(color: Colors.white.withValues(alpha: 0.9), fontSize: 13)),
-          ],
+        color: color,
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [color.withValues(alpha: 0.8), color],
         ),
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          BoxShadow(color: color.withValues(alpha: 0.3), blurRadius: 10, offset: const Offset(0, 4)),
+        ],
+      ),
+      child: Stack(
+        children: [
+          SingleChildScrollView(
+            physics: const NeverScrollableScrollPhysics(),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Icon(Icons.lightbulb_outline, color: Colors.white, size: 28),
+                const SizedBox(height: 12),
+                Text(
+                  title,
+                  style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 16, letterSpacing: 0.3),
+                ),
+                const SizedBox(height: 6),
+                Text(description, style: TextStyle(color: Colors.white.withValues(alpha: 0.9), fontSize: 13, height: 1.4)),
+              ],
+            ),
+          ),
+          Positioned(
+            right: 0,
+            bottom: 0,
+            child: IconButton(
+              onPressed: () {
+                // Future: Add Share logic
+              },
+              style: IconButton.styleFrom(
+                backgroundColor: Colors.white12,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              ),
+              icon: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(Icons.share_outlined, color: Colors.white, size: 16),
+                  const SizedBox(width: 4),
+                  Text(
+                    l10n.translate('share'),
+                    style: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -366,12 +410,18 @@ class _WaterTrackerWidgetState extends State<_WaterTrackerWidget> {
     final l10n = context.watch<LocaleProvider>();
     final primaryColor = context.watch<ThemeProvider>().primaryColor;
 
-    return Container(
-      padding: const EdgeInsets.all(20),
+    bool isComplete = glassesValue >= 8;
+    
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 500),
+      padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: primaryColor.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: primaryColor.withValues(alpha: 0.2)),
+        color: isComplete ? Colors.green.withValues(alpha: 0.1) : primaryColor.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(28),
+        border: Border.all(
+          color: isComplete ? Colors.green.withValues(alpha: 0.3) : primaryColor.withValues(alpha: 0.2),
+          width: 2,
+        ),
       ),
       child: Column(
         children: [
@@ -381,30 +431,54 @@ class _WaterTrackerWidgetState extends State<_WaterTrackerWidget> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    '$glassesValue / 8 ${l10n.translate('glasses')}',
-                    style: AppTextStyles.heading3.copyWith(color: primaryColor),
+                  AnimatedDefaultTextStyle(
+                    duration: const Duration(milliseconds: 300),
+                    style: AppTextStyles.heading3.copyWith(
+                      color: isComplete ? Colors.green : primaryColor,
+                      fontWeight: FontWeight.w900,
+                    ),
+                    child: Text('$glassesValue / 8 ${l10n.translate('glasses')}'),
                   ),
-                  Text(l10n.translate('water_target'), style: AppTextStyles.bodySmall),
+                  Text(
+                    isComplete ? l10n.translate('water_reached') : l10n.translate('water_target'),
+                    style: TextStyle(
+                      color: isComplete ? Colors.green : AppColors.textSecondary,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 12,
+                    ),
+                  ),
                 ],
               ),
               IconButton.filled(
-                onPressed: () => setState(() {
-                  if (glassesValue < 20) glassesValue++;
-                }),
-                style: IconButton.styleFrom(backgroundColor: primaryColor),
-                icon: const Icon(Icons.add, color: Colors.white),
+                onPressed: () {
+                  setState(() {
+                    if (glassesValue < 20) {
+                      glassesValue++;
+                    }
+                  });
+                },
+                style: IconButton.styleFrom(
+                  backgroundColor: isComplete ? Colors.green : primaryColor,
+                  padding: const EdgeInsets.all(12),
+                ),
+                icon: const Icon(Icons.add, color: Colors.white, size: 24),
               ),
             ],
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 24),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: List.generate(8, (index) {
-              return Icon(
-                index < glassesValue ? Icons.water_drop : Icons.water_drop_outlined,
-                color: index < glassesValue ? Colors.blue : AppColors.textSecondary.withValues(alpha: 0.5),
-                size: 28,
+              bool isDrunk = index < glassesValue;
+              return AnimatedScale(
+                scale: isDrunk ? 1.2 : 1.0,
+                duration: const Duration(milliseconds: 400),
+                curve: Curves.elasticOut,
+                child: Icon(
+                  isDrunk ? Icons.water_drop : Icons.water_drop_outlined,
+                  color: isDrunk ? (isComplete ? Colors.green : Colors.blue) : AppColors.textSecondary.withValues(alpha: 0.3),
+                  size: 30,
+                ),
               );
             }),
           ),
