@@ -1,12 +1,16 @@
+import 'package:fit_motiv/core/services/analytics_service.dart';
 import 'package:fit_motiv/core/utils/snackbar_service.dart';
 import 'package:fit_motiv/features/auth/data/model/request/register_request.dart';
 import 'package:fit_motiv/features/auth/domain/repositories/auth_repository.dart';
 import 'package:flutter/material.dart';
 
 class RegisterBloc extends ChangeNotifier {
-  RegisterBloc({required AuthRepository authRepository}) : _authRepository = authRepository;
+  RegisterBloc({required AuthRepository authRepository, required AnalyticsService analyticsService})
+    : _authRepository = authRepository,
+      _analyticsService = analyticsService;
 
   final AuthRepository _authRepository;
+  final AnalyticsService _analyticsService;
 
   // Controllers para los campos del formulario
   final TextEditingController emailController = TextEditingController();
@@ -98,6 +102,7 @@ class RegisterBloc extends ChangeNotifier {
         (userEntity) {
           _isLoading = false;
           _userData = userEntity;
+          _analyticsService.logSignUp('email');
 
           // Mostrar SnackBar de éxito
           SnackBarService.showSuccess('Account created successfully! Welcome to FitMotiv, ${fullNameController.text}!');

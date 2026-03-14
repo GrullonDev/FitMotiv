@@ -1,15 +1,27 @@
 import 'dart:async';
-import 'package:flutter/material.dart';
+
+import 'package:fit_motiv/core/services/analytics_service.dart';
+import 'package:fit_motiv/features/progress/data/datasources/progress_supabase_datasource.dart';
 import 'package:fit_motiv/features/routines/domain/entities/exercise.dart';
+import 'package:flutter/material.dart';
 
 enum WorkoutState { idle, playing, paused, rest, completed }
 
 class WorkoutSessionProvider extends ChangeNotifier {
+  WorkoutSessionProvider({this.progressDatasource, this.analyticsService});
+
+  /// Datasource opcional para persistir la sesión al completarse
+  final ProgressSupabaseDatasource? progressDatasource;
+  final AnalyticsService? analyticsService;
+
   List<Exercise> _exercises = [];
   int _currentIndex = 0;
   int _remainingSeconds = 0;
   int _totalSeconds = 0;
   int _totalDurationMinutes = 0;
+  int _totalCaloriesBurned = 0;
+  String _workoutId = '';
+  String _workoutName = '';
   Timer? _timer;
   WorkoutState _state = WorkoutState.idle;
 
@@ -18,23 +30,31 @@ class WorkoutSessionProvider extends ChangeNotifier {
   int get remainingSeconds => _remainingSeconds;
   int get totalSeconds => _totalSeconds;
   int get totalDurationMinutes => _totalDurationMinutes;
+  int get totalCaloriesBurned => _totalCaloriesBurned;
   WorkoutState get state => _state;
   Exercise get currentExercise => _exercises[_currentIndex];
   double get progress => _currentIndex / _exercises.length;
   double get timerProgress => _totalSeconds > 0 ? _remainingSeconds / _totalSeconds : 0.0;
 
-  void startWorkout(List<Exercise> exercises) {
+  void startWorkout(List<Exercise> exercises, {String workoutId = '', String workoutName = ''}) {
     _exercises = exercises;
     _currentIndex = 0;
     _totalDurationMinutes = 0;
+    _totalCaloriesBurned = 0;
+    _workoutId = workoutId;
+    _workoutName = workoutName;
     _state = WorkoutState.playing;
+
+    // Log tracking
+    analyticsService?.logWorkoutStarted(workoutName.isNotEmpty ? workoutName : 'Workout');
+
     _prepareCurrentExercise();
     notifyListeners();
   }
 
   void _prepareCurrentExercise() {
     final exercise = _exercises[_currentIndex];
-    
+
     if (exercise.isTimeBased) {
       _remainingSeconds = exercise.seconds!;
       _totalSeconds = exercise.seconds!;
@@ -47,6 +67,8 @@ class WorkoutSessionProvider extends ChangeNotifier {
 
     if (_state == WorkoutState.playing) {
       _totalDurationMinutes += _totalSeconds ~/ 60;
+      // Estimar calorías: ~5 cal/min para ejercicio moderado
+      _totalCaloriesBurned += (_totalSeconds ~/ 60) * 5;
       _startTimer();
     } else {
       _stopTimer();
@@ -98,6 +120,8 @@ class WorkoutSessionProvider extends ChangeNotifier {
     } else {
       _state = WorkoutState.completed;
       _stopTimer();
+      // Persistir la sesión completa en Supabase
+      _logCompletedSession();
     }
     notifyListeners();
   }
@@ -107,6 +131,23 @@ class WorkoutSessionProvider extends ChangeNotifier {
       _currentIndex--;
       _prepareCurrentExercise();
       notifyListeners();
+    }
+  }
+
+  /// Persiste la sesión completada en la base de datos
+  Future<void> _logCompletedSession() async {
+    if (progressDatasource == null) return;
+
+    try {
+      await progressDatasource!.logWorkoutSession(
+        workoutId: _workoutId.isNotEmpty ? _workoutId : 'manual',
+        workoutName: _workoutName.isNotEmpty ? _workoutName : 'Workout',
+        durationMinutes: _totalDurationMinutes > 0 ? _totalDurationMinutes : 1,
+        caloriesBurned: _totalCaloriesBurned > 0 ? _totalCaloriesBurned : 10,
+      );
+      debugPrint('✅ Workout session logged to Supabase');
+    } catch (e) {
+      debugPrint('❌ Error logging workout session: $e');
     }
   }
 

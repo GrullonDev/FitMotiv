@@ -1,16 +1,18 @@
 import 'package:firebase_core/firebase_core.dart';
-import 'package:fit_motiv/firebase_options.dart';
-import 'package:fit_motiv/core/services/notification_service.dart';
 import 'package:fit_motiv/core/config/app_config.dart';
 import 'package:fit_motiv/core/di/injection_container.dart' as di;
+import 'package:fit_motiv/core/localization/locale_provider.dart';
+import 'package:fit_motiv/core/services/analytics_service.dart';
+import 'package:fit_motiv/core/services/notification_service.dart';
+import 'package:fit_motiv/core/theme/theme_provider.dart';
 import 'package:fit_motiv/features/community/presentation/providers/community_provider.dart';
 import 'package:fit_motiv/features/dashboard/presentation/providers/dashboard_provider.dart';
+import 'package:fit_motiv/features/plans/presentation/providers/plans_provider.dart';
 import 'package:fit_motiv/features/profile_settings/presentation/providers/user_profile_provider.dart';
 import 'package:fit_motiv/features/progress/presentation/providers/progress_provider.dart';
 import 'package:fit_motiv/features/routines/presentation/providers/workout_provider.dart';
 import 'package:fit_motiv/features/routines/presentation/providers/workout_session_provider.dart';
-import 'package:fit_motiv/core/theme/theme_provider.dart';
-import 'package:fit_motiv/core/localization/locale_provider.dart';
+import 'package:fit_motiv/firebase_options.dart';
 import 'package:fit_motiv/utils/app.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -29,6 +31,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => di.sl<WorkoutSessionProvider>()),
         ChangeNotifierProvider(create: (_) => di.sl<ProgressProvider>()),
         ChangeNotifierProvider(create: (_) => di.sl<CommunityProvider>()),
+        ChangeNotifierProvider(create: (_) => di.sl<PlansProvider>()),
         ChangeNotifierProvider(create: (_) => LocaleProvider()),
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
       ],
@@ -43,18 +46,13 @@ Future<void> initializeApp() async {
 
   // Initialize Firebase (Only if configured)
   try {
-    await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
+    await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   } catch (e) {
     debugPrint('Firebase initialization skipped: $e');
   }
 
   // Initialize Supabase
-  await Supabase.initialize(
-    url: AppConfig.instance.supabaseUrl,
-    anonKey: AppConfig.instance.supabaseAnonKey,
-  );
+  await Supabase.initialize(url: AppConfig.instance.supabaseUrl, anonKey: AppConfig.instance.supabaseAnonKey);
 
   // Initialize dependency injection
   await di.init();
@@ -64,5 +62,12 @@ Future<void> initializeApp() async {
     await di.sl<NotificationService>().init();
   } catch (e) {
     debugPrint('Notification initialization skipped: $e');
+  }
+
+  // Log App Open
+  try {
+    await di.sl<AnalyticsService>().logAppOpen();
+  } catch (e) {
+    debugPrint('Analytics log skipped: $e');
   }
 }

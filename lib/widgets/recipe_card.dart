@@ -1,11 +1,72 @@
 import 'package:fit_motiv/constants/app_text_styles.dart';
+import 'package:fit_motiv/features/plans/presentation/providers/plans_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+/// Card de "Healthy Recipe" en el Dashboard.
+/// Ahora lee los datos desde PlansProvider (Supabase).
 class RecipeCard extends StatelessWidget {
   const RecipeCard({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final provider = context.watch<PlansProvider>();
+    final recipe = provider.dailyRecipe;
+
+    // Si está cargando
+    if (provider.isLoading) {
+      return Container(
+        height: 200,
+        decoration: BoxDecoration(
+          color: Theme.of(context).cardTheme.color ?? Colors.white,
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Center(child: CircularProgressIndicator(color: Theme.of(context).colorScheme.primary)),
+      );
+    }
+
+    // Si no hay receta
+    if (recipe == null) {
+      return Container(
+        height: 180,
+        decoration: BoxDecoration(
+          color: Theme.of(context).cardTheme.color ?? Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.05),
+              spreadRadius: 1,
+              blurRadius: 10,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.restaurant_menu,
+                size: 48,
+                color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.3),
+              ),
+              const SizedBox(height: 12),
+              Text('No hay recetas aún', style: AppTextStyles.bodyMedium),
+              const SizedBox(height: 4),
+              Text('Agrega recetas a la base de datos', style: AppTextStyles.bodySmall),
+            ],
+          ),
+        ),
+      );
+    }
+
+    final title = recipe['title'] as String? ?? 'Recipe';
+    final description = recipe['description'] as String? ?? 'A nutritious and delicious recipe.';
+    final time = recipe['time'] as String? ?? '';
+    final calories = recipe['calories'] as String? ?? '';
+    final rating = (recipe['rating'] as num?)?.toDouble() ?? 0;
+    final imageUrl = recipe['image_url'] as String? ?? '';
+
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
@@ -23,68 +84,17 @@ class RecipeCard extends StatelessWidget {
       child: Column(
         children: [
           // Imagen de la receta
-          Container(
-            height: 180,
-            width: double.infinity,
-            decoration: BoxDecoration(
-              borderRadius: const BorderRadius.only(topLeft: Radius.circular(16), topRight: Radius.circular(16)),
-              color: const Color(0xFFF3F4F6),
-            ),
-            child: Stack(
-              children: [
-                // Simulación de imagen de aguacate
-                Center(
-                  child: Container(
-                    width: 120,
-                    height: 120,
-                    decoration: BoxDecoration(color: const Color(0xFF86EFAC), borderRadius: BorderRadius.circular(60)),
-                    child: Stack(
-                      children: [
-                        // Aguacate base
-                        Positioned(
-                          left: 20,
-                          top: 20,
-                          child: Container(
-                            width: 80,
-                            height: 80,
-                            decoration: BoxDecoration(
-                              color: const Color(0xFF22C55E),
-                              borderRadius: BorderRadius.circular(40),
-                            ),
-                          ),
-                        ),
-                        // Semilla del aguacate
-                        Positioned(
-                          left: 45,
-                          top: 45,
-                          child: Container(
-                            width: 30,
-                            height: 30,
-                            decoration: BoxDecoration(
-                              color: const Color(0xFFFDE68A),
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                          ),
-                        ),
-                        // Pan tostado (base)
-                        Positioned(
-                          bottom: 10,
-                          left: 10,
-                          right: 10,
-                          child: Container(
-                            height: 15,
-                            decoration: BoxDecoration(
-                              color: const Color(0xFFD2B48C),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
+          ClipRRect(
+            borderRadius: const BorderRadius.only(topLeft: Radius.circular(16), topRight: Radius.circular(16)),
+            child: imageUrl.isNotEmpty
+                ? Image.network(
+                    imageUrl,
+                    height: 180,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                    errorBuilder: (_, __, ___) => _buildPlaceholderImage(context),
+                  )
+                : _buildPlaceholderImage(context),
           ),
           // Información de la receta
           Padding(
@@ -92,20 +102,25 @@ class RecipeCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Avocado Toast with Egg', style: AppTextStyles.heading3),
+                Text(title, style: AppTextStyles.heading3),
                 const SizedBox(height: 8),
                 Text(
-                  'A nutritious and delicious breakfast option to start your day right.',
+                  description,
                   style: AppTextStyles.bodyMedium.copyWith(height: 1.4),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
                 const SizedBox(height: 16),
                 Row(
                   children: [
-                    _buildInfoChip(icon: Icons.access_time, text: '10 min', color: const Color(0xFF00D4A3)),
-                    const SizedBox(width: 12),
-                    _buildInfoChip(icon: Icons.local_fire_department, text: '320 cal', color: const Color(0xFFFF6B6B)),
-                    const SizedBox(width: 12),
-                    _buildInfoChip(icon: Icons.star, text: '4.8', color: const Color(0xFFFFA726)),
+                    if (time.isNotEmpty)
+                      _buildInfoChip(icon: Icons.access_time, text: time, color: const Color(0xFF00D4A3)),
+                    if (time.isNotEmpty) const SizedBox(width: 12),
+                    if (calories.isNotEmpty)
+                      _buildInfoChip(icon: Icons.local_fire_department, text: calories, color: const Color(0xFFFF6B6B)),
+                    if (calories.isNotEmpty) const SizedBox(width: 12),
+                    if (rating > 0)
+                      _buildInfoChip(icon: Icons.star, text: rating.toStringAsFixed(1), color: const Color(0xFFFFA726)),
                   ],
                 ),
                 const SizedBox(height: 16),
@@ -113,7 +128,7 @@ class RecipeCard extends StatelessWidget {
                   width: double.infinity,
                   child: OutlinedButton(
                     onPressed: () {
-                      // Acción para ver la receta
+                      Navigator.pushNamed(context, '/plans');
                     },
                     style: OutlinedButton.styleFrom(
                       side: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2),
@@ -130,6 +145,17 @@ class RecipeCard extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildPlaceholderImage(BuildContext context) {
+    return Container(
+      height: 180,
+      width: double.infinity,
+      color: const Color(0xFFF3F4F6),
+      child: Center(
+        child: Icon(Icons.restaurant, size: 60, color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.3)),
       ),
     );
   }

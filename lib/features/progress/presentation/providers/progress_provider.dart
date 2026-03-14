@@ -1,14 +1,17 @@
-import 'package:flutter/material.dart';
+import 'package:fit_motiv/core/services/analytics_service.dart';
 import 'package:fit_motiv/features/progress/data/datasources/progress_supabase_datasource.dart';
+import 'package:flutter/material.dart';
 
 /// Provider que gestiona el progreso del usuario
 class ProgressProvider extends ChangeNotifier {
-  ProgressProvider({required ProgressSupabaseDatasource datasource})
-      : _datasource = datasource {
+  ProgressProvider({required ProgressSupabaseDatasource datasource, required AnalyticsService analyticsService})
+    : _datasource = datasource,
+      _analyticsService = analyticsService {
     loadAll();
   }
 
   final ProgressSupabaseDatasource _datasource;
+  final AnalyticsService _analyticsService;
 
   List<Map<String, dynamic>> _weightLog = [];
   List<Map<String, dynamic>> _goals = [];
@@ -75,6 +78,7 @@ class ProgressProvider extends ChangeNotifier {
   Future<bool> logWeight(double weight, {String notes = ''}) async {
     try {
       await _datasource.logWeight(weight, notes: notes);
+      _analyticsService.logWeightRegistered(weight);
       await loadAll();
       return true;
     } catch (e) {
@@ -109,6 +113,25 @@ class ProgressProvider extends ChangeNotifier {
         durationMinutes: durationMinutes,
         caloriesBurned: caloriesBurned,
       );
+      await loadAll();
+      return true;
+    } catch (e) {
+      _error = e.toString();
+      notifyListeners();
+      return false;
+    }
+  }
+
+  /// Crea una meta nueva en Supabase
+  Future<bool> createGoal({
+    required String title,
+    String description = '',
+    double targetValue = 0,
+    String unit = '',
+  }) async {
+    try {
+      await _datasource.createGoal(title: title, description: description, targetValue: targetValue, unit: unit);
+      _analyticsService.logGoalCreated(title);
       await loadAll();
       return true;
     } catch (e) {

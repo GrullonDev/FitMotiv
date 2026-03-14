@@ -3,6 +3,7 @@ import 'package:fit_motiv/constants/app_text_styles.dart';
 import 'package:fit_motiv/core/localization/locale_provider.dart';
 import 'package:fit_motiv/core/theme/theme_provider.dart';
 import 'package:fit_motiv/core/utils/responsive_utils.dart';
+import 'package:fit_motiv/features/plans/presentation/providers/plans_provider.dart';
 import 'package:fit_motiv/features/plans/presentation/widgets/nutrition_plan_card.dart';
 import 'package:fit_motiv/features/plans/presentation/widgets/recipe_card.dart';
 import 'package:flutter/material.dart';
@@ -62,75 +63,80 @@ class PlansScreen extends StatelessWidget {
   }
 
   Widget _buildMealPlansTab(BuildContext context, LocaleProvider l10n, Color primaryColor) {
+    final provider = context.watch<PlansProvider>();
     bool isMobile = Responsive.isMobile(context);
 
-    return SingleChildScrollView(
-      physics: const BouncingScrollPhysics(),
-      padding: EdgeInsets.all(isMobile ? 20 : 32),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(Icons.auto_awesome, color: primaryColor, size: isMobile ? 20 : 24),
-              const SizedBox(width: 8),
-              Text(
-                l10n.translate('personalized_meal_plans'),
-                style: isMobile ? AppTextStyles.heading4 : AppTextStyles.heading3,
-              ),
-            ],
-          ),
-          const SizedBox(height: 20),
-          if (isMobile) ...[
-            NutritionPlanCard(
-              title: l10n.translate('weight_loss_plan'),
-              description: l10n.translate('weight_loss_desc'),
-              calories: '1,500 - 1,800 kcal',
-              icon: Icons.restaurant,
-              badgeText: '7 ${l10n.translate('days')}',
-              imageUrl: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=500&auto=format&fit=crop',
-              isRecommended: true,
-            ),
-            const SizedBox(height: 16),
-            NutritionPlanCard(
-              title: l10n.translate('muscle_building'),
-              description: l10n.translate('muscle_building_desc'),
-              calories: '2,500 - 3,000 kcal',
-              icon: Icons.fitness_center,
-              badgeText: l10n.translate('advanced'),
-              imageUrl: 'https://images.unsplash.com/photo-1532384748853-8f54a8f476e2?q=80&w=500&auto=format&fit=crop',
-              isRecommended: false,
-            ),
-          ] else
+    if (provider.isLoading) {
+      return Center(child: CircularProgressIndicator(color: primaryColor));
+    }
+
+    final plans = provider.mealPlans;
+
+    return RefreshIndicator(
+      color: primaryColor,
+      onRefresh: () => provider.refreshAll(),
+      child: SingleChildScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        padding: EdgeInsets.all(isMobile ? 20 : 32),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
             Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Expanded(
-                  child: NutritionPlanCard(
-                    title: l10n.translate('weight_loss_plan'),
-                    description: l10n.translate('weight_loss_desc'),
-                    calories: '1,500 - 1,800 kcal',
-                    icon: Icons.restaurant,
-                    badgeText: '7 ${l10n.translate('days')}',
-                    imageUrl: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=500&auto=format&fit=crop',
-                    isRecommended: true,
-                  ),
-                ),
-                const SizedBox(width: 20),
-                Expanded(
-                  child: NutritionPlanCard(
-                    title: l10n.translate('muscle_building'),
-                    description: l10n.translate('muscle_building_desc'),
-                    calories: '2,500 - 3,000 kcal',
-                    icon: Icons.fitness_center,
-                    badgeText: l10n.translate('advanced'),
-                    imageUrl: 'https://images.unsplash.com/photo-1532384748853-8f54a8f476e2?q=80&w=500&auto=format&fit=crop',
-                    isRecommended: false,
-                  ),
+                Icon(Icons.auto_awesome, color: primaryColor, size: isMobile ? 20 : 24),
+                const SizedBox(width: 8),
+                Text(
+                  l10n.translate('personalized_meal_plans'),
+                  style: isMobile ? AppTextStyles.heading4 : AppTextStyles.heading3,
                 ),
               ],
             ),
-        ],
+            const SizedBox(height: 20),
+            if (plans.isEmpty)
+              _buildEmptyState(
+                context,
+                'No hay planes disponibles',
+                'Los planes de nutrición aparecerán aquí.',
+                Icons.restaurant_menu,
+              )
+            else if (isMobile)
+              ...plans.map(
+                (plan) => Padding(
+                  padding: const EdgeInsets.only(bottom: 16),
+                  child: NutritionPlanCard(
+                    title: plan['title'] as String? ?? '',
+                    description: plan['description'] as String? ?? '',
+                    calories: plan['calories'] as String? ?? '',
+                    icon: _getIconForString(plan['icon'] as String? ?? 'restaurant'),
+                    badgeText: plan['badge_text'] as String? ?? '',
+                    imageUrl: plan['image_url'] as String? ?? '',
+                    isRecommended: plan['is_recommended'] as bool? ?? false,
+                  ),
+                ),
+              )
+            else
+              Wrap(
+                spacing: 20,
+                runSpacing: 20,
+                children: plans
+                    .map(
+                      (plan) => SizedBox(
+                        width: (MediaQuery.of(context).size.width - 84) / 2,
+                        child: NutritionPlanCard(
+                          title: plan['title'] as String? ?? '',
+                          description: plan['description'] as String? ?? '',
+                          calories: plan['calories'] as String? ?? '',
+                          icon: _getIconForString(plan['icon'] as String? ?? 'restaurant'),
+                          badgeText: plan['badge_text'] as String? ?? '',
+                          imageUrl: plan['image_url'] as String? ?? '',
+                          isRecommended: plan['is_recommended'] as bool? ?? false,
+                        ),
+                      ),
+                    )
+                    .toList(),
+              ),
+          ],
+        ),
       ),
     );
   }
@@ -138,91 +144,101 @@ class PlansScreen extends StatelessWidget {
   Widget _buildRecipesTab(BuildContext context, LocaleProvider l10n, Color primaryColor) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final isMobile = Responsive.isMobile(context);
+    final provider = context.watch<PlansProvider>();
 
-    return Column(
-      children: [
-        // Search Bar
-        Padding(
-          padding: EdgeInsets.fromLTRB(isMobile ? 20 : 40, 20, isMobile ? 20 : 40, 10),
-          child: TextField(
-            decoration: InputDecoration(
-              hintText: l10n.translate('search_recipes'),
-              prefixIcon: const Icon(Icons.search),
-              filled: true,
-              fillColor: isDark ? Colors.white10 : Colors.white,
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: BorderSide.none),
-              contentPadding: const EdgeInsets.symmetric(vertical: 0),
+    if (provider.isLoading) {
+      return Center(child: CircularProgressIndicator(color: primaryColor));
+    }
+
+    final recipes = provider.filteredRecipes;
+    final categories = provider.availableCategories;
+
+    return RefreshIndicator(
+      color: primaryColor,
+      onRefresh: () => provider.refreshAll(),
+      child: Column(
+        children: [
+          // Search Bar
+          Padding(
+            padding: EdgeInsets.fromLTRB(isMobile ? 20 : 40, 20, isMobile ? 20 : 40, 10),
+            child: TextField(
+              decoration: InputDecoration(
+                hintText: l10n.translate('search_recipes'),
+                prefixIcon: const Icon(Icons.search),
+                filled: true,
+                fillColor: isDark ? Colors.white10 : Colors.white,
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: BorderSide.none),
+                contentPadding: const EdgeInsets.symmetric(vertical: 0),
+              ),
             ),
           ),
-        ),
 
-        // Category Chips
-        SizedBox(
-          height: 50,
-          child: ListView(
-            padding: EdgeInsets.symmetric(horizontal: isMobile ? 16 : 36),
-            scrollDirection: Axis.horizontal,
-            physics: const BouncingScrollPhysics(),
-            children: [
-              _buildFilterChip(l10n.translate('vegan'), true, primaryColor),
-              _buildFilterChip(l10n.translate('high_protein'), false, primaryColor),
-              _buildFilterChip(l10n.translate('fast'), false, primaryColor),
-              _buildFilterChip(l10n.translate('keto'), false, primaryColor),
-            ],
-          ),
-        ),
+          // Category Chips desde Supabase
+          if (categories.isNotEmpty)
+            SizedBox(
+              height: 50,
+              child: ListView(
+                padding: EdgeInsets.symmetric(horizontal: isMobile ? 16 : 36),
+                scrollDirection: Axis.horizontal,
+                physics: const BouncingScrollPhysics(),
+                children: categories
+                    .map(
+                      (cat) => _buildFilterChip(
+                        cat,
+                        provider.selectedCategory == cat,
+                        primaryColor,
+                        () => provider.selectCategory(cat),
+                      ),
+                    )
+                    .toList(),
+              ),
+            ),
 
-        Expanded(
-          child: GridView.count(
-            physics: const BouncingScrollPhysics(),
-            padding: EdgeInsets.all(isMobile ? 20 : 40),
-            crossAxisCount: isMobile ? 2 : 3,
-            mainAxisSpacing: 16,
-            crossAxisSpacing: 16,
-            childAspectRatio: isMobile ? 0.68 : 0.85,
-            children: [
-              RecipeCard(
-                title: l10n.translate('avocado_toast'),
-                time: '15 min',
-                calories: '320 kcal',
-                imageUrl:
-                    'https://images.unsplash.com/photo-1525351484163-7529414344d8?q=80&w=500&auto=format&fit=crop',
-              ),
-              RecipeCard(
-                title: l10n.translate('quinoa_salad'),
-                time: '20 min',
-                calories: '450 kcal',
-                imageUrl:
-                    'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=500&auto=format&fit=crop',
-              ),
-              RecipeCard(
-                title: l10n.translate('berry_smoothie'),
-                time: '5 min',
-                calories: '250 kcal',
-                imageUrl:
-                    'https://images.unsplash.com/photo-1553530666-ba11a7da3888?q=80&w=500&auto=format&fit=crop',
-              ),
-              RecipeCard(
-                title: l10n.translate('grilled_salmon'),
-                time: '25 min',
-                calories: '550 kcal',
-                imageUrl:
-                    'https://images.unsplash.com/photo-1467003909585-2f8a72700288?q=80&w=500&auto=format&fit=crop',
-              ),
-            ],
+          Expanded(
+            child: recipes.isEmpty
+                ? Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.restaurant_menu, size: 48, color: AppColors.textSecondary.withValues(alpha: 0.3)),
+                        const SizedBox(height: 12),
+                        Text('No hay recetas', style: AppTextStyles.bodyMedium),
+                      ],
+                    ),
+                  )
+                : GridView.builder(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    padding: EdgeInsets.all(isMobile ? 20 : 40),
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: isMobile ? 2 : 3,
+                      mainAxisSpacing: 16,
+                      crossAxisSpacing: 16,
+                      childAspectRatio: isMobile ? 0.68 : 0.85,
+                    ),
+                    itemCount: recipes.length,
+                    itemBuilder: (context, index) {
+                      final recipe = recipes[index];
+                      return RecipeCard(
+                        title: recipe['title'] as String? ?? '',
+                        time: recipe['time'] as String? ?? '',
+                        calories: recipe['calories'] as String? ?? '',
+                        imageUrl: recipe['image_url'] as String? ?? '',
+                      );
+                    },
+                  ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
-  Widget _buildFilterChip(String label, bool isSelected, Color primary) {
+  Widget _buildFilterChip(String label, bool isSelected, Color primary, VoidCallback onTap) {
     return Container(
       margin: const EdgeInsets.only(right: 8, top: 4, bottom: 4),
       child: FilterChip(
         label: Text(label),
         selected: isSelected,
-        onSelected: (v) {},
+        onSelected: (_) => onTap(),
         backgroundColor: Colors.transparent,
         selectedColor: primary.withValues(alpha: 0.2),
         checkmarkColor: primary,
@@ -237,63 +253,94 @@ class PlansScreen extends StatelessWidget {
 
   Widget _buildTipsTab(BuildContext context, LocaleProvider l10n) {
     final primaryColor = context.watch<ThemeProvider>().primaryColor;
+    final provider = context.watch<PlansProvider>();
 
-    return SingleChildScrollView(
-      physics: const BouncingScrollPhysics(),
-      padding: const EdgeInsets.all(20),
+    if (provider.isLoading) {
+      return Center(child: CircularProgressIndicator(color: primaryColor));
+    }
+
+    return RefreshIndicator(
+      color: primaryColor,
+      onRefresh: () => provider.refreshAll(),
+      child: SingleChildScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Carrusel - Sabías que? — desde Supabase
+            Text(l10n.translate('did_you_know'), style: AppTextStyles.heading4),
+            const SizedBox(height: 16),
+            if (provider.tips.isEmpty)
+              _buildEmptyState(context, 'Sin tips', 'Los tips nutricionales aparecerán aquí.', Icons.lightbulb_outline)
+            else
+              SizedBox(
+                height: 190,
+                child: PageView(
+                  physics: const BouncingScrollPhysics(),
+                  children: provider.tips.map((tip) {
+                    final color = _parseColor(tip['color'] as String? ?? '#3B82F6');
+                    return _buildMythCard(
+                      context,
+                      tip['title'] as String? ?? '',
+                      tip['description'] as String? ?? '',
+                      color,
+                      primaryColor,
+                    );
+                  }).toList(),
+                ),
+              ),
+
+            const SizedBox(height: 32),
+
+            // Water Calculator — persistido en Supabase
+            Text(l10n.translate('water_tracker'), style: AppTextStyles.heading4),
+            const SizedBox(height: 16),
+            _WaterTrackerWidget(provider: provider),
+
+            const SizedBox(height: 32),
+
+            // Articles — desde Supabase
+            Text(l10n.translate('recommended_articles'), style: AppTextStyles.heading4),
+            const SizedBox(height: 16),
+            if (provider.articles.isEmpty)
+              _buildEmptyState(
+                context,
+                'Sin artículos',
+                'Los artículos recomendados aparecerán aquí.',
+                Icons.article_outlined,
+              )
+            else
+              ...provider.articles.map(
+                (article) => _buildArticleTile(
+                  article['title'] as String? ?? '',
+                  article['subtitle'] as String? ?? '',
+                  article['read_time'] as String? ?? '',
+                ),
+              ),
+            const SizedBox(height: 80),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildEmptyState(BuildContext context, String title, String subtitle, IconData icon) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        color: Theme.of(context).cardTheme.color ?? Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 8, offset: const Offset(0, 2))],
+      ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Carrusel - Sabías que?
-          Text(l10n.translate('did_you_know'), style: AppTextStyles.heading4),
-          const SizedBox(height: 16),
-          SizedBox(
-            height: 190,
-            child: PageView(
-              physics: const BouncingScrollPhysics(),
-              children: [
-                _buildMythCard(
-                  context,
-                  'Mito: Los carbohidratos después de las 6 PM engordan.',
-                  'Realidad: El balance calórico total del día es lo que importa.',
-                  const Color(0xFF3B82F6),
-                  primaryColor,
-                ),
-                _buildMythCard(
-                  context,
-                  'Mito: Beber agua con limón quema grasa.',
-                  'Realidad: El agua con limón hidrata, pero no tiene propiedades quema grasa.',
-                  const Color(0xFFF59E0B),
-                  primaryColor,
-                ),
-              ],
-            ),
-          ),
-
-          const SizedBox(height: 32),
-
-          // Water Calculator
-          Text(l10n.translate('water_tracker'), style: AppTextStyles.heading4),
-          const SizedBox(height: 16),
-          const _WaterTrackerWidget(),
-
-          const SizedBox(height: 32),
-
-          // Articles
-          Text(l10n.translate('recommended_articles'), style: AppTextStyles.heading4),
-          const SizedBox(height: 16),
-          _buildArticleTile(
-            'Cómo leer etiquetas nutricionales',
-            'Aprende a diferenciar el marketing de la realidad.',
-            '5 ${l10n.translate('read_time')}',
-          ),
-          _buildArticleTile(
-            'La importancia de la hidratación',
-            'Por qué el agua es tu mejor aliada en el gym.',
-            '4 ${l10n.translate('read_time')}',
-          ),
-          _buildArticleTile('Mejores snacks pre-entreno', 'Energía real para tus músculos.', '3 ${l10n.translate('read_time')}'),
-          const SizedBox(height: 80), // Added bottom padding to ensure final card is visible
+          Icon(icon, size: 40, color: AppColors.textSecondary.withValues(alpha: 0.4)),
+          const SizedBox(height: 12),
+          Text(title, style: AppTextStyles.bodyMedium.copyWith(fontWeight: FontWeight.w600)),
+          const SizedBox(height: 4),
+          Text(subtitle, style: AppTextStyles.bodySmall, textAlign: TextAlign.center),
         ],
       ),
     );
@@ -312,9 +359,7 @@ class PlansScreen extends StatelessWidget {
           colors: [color.withValues(alpha: 0.8), color],
         ),
         borderRadius: BorderRadius.circular(24),
-        boxShadow: [
-          BoxShadow(color: color.withValues(alpha: 0.3), blurRadius: 10, offset: const Offset(0, 4)),
-        ],
+        boxShadow: [BoxShadow(color: color.withValues(alpha: 0.3), blurRadius: 10, offset: const Offset(0, 4))],
       ),
       child: Stack(
         children: [
@@ -327,10 +372,18 @@ class PlansScreen extends StatelessWidget {
                 const SizedBox(height: 12),
                 Text(
                   title,
-                  style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 16, letterSpacing: 0.3),
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w900,
+                    fontSize: 16,
+                    letterSpacing: 0.3,
+                  ),
                 ),
                 const SizedBox(height: 6),
-                Text(description, style: TextStyle(color: Colors.white.withValues(alpha: 0.9), fontSize: 13, height: 1.4)),
+                Text(
+                  description,
+                  style: TextStyle(color: Colors.white.withValues(alpha: 0.9), fontSize: 13, height: 1.4),
+                ),
               ],
             ),
           ),
@@ -338,9 +391,7 @@ class PlansScreen extends StatelessWidget {
             right: 0,
             bottom: 0,
             child: IconButton(
-              onPressed: () {
-                // Future: Add Share logic
-              },
+              onPressed: () {},
               style: IconButton.styleFrom(
                 backgroundColor: Colors.white12,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -393,25 +444,44 @@ class PlansScreen extends StatelessWidget {
       ),
     );
   }
+
+  Color _parseColor(String hex) {
+    try {
+      return Color(int.parse(hex.replaceFirst('#', '0xFF')));
+    } catch (_) {
+      return const Color(0xFF3B82F6);
+    }
+  }
+
+  IconData _getIconForString(String iconName) {
+    switch (iconName.toLowerCase()) {
+      case 'restaurant':
+        return Icons.restaurant;
+      case 'fitness_center':
+        return Icons.fitness_center;
+      case 'eco':
+        return Icons.eco;
+      case 'local_fire_department':
+        return Icons.local_fire_department;
+      default:
+        return Icons.restaurant;
+    }
+  }
 }
 
-class _WaterTrackerWidget extends StatefulWidget {
-  const _WaterTrackerWidget();
-
-  @override
-  State<_WaterTrackerWidget> createState() => _WaterTrackerWidgetState();
-}
-
-class _WaterTrackerWidgetState extends State<_WaterTrackerWidget> {
-  int glassesValue = 0;
+/// Water Tracker conectado a Supabase (persiste los vasos)
+class _WaterTrackerWidget extends StatelessWidget {
+  const _WaterTrackerWidget({required this.provider});
+  final PlansProvider provider;
 
   @override
   Widget build(BuildContext context) {
     final l10n = context.watch<LocaleProvider>();
     final primaryColor = context.watch<ThemeProvider>().primaryColor;
 
+    final glassesValue = provider.todayWaterGlasses;
     bool isComplete = glassesValue >= 8;
-    
+
     return AnimatedContainer(
       duration: const Duration(milliseconds: 500),
       padding: const EdgeInsets.all(24),
@@ -450,13 +520,7 @@ class _WaterTrackerWidgetState extends State<_WaterTrackerWidget> {
                 ],
               ),
               IconButton.filled(
-                onPressed: () {
-                  setState(() {
-                    if (glassesValue < 20) {
-                      glassesValue++;
-                    }
-                  });
-                },
+                onPressed: () => provider.addWaterGlass(),
                 style: IconButton.styleFrom(
                   backgroundColor: isComplete ? Colors.green : primaryColor,
                   padding: const EdgeInsets.all(12),
@@ -476,7 +540,9 @@ class _WaterTrackerWidgetState extends State<_WaterTrackerWidget> {
                 curve: Curves.elasticOut,
                 child: Icon(
                   isDrunk ? Icons.water_drop : Icons.water_drop_outlined,
-                  color: isDrunk ? (isComplete ? Colors.green : Colors.blue) : AppColors.textSecondary.withValues(alpha: 0.3),
+                  color: isDrunk
+                      ? (isComplete ? Colors.green : Colors.blue)
+                      : AppColors.textSecondary.withValues(alpha: 0.3),
                   size: 30,
                 ),
               );

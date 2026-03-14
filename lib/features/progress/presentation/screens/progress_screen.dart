@@ -1,11 +1,11 @@
-import 'package:fit_motiv/features/progress/presentation/providers/progress_provider.dart';
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:fl_chart/fl_chart.dart';
-import 'package:intl/intl.dart';
 import 'package:fit_motiv/constants/app_colors.dart';
 import 'package:fit_motiv/constants/app_text_styles.dart';
 import 'package:fit_motiv/core/localization/locale_provider.dart';
+import 'package:fit_motiv/features/progress/presentation/providers/progress_provider.dart';
+import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class ProgressScreen extends StatefulWidget {
   const ProgressScreen({super.key});
@@ -20,10 +20,7 @@ class _ProgressScreenState extends State<ProgressScreen> with SingleTickerProvid
   @override
   void initState() {
     super.initState();
-    _rotationController = AnimationController(
-      duration: const Duration(seconds: 1),
-      vsync: this,
-    );
+    _rotationController = AnimationController(duration: const Duration(seconds: 1), vsync: this);
   }
 
   @override
@@ -47,10 +44,7 @@ class _ProgressScreenState extends State<ProgressScreen> with SingleTickerProvid
       length: 3,
       child: Scaffold(
         appBar: AppBar(
-          title: Text(
-            context.watch<LocaleProvider>().translate('progress'),
-            style: AppTextStyles.heading3,
-          ),
+          title: Text(context.watch<LocaleProvider>().translate('progress'), style: AppTextStyles.heading3),
           centerTitle: true,
           actions: [
             RotationTransition(
@@ -98,10 +92,8 @@ class _ProgressScreenState extends State<ProgressScreen> with SingleTickerProvid
   void _showActionSheet(BuildContext context, ProgressProvider provider) {
     showModalBottomSheet(
       context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (context) => Container(
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+      builder: (ctx) => Container(
         padding: const EdgeInsets.all(24),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -112,20 +104,124 @@ class _ProgressScreenState extends State<ProgressScreen> with SingleTickerProvid
               leading: const Icon(Icons.monitor_weight_outlined, color: Color(0xFF4ECDC4)),
               title: const Text('Registrar Peso'),
               onTap: () {
-                Navigator.pop(context);
-                // Mostrar diálogo de peso
+                Navigator.pop(ctx);
+                _showWeightDialog(context, provider);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.flag_outlined, color: Colors.orange),
+              title: const Text('Nueva Meta'),
+              onTap: () {
+                Navigator.pop(ctx);
+                _showGoalDialog(context, provider);
               },
             ),
             ListTile(
               leading: const Icon(Icons.fitness_center, color: Colors.blue),
-              title: const Text('Nueva Sesión'),
+              title: const Text('Ir a Rutinas'),
               onTap: () {
-                Navigator.pop(context);
-                // Ir a rutinas
+                Navigator.pop(ctx);
+                // Navigate to routines tab using bottom navigation
+                DefaultTabController.of(context).animateTo(1);
               },
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  void _showWeightDialog(BuildContext context, ProgressProvider provider) {
+    final controller = TextEditingController();
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Registrar Peso'),
+        content: TextField(
+          controller: controller,
+          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+          decoration: InputDecoration(
+            hintText: 'Peso en lbs',
+            suffixText: 'lbs',
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+          ),
+          autofocus: true,
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancelar')),
+          ElevatedButton(
+            onPressed: () async {
+              final weight = double.tryParse(controller.text.trim());
+              if (weight != null && weight > 0) {
+                Navigator.pop(ctx);
+                final success = await provider.logWeight(weight);
+                if (success && context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('✅ Peso registrado')));
+                }
+              }
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Theme.of(context).colorScheme.primary,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            ),
+            child: const Text('Guardar', style: TextStyle(color: Colors.white)),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showGoalDialog(BuildContext context, ProgressProvider provider) {
+    final titleController = TextEditingController();
+    final descController = TextEditingController();
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Nueva Meta'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: titleController,
+              decoration: InputDecoration(
+                hintText: 'Nombre de la meta',
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+              ),
+              autofocus: true,
+            ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: descController,
+              decoration: InputDecoration(
+                hintText: 'Descripción (opcional)',
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+              ),
+              maxLines: 2,
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancelar')),
+          ElevatedButton(
+            onPressed: () async {
+              if (titleController.text.trim().isNotEmpty) {
+                Navigator.pop(ctx);
+                final success = await provider.createGoal(
+                  title: titleController.text.trim(),
+                  description: descController.text.trim(),
+                );
+                if (success && context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('✅ Meta creada')));
+                }
+              }
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Theme.of(context).colorScheme.primary,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            ),
+            child: const Text('Crear', style: TextStyle(color: Colors.white)),
+          ),
+        ],
       ),
     );
   }
@@ -309,10 +405,7 @@ class _WeightTab extends StatelessWidget {
           const SizedBox(height: 40),
           Container(
             padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: AppColors.textSecondary.withValues(alpha: 0.05),
-              shape: BoxShape.circle,
-            ),
+            decoration: BoxDecoration(color: AppColors.textSecondary.withValues(alpha: 0.05), shape: BoxShape.circle),
             child: Icon(icon, size: 64, color: AppColors.textSecondary.withValues(alpha: 0.2)),
           ),
           const SizedBox(height: 16),
@@ -346,9 +439,33 @@ class _GoalsTab extends StatelessWidget {
             child: ListView(
               scrollDirection: Axis.horizontal,
               children: [
-                _SuggestedGoalCard(title: 'Bajar de peso', icon: Icons.trending_down, color: Colors.blue),
-                _SuggestedGoalCard(title: 'Ganar músculo', icon: Icons.fitness_center, color: Colors.orange),
-                _SuggestedGoalCard(title: 'Mantenerse', icon: Icons.accessibility_new, color: Colors.green),
+                _SuggestedGoalCard(
+                  title: 'Bajar de peso',
+                  icon: Icons.trending_down,
+                  color: Colors.blue,
+                  onTap: () => provider.createGoal(
+                    title: 'Bajar de peso',
+                    description: 'Reducir mi peso corporal de forma saludable.',
+                  ),
+                ),
+                _SuggestedGoalCard(
+                  title: 'Ganar músculo',
+                  icon: Icons.fitness_center,
+                  color: Colors.orange,
+                  onTap: () => provider.createGoal(
+                    title: 'Ganar músculo',
+                    description: 'Aumentar mi masa muscular con entrenamiento de fuerza.',
+                  ),
+                ),
+                _SuggestedGoalCard(
+                  title: 'Mantenerse',
+                  icon: Icons.accessibility_new,
+                  color: Colors.green,
+                  onTap: () => provider.createGoal(
+                    title: 'Mantenerse activo',
+                    description: 'Mantener una rutina regular de ejercicios.',
+                  ),
+                ),
               ],
             ),
           ),
@@ -357,12 +474,7 @@ class _GoalsTab extends StatelessWidget {
           Text('Mis Metas', style: AppTextStyles.heading4),
           const SizedBox(height: 12),
           if (provider.goals.isEmpty)
-            _buildEmptyState(
-              context,
-              'Sin metas',
-              'Establece objetivos para medir tu progreso.',
-              Icons.flag_outlined,
-            )
+            _buildEmptyState(context, 'Sin metas', 'Establece objetivos para medir tu progreso.', Icons.flag_outlined)
           else
             ...provider.goals.map((goal) {
               return _GoalCard(goal: goal, provider: provider);
@@ -408,9 +520,7 @@ class _StatBox extends StatelessWidget {
       decoration: BoxDecoration(
         color: Theme.of(context).cardTheme.color ?? Colors.white,
         borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10, offset: const Offset(0, 4)),
-        ],
+        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10, offset: const Offset(0, 4))],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -489,7 +599,9 @@ class _WeeklyActivityChart extends StatelessWidget {
               barRods: [
                 BarChartRodData(
                   toY: dayCounts[i].toDouble(),
-                  color: dayCounts[i] > 0 ? Theme.of(context).colorScheme.primary : AppColors.textSecondary.withValues(alpha: 0.1),
+                  color: dayCounts[i] > 0
+                      ? Theme.of(context).colorScheme.primary
+                      : AppColors.textSecondary.withValues(alpha: 0.1),
                   width: 14,
                   borderRadius: const BorderRadius.vertical(top: Radius.circular(4)),
                 ),
@@ -576,33 +688,37 @@ class _WeightTrendChart extends StatelessWidget {
 }
 
 class _SuggestedGoalCard extends StatelessWidget {
-  const _SuggestedGoalCard({required this.title, required this.icon, required this.color});
+  const _SuggestedGoalCard({required this.title, required this.icon, required this.color, this.onTap});
   final String title;
   final IconData icon;
   final Color color;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 140,
-      margin: const EdgeInsets.only(right: 12),
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.05),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: color.withValues(alpha: 0.1)),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(icon, color: color, size: 28),
-          const SizedBox(height: 8),
-          Text(
-            title,
-            style: AppTextStyles.bodySmall.copyWith(fontWeight: FontWeight.bold, color: color),
-            textAlign: TextAlign.center,
-          ),
-        ],
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: 140,
+        margin: const EdgeInsets.only(right: 12),
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: color.withValues(alpha: 0.05),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: color.withValues(alpha: 0.1)),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, color: color, size: 28),
+            const SizedBox(height: 8),
+            Text(
+              title,
+              style: AppTextStyles.bodySmall.copyWith(fontWeight: FontWeight.bold, color: color),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -618,7 +734,7 @@ class _GoalCard extends StatelessWidget {
     final isCompleted = goal['is_completed'] as bool? ?? false;
     final title = goal['title'] as String? ?? '';
     final description = goal['description'] as String? ?? '';
-    
+
     // Simular progreso para demostración (Task 8)
     double progress = isCompleted ? 1.0 : 0.45;
     String progressText = isCompleted ? "Meta alcanzada" : "Llevas 5 lbs de 20 lbs";
@@ -639,7 +755,9 @@ class _GoalCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: (isCompleted ? AppColors.success : Theme.of(context).colorScheme.primary).withValues(alpha: 0.1),
+                  color: (isCompleted ? AppColors.success : Theme.of(context).colorScheme.primary).withValues(
+                    alpha: 0.1,
+                  ),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Icon(
@@ -748,7 +866,7 @@ class _SessionCard extends StatelessWidget {
                 Text(name, style: AppTextStyles.bodyMedium.copyWith(fontWeight: FontWeight.bold)),
                 const SizedBox(height: 4),
                 Text(
-                  '${duration} min • ${calories} cal ${timeAgo.isNotEmpty ? "• $timeAgo" : ""}',
+                  '$duration min • $calories cal ${timeAgo.isNotEmpty ? "• $timeAgo" : ""}',
                   style: AppTextStyles.bodySmall,
                 ),
               ],
@@ -770,7 +888,7 @@ class _WeightEntry extends StatelessWidget {
   Widget build(BuildContext context) {
     final weight = (entry['weight'] as num?)?.toDouble() ?? 0;
     final recordedAt = entry['recorded_at'] as String? ?? '';
-    
+
     double? diff;
     if (previousEntry != null) {
       final prevWeight = (previousEntry!['weight'] as num).toDouble();

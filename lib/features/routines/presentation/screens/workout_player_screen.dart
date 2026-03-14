@@ -10,14 +10,9 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 class WorkoutPlayerScreen extends StatefulWidget {
+  const WorkoutPlayerScreen({super.key, required this.exercises, required this.routineTitle});
   final List<Exercise> exercises;
   final String routineTitle;
-
-  const WorkoutPlayerScreen({
-    super.key,
-    required this.exercises,
-    required this.routineTitle,
-  });
 
   @override
   State<WorkoutPlayerScreen> createState() => _WorkoutPlayerScreenState();
@@ -28,7 +23,7 @@ class _WorkoutPlayerScreenState extends State<WorkoutPlayerScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<WorkoutSessionProvider>().startWorkout(widget.exercises);
+      context.read<WorkoutSessionProvider>().startWorkout(widget.exercises, workoutName: widget.routineTitle);
     });
   }
 
@@ -55,10 +50,7 @@ class _WorkoutPlayerScreenState extends State<WorkoutPlayerScreen> {
         backgroundColor: isRest ? const Color(0xFFE8F5E9) : null,
         title: Text(isRest ? lp.translate('rest') : widget.routineTitle, style: AppTextStyles.heading4),
         centerTitle: true,
-        leading: IconButton(
-          icon: const Icon(Icons.close),
-          onPressed: () => _confirmExit(context, lp),
-        ),
+        leading: IconButton(icon: const Icon(Icons.close), onPressed: () => _confirmExit(context, lp)),
       ),
       body: Column(
         children: [
@@ -68,9 +60,9 @@ class _WorkoutPlayerScreenState extends State<WorkoutPlayerScreen> {
             color: isRest ? Colors.green : Theme.of(context).colorScheme.primary,
           ),
           Expanded(
-            child: isTablet 
-              ? _buildTabletLayout(context, session, currentExercise, isRest, lp)
-              : _buildMobileLayout(context, session, currentExercise, isRest, lp),
+            child: isTablet
+                ? _buildTabletLayout(context, session, currentExercise, isRest, lp)
+                : _buildMobileLayout(context, session, currentExercise, isRest, lp),
           ),
           _buildControls(context, session),
         ],
@@ -78,7 +70,13 @@ class _WorkoutPlayerScreenState extends State<WorkoutPlayerScreen> {
     );
   }
 
-  Widget _buildMobileLayout(BuildContext context, WorkoutSessionProvider session, Exercise currentExercise, bool isRest, LocaleProvider lp) {
+  Widget _buildMobileLayout(
+    BuildContext context,
+    WorkoutSessionProvider session,
+    Exercise currentExercise,
+    bool isRest,
+    LocaleProvider lp,
+  ) {
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
       child: Column(
@@ -94,15 +92,18 @@ class _WorkoutPlayerScreenState extends State<WorkoutPlayerScreen> {
     );
   }
 
-  Widget _buildTabletLayout(BuildContext context, WorkoutSessionProvider session, Exercise currentExercise, bool isRest, LocaleProvider lp) {
+  Widget _buildTabletLayout(
+    BuildContext context,
+    WorkoutSessionProvider session,
+    Exercise currentExercise,
+    bool isRest,
+    LocaleProvider lp,
+  ) {
     return Padding(
       padding: const EdgeInsets.all(40),
       child: Row(
         children: [
-          Expanded(
-            flex: 1,
-            child: _buildExerciseVisual(context, currentExercise, isRest, size: 300),
-          ),
+          Expanded(flex: 1, child: _buildExerciseVisual(context, currentExercise, isRest, size: 300)),
           const SizedBox(width: 40),
           Expanded(
             flex: 1,
@@ -136,7 +137,13 @@ class _WorkoutPlayerScreenState extends State<WorkoutPlayerScreen> {
     );
   }
 
-  Widget _buildExerciseInfo(BuildContext context, WorkoutSessionProvider session, Exercise currentExercise, bool isRest, LocaleProvider lp) {
+  Widget _buildExerciseInfo(
+    BuildContext context,
+    WorkoutSessionProvider session,
+    Exercise currentExercise,
+    bool isRest,
+    LocaleProvider lp,
+  ) {
     return Column(
       children: [
         Text(
@@ -176,7 +183,13 @@ class _WorkoutPlayerScreenState extends State<WorkoutPlayerScreen> {
     );
   }
 
-  Widget _buildTimerProgress(BuildContext context, WorkoutSessionProvider session, bool isRest, Exercise currentExercise, LocaleProvider lp) {
+  Widget _buildTimerProgress(
+    BuildContext context,
+    WorkoutSessionProvider session,
+    bool isRest,
+    Exercise currentExercise,
+    LocaleProvider lp,
+  ) {
     return Stack(
       alignment: Alignment.center,
       children: [
@@ -204,10 +217,7 @@ class _WorkoutPlayerScreenState extends State<WorkoutPlayerScreen> {
             ),
             Text(
               currentExercise.isTimeBased || isRest ? lp.translate('sec') : lp.translate('pace'),
-              style: AppTextStyles.bodySmall.copyWith(
-                fontWeight: FontWeight.bold,
-                letterSpacing: 2,
-              ),
+              style: AppTextStyles.bodySmall.copyWith(fontWeight: FontWeight.bold, letterSpacing: 2),
             ),
           ],
         ),
@@ -227,10 +237,7 @@ class _WorkoutPlayerScreenState extends State<WorkoutPlayerScreen> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Text('${lp.translate('next')}: ', style: AppTextStyles.bodySmall.copyWith(fontWeight: FontWeight.bold)),
-          Text(
-            session.exercises[session.currentIndex + 1].name,
-            style: AppTextStyles.bodySmall,
-          ),
+          Text(session.exercises[session.currentIndex + 1].name, style: AppTextStyles.bodySmall),
         ],
       ),
     );
@@ -243,11 +250,7 @@ class _WorkoutPlayerScreenState extends State<WorkoutPlayerScreen> {
         color: Colors.white,
         borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
         boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, -5),
-          )
+          BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10, offset: const Offset(0, -5)),
         ],
       ),
       child: Row(
@@ -265,10 +268,7 @@ class _WorkoutPlayerScreenState extends State<WorkoutPlayerScreen> {
             child: Container(
               width: 80,
               height: 80,
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.primary,
-                shape: BoxShape.circle,
-              ),
+              decoration: BoxDecoration(color: Theme.of(context).colorScheme.primary, shape: BoxShape.circle),
               child: Icon(
                 session.state == WorkoutState.paused ? Icons.play_arrow : Icons.pause,
                 color: Colors.white,
@@ -276,26 +276,16 @@ class _WorkoutPlayerScreenState extends State<WorkoutPlayerScreen> {
               ),
             ),
           ),
-          IconButton(
-            onPressed: () => session.nextExercise(),
-            icon: const Icon(Icons.skip_next, size: 32),
-          ),
+          IconButton(onPressed: () => session.nextExercise(), icon: const Icon(Icons.skip_next, size: 32)),
         ],
       ),
     );
   }
 
   Widget _buildCompletionScreen(BuildContext context, LocaleProvider lp) {
-    final session = context.read<WorkoutSessionProvider>();
-    
-    // Log workout session once
+    // Refrescar el ProgressProvider para que muestre la nueva sesión
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<ProgressProvider>().logWorkoutSession(
-        workoutId: 'manual',
-        workoutName: widget.routineTitle,
-        durationMinutes: session.totalDurationMinutes > 0 ? session.totalDurationMinutes : 1,
-        caloriesBurned: (session.totalDurationMinutes > 0 ? session.totalDurationMinutes : 1) * 7,
-      );
+      context.read<ProgressProvider>().refreshAll();
     });
 
     return Scaffold(
@@ -309,11 +299,7 @@ class _WorkoutPlayerScreenState extends State<WorkoutPlayerScreen> {
               const SizedBox(height: 24),
               Text(lp.translate('completed'), style: AppTextStyles.heading1),
               const SizedBox(height: 16),
-              Text(
-                'Great job! You finished the workout.',
-                style: AppTextStyles.bodyLarge,
-                textAlign: TextAlign.center,
-              ),
+              Text('Great job! You finished the workout.', style: AppTextStyles.bodyLarge, textAlign: TextAlign.center),
               const SizedBox(height: 40),
               ElevatedButton(
                 onPressed: () => Navigator.pop(context),
@@ -339,10 +325,7 @@ class _WorkoutPlayerScreenState extends State<WorkoutPlayerScreen> {
         title: Text(lp.translate('quit_workout')),
         content: Text(lp.translate('quit_workout_confirm')),
         actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(lp.translate('continue')),
-          ),
+          TextButton(onPressed: () => Navigator.pop(context), child: Text(lp.translate('continue'))),
           TextButton(
             onPressed: () {
               Navigator.pop(context); // Close dialog

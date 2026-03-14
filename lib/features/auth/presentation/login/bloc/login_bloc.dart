@@ -1,12 +1,16 @@
+import 'package:fit_motiv/core/services/analytics_service.dart';
 import 'package:fit_motiv/core/utils/snackbar_service.dart';
 import 'package:fit_motiv/features/auth/data/model/request/login_request.dart';
 import 'package:fit_motiv/features/auth/domain/repositories/auth_repository.dart';
 import 'package:flutter/material.dart';
 
 class LoginBloc extends ChangeNotifier {
-  LoginBloc({required AuthRepository authRepository}) : _authRepository = authRepository;
+  LoginBloc({required AuthRepository authRepository, required AnalyticsService analyticsService})
+    : _authRepository = authRepository,
+      _analyticsService = analyticsService;
 
   final AuthRepository _authRepository;
+  final AnalyticsService _analyticsService;
 
   // Controllers para los campos del formulario
   final TextEditingController usernameController = TextEditingController();
@@ -67,8 +71,7 @@ class LoginBloc extends ChangeNotifier {
 
           // Detectar si es error de email no confirmado
           if (failure.message.toLowerCase().contains('email') &&
-              (failure.message.toLowerCase().contains('confirm') ||
-               failure.message.toLowerCase().contains('verify'))) {
+              (failure.message.toLowerCase().contains('confirm') || failure.message.toLowerCase().contains('verify'))) {
             _isEmailNotConfirmed = true;
             _errorMessage = 'Please verify your email before signing in. Check your inbox for a confirmation link.';
             SnackBarService.showWarning(_errorMessage!);
@@ -89,6 +92,7 @@ class LoginBloc extends ChangeNotifier {
           } else {
             _loginData = response;
             _successMessage = 'Login successful! Welcome back.';
+            _analyticsService.logLogin('email');
             SnackBarService.showSuccess('Login successful! Welcome back.');
           }
 

@@ -1,11 +1,13 @@
 import 'package:fit_motiv/constants/app_colors.dart';
 import 'package:fit_motiv/constants/app_text_styles.dart';
+import 'package:fit_motiv/core/di/injection_container.dart';
 import 'package:fit_motiv/core/localization/locale_provider.dart';
+import 'package:fit_motiv/core/services/analytics_service.dart';
 import 'package:fit_motiv/core/theme/theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class RecipeDetailScreen extends StatelessWidget {
+class RecipeDetailScreen extends StatefulWidget {
   const RecipeDetailScreen({
     super.key,
     required this.title,
@@ -20,7 +22,22 @@ class RecipeDetailScreen extends StatelessWidget {
   final String time;
 
   @override
+  State<RecipeDetailScreen> createState() => _RecipeDetailScreenState();
+}
+
+class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
+  @override
+  void initState() {
+    super.initState();
+    sl.get<AnalyticsService>().logRecipeViewed(widget.title);
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final title = widget.title;
+    final imageUrl = widget.imageUrl;
+    final calories = widget.calories;
+    final time = widget.time;
     final l10n = context.watch<LocaleProvider>();
     final primaryColor = context.watch<ThemeProvider>().primaryColor;
     final isDark = Theme.of(context).brightness == Brightness.dark;

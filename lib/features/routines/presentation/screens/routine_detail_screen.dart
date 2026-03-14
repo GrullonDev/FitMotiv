@@ -3,6 +3,7 @@ import 'package:fit_motiv/constants/app_text_styles.dart';
 import 'package:fit_motiv/core/localization/locale_provider.dart';
 import 'package:fit_motiv/core/utils/responsive_utils.dart';
 import 'package:fit_motiv/features/routines/domain/entities/exercise.dart';
+import 'package:fit_motiv/features/routines/presentation/providers/workout_provider.dart';
 import 'package:fit_motiv/features/routines/presentation/screens/workout_player_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -33,11 +34,74 @@ class RoutineDetailScreen extends StatefulWidget {
 
 class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
   int _selectedDuration = 70; // Default 70s as requested
+  List<Map<String, dynamic>> _dbExercises = [];
+  bool _loadingExercises = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadExercisesFromSupabase();
+  }
+
+  Future<void> _loadExercisesFromSupabase() async {
+    final provider = context.read<WorkoutProvider>();
+    final exercises = await provider.loadExercises(widget.id);
+    if (mounted) {
+      setState(() {
+        _dbExercises = exercises;
+        _loadingExercises = false;
+      });
+    }
+  }
+
+  /// Genera la lista de Exercise entities para el player.
+  /// Si hay ejercicios en DB, usa esos. Si no, genera fallback.
+  List<Exercise> _buildExerciseList() {
+    if (_dbExercises.isNotEmpty) {
+      return _dbExercises
+          .map(
+            (e) => Exercise(
+              id: e['id'] as String? ?? '',
+              name: e['name'] as String? ?? 'Exercise',
+              category: e['category'] as String? ?? widget.category,
+              seconds: e['seconds'] as int? ?? _selectedDuration,
+              reps: e['reps'] as int?,
+              description: e['description'] as String? ?? 'Focus on your form.',
+            ),
+          )
+          .toList();
+    }
+
+    // Fallback: generar ejercicios demo si la DB no tiene
+    return List.generate(
+      widget.exerciseCount,
+      (index) => Exercise(
+        id: 'ex_$index',
+        name: [
+          'Push Ups',
+          'Squats',
+          'Plank',
+          'Lunges',
+          'Jumping Jacks',
+          'Burpees',
+          'Mountain Climbers',
+          'Crunches',
+          'Dips',
+          'Deadlift',
+        ][index % 10],
+        category: widget.category,
+        seconds: _selectedDuration,
+        reps: null,
+        description: 'Focus on your form and keep a steady pace.',
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     final lp = context.read<LocaleProvider>();
     final isTablet = Responsive.isTablet(context);
+    final exerciseCount = _dbExercises.isNotEmpty ? _dbExercises.length : widget.exerciseCount;
 
     if (isTablet) {
       return Scaffold(
@@ -75,7 +139,7 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
                   Padding(
                     padding: const EdgeInsets.all(32),
                     child: Text(
-                      '${lp.translate('exercises').toUpperCase()} (${widget.exerciseCount})',
+                      '${lp.translate('exercises').toUpperCase()} ($exerciseCount)',
                       style: AppTextStyles.bodySmall.copyWith(
                         fontWeight: FontWeight.bold,
                         letterSpacing: 1.2,
@@ -84,11 +148,18 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
                     ),
                   ),
                   Expanded(
-                    child: ListView.builder(
-                      padding: const EdgeInsets.symmetric(horizontal: 12),
-                      itemCount: widget.exerciseCount,
-                      itemBuilder: (context, index) => _ExerciseTile(index: index),
-                    ),
+                    child: _loadingExercises
+                        ? Center(child: CircularProgressIndicator(color: Theme.of(context).colorScheme.primary))
+                        : ListView.builder(
+                            padding: const EdgeInsets.symmetric(horizontal: 12),
+                            itemCount: exerciseCount,
+                            itemBuilder: (context, index) => _ExerciseTile(
+                              index: index,
+                              name: _dbExercises.isNotEmpty
+                                  ? _dbExercises[index]['name'] as String? ?? 'Exercise'
+                                  : null,
+                            ),
+                          ),
                   ),
                 ],
               ),
@@ -119,7 +190,7 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
                   _buildDescription(lp),
                   const SizedBox(height: 24),
                   Text(
-                    '${lp.translate('exercises').toUpperCase()} (${widget.exerciseCount})',
+                    '${lp.translate('exercises').toUpperCase()} ($exerciseCount)',
                     style: AppTextStyles.bodySmall.copyWith(
                       fontWeight: FontWeight.bold,
                       letterSpacing: 1.2,
@@ -131,12 +202,25 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
               ),
             ),
           ),
-          SliverList(
-            delegate: SliverChildBuilderDelegate(
-              (context, index) => _ExerciseTile(index: index),
-              childCount: widget.exerciseCount,
+          if (_loadingExercises)
+            SliverToBoxAdapter(
+              child: Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(32),
+                  child: CircularProgressIndicator(color: Theme.of(context).colorScheme.primary),
+                ),
+              ),
+            )
+          else
+            SliverList(
+              delegate: SliverChildBuilderDelegate(
+                (context, index) => _ExerciseTile(
+                  index: index,
+                  name: _dbExercises.isNotEmpty ? _dbExercises[index]['name'] as String? ?? 'Exercise' : null,
+                ),
+                childCount: exerciseCount,
+              ),
             ),
-          ),
           const SliverToBoxAdapter(child: SizedBox(height: 120)),
         ],
       ),
@@ -289,29 +373,7 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
   Widget _buildStartButton(BuildContext context, LocaleProvider lp) {
     return ElevatedButton(
       onPressed: () {
-        final exercises = List.generate(
-          widget.exerciseCount,
-          (index) => Exercise(
-            id: 'ex_$index',
-            name: [
-              'Push Ups',
-              'Squats',
-              'Plank',
-              'Lunges',
-              'Jumping Jacks',
-              'Burpees',
-              'Mountain Climbers',
-              'Crunches',
-              'Dips',
-              'Deadlift',
-            ][index % 10],
-            category: widget.category,
-            // Override duration with user selection
-            seconds: _selectedDuration,
-            reps: null, // Make all timed for this demo if user selects duration
-            description: 'Focus on your form and keep a steady pace.',
-          ),
-        );
+        final exercises = _buildExerciseList();
 
         Navigator.push(
           context,
@@ -418,8 +480,9 @@ class _IconButton extends StatelessWidget {
 }
 
 class _ExerciseTile extends StatelessWidget {
-  const _ExerciseTile({required this.index});
+  const _ExerciseTile({required this.index, this.name});
   final int index;
+  final String? name;
 
   @override
   Widget build(BuildContext context) {
@@ -435,7 +498,7 @@ class _ExerciseTile extends StatelessWidget {
       'Dips',
       'Deadlift',
     ];
-    final name = exerciseNames[index % exerciseNames.length];
+    final displayName = name ?? exerciseNames[index % exerciseNames.length];
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
@@ -463,7 +526,7 @@ class _ExerciseTile extends StatelessWidget {
           ),
           const SizedBox(width: 16),
           Expanded(
-            child: Text(name, style: AppTextStyles.bodyMedium.copyWith(fontWeight: FontWeight.w600)),
+            child: Text(displayName, style: AppTextStyles.bodyMedium.copyWith(fontWeight: FontWeight.w600)),
           ),
           Icon(Icons.timer_outlined, color: AppColors.textSecondary, size: 20),
         ],
