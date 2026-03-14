@@ -46,14 +46,12 @@ class _PostDetailsScreenState extends State<PostDetailsScreen> {
     final authorName = profiles?['full_name'] as String? ?? profiles?['username'] as String? ?? 'Anonymous';
     final content = post['content'] as String? ?? '';
 
-    final initials = authorName.isNotEmpty
-        ? authorName.split(' ').map((e) => e.isNotEmpty ? e[0] : '').join().toUpperCase()
-        : '?';
+    final avatarUrl = 'https://api.dicebear.com/8.x/initials/png?seed=${Uri.encodeComponent(authorName)}';
 
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
-        title: const Text('Post'),
+        title: const Text('Publicación'),
         backgroundColor: AppColors.background,
         elevation: 0,
         leading: IconButton(
@@ -73,8 +71,8 @@ class _PostDetailsScreenState extends State<PostDetailsScreen> {
                   Row(
                     children: [
                       CircleAvatar(
-                        backgroundColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
-                        child: Text(initials, style: TextStyle(color: Theme.of(context).colorScheme.primary)),
+                        radius: 20,
+                        backgroundImage: NetworkImage(avatarUrl),
                       ),
                       const SizedBox(width: 12),
                       Text(authorName, style: AppTextStyles.bodyMedium.copyWith(fontWeight: FontWeight.bold)),
@@ -83,13 +81,13 @@ class _PostDetailsScreenState extends State<PostDetailsScreen> {
                   const SizedBox(height: 16),
                   Text(content, style: AppTextStyles.bodyLarge),
                   const Divider(height: 32),
-                  Text('Comments', style: AppTextStyles.heading4),
+                  Text('Comentarios', style: AppTextStyles.heading4),
                   const SizedBox(height: 16),
 
                   // Comments List
                   if (provider.postComments.isEmpty)
                     const Center(
-                      child: Padding(padding: EdgeInsets.all(32.0), child: Text('No comments yet. Be the first!')),
+                      child: Padding(padding: EdgeInsets.all(32.0), child: Text('No hay comentarios aún. ¡Sé el primero!')),
                     )
                   else
                     ListView.separated(
@@ -101,27 +99,36 @@ class _PostDetailsScreenState extends State<PostDetailsScreen> {
                         final comment = provider.postComments[index];
                         final cProfiles = comment['profiles'] as Map<String, dynamic>?;
                         final cAuthor =
-                            cProfiles?['full_name'] as String? ?? cProfiles?['username'] as String? ?? 'Anonymous';
+                            cProfiles?['full_name'] as String? ?? cProfiles?['username'] as String? ?? 'Usuario';
+                        final cAvatarUrl = 'https://api.dicebear.com/8.x/initials/png?seed=${Uri.encodeComponent(cAuthor)}';
 
                         return Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             CircleAvatar(
-                              radius: 14,
-                              backgroundColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.05),
-                              child: Text(
-                                cAuthor.isNotEmpty ? cAuthor[0].toUpperCase() : '?',
-                                style: TextStyle(fontSize: 10, color: Theme.of(context).colorScheme.primary),
-                              ),
+                              radius: 16,
+                              backgroundImage: NetworkImage(cAvatarUrl),
                             ),
-                            const SizedBox(width: 8),
+                            const SizedBox(width: 12),
                             Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(cAuthor, style: AppTextStyles.bodySmall.copyWith(fontWeight: FontWeight.bold)),
-                                  Text(comment['content'] ?? '', style: AppTextStyles.bodySmall),
-                                ],
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                                decoration: BoxDecoration(
+                                  color: AppColors.textSecondary.withValues(alpha: 0.08),
+                                  borderRadius: const BorderRadius.only(
+                                    topRight: Radius.circular(20),
+                                    bottomRight: Radius.circular(20),
+                                    bottomLeft: Radius.circular(20),
+                                  ),
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(cAuthor, style: AppTextStyles.bodySmall.copyWith(fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
+                                    const SizedBox(height: 4),
+                                    Text(comment['content'] ?? '', style: AppTextStyles.bodyMedium),
+                                  ],
+                                ),
                               ),
                             ),
                           ],
@@ -148,18 +155,27 @@ class _PostDetailsScreenState extends State<PostDetailsScreen> {
                   child: TextField(
                     controller: _commentController,
                     decoration: InputDecoration(
-                      hintText: 'Write a comment...',
+                      hintText: 'Escribe un comentario...',
                       hintStyle: AppTextStyles.bodySmall,
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(24), borderSide: BorderSide.none),
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(24), borderSide: const BorderSide(color: AppColors.border)),
+                      enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(24), borderSide: const BorderSide(color: AppColors.border)),
+                      focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(24), borderSide: BorderSide(color: Theme.of(context).colorScheme.primary)),
                       filled: true,
                       fillColor: AppColors.background,
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                     ),
                   ),
                 ),
-                IconButton(
-                  icon: Icon(Icons.send, color: Theme.of(context).colorScheme.primary),
-                  onPressed: _submitComment,
+                const SizedBox(width: 8),
+                Container(
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.primary,
+                    shape: BoxShape.circle,
+                  ),
+                  child: IconButton(
+                    icon: const Icon(Icons.send_rounded, color: Colors.white, size: 20),
+                    onPressed: _submitComment,
+                  ),
                 ),
               ],
             ),

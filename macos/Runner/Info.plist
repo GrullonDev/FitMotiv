@@ -28,5 +28,7 @@
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
+	<key>NSLocationUsageDescription</key>
+	<string>Esta aplicación necesita tu ubicación para calcular distancias entre miembros de la comunidad.</string>
 </dict>
 </plist>

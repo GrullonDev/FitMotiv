@@ -8,6 +8,7 @@ import 'package:fit_motiv/features/community/presentation/screens/user_selection
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:shimmer/shimmer.dart';
 
 class CommunityScreen extends StatelessWidget {
   const CommunityScreen({super.key});
@@ -34,34 +35,46 @@ class CommunityScreen extends StatelessWidget {
             unselectedLabelColor: Theme.of(context).colorScheme.onSurfaceVariant,
             indicatorColor: Theme.of(context).colorScheme.primary,
             tabs: [
-              Tab(text: l10n.translate('feed')),
-              Tab(text: l10n.translate('members')),
-              Tab(text: l10n.translate('messages')),
+              const Tab(text: 'Noticias'),
+              const Tab(text: 'Miembros'),
+              const Tab(text: 'Mensajes'),
             ],
           ),
         ),
-        body: provider.isLoading
-            ? Center(child: CircularProgressIndicator(color: Theme.of(context).colorScheme.primary))
-            : TabBarView(
-                children: [
-                  _FeedTab(provider: provider),
-                  _MembersTab(provider: provider),
-                  _MessagesTab(provider: provider),
-                ],
-              ),
+        body: TabBarView(
+          children: [
+            _FeedTab(provider: provider),
+            _MembersTab(provider: provider),
+            _MessagesTab(provider: provider),
+          ],
+        ),
         floatingActionButton: Builder(
           builder: (context) {
             final tabController = DefaultTabController.of(context);
             return AnimatedBuilder(
               animation: tabController,
               builder: (context, child) {
-                // Solo mostrar en la pestaña de Feed (index 0)
-                if (tabController.index != 0) return const SizedBox.shrink();
-                return FloatingActionButton(
-                  onPressed: () => _showCreatePostDialog(context, provider),
-                  backgroundColor: Theme.of(context).colorScheme.primary,
-                  child: const Icon(Icons.add, color: Colors.white),
-                );
+                // Mostrar en la pestaña de Feed (index 0) para nuevo post
+                if (tabController.index == 0) {
+                  return FloatingActionButton.extended(
+                    onPressed: () => _showCreatePostDialog(context, provider),
+                    backgroundColor: Theme.of(context).colorScheme.primary,
+                    icon: const Icon(Icons.add, color: Colors.white),
+                    label: const Text('Nuevo Post', style: TextStyle(color: Colors.white)),
+                  );
+                }
+                // Mostrar en la pestaña de Mensajes (index 2) para nuevo chat
+                if (tabController.index == 2) {
+                  return FloatingActionButton.extended(
+                    onPressed: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => const UserSelectionScreen()));
+                    },
+                    backgroundColor: Theme.of(context).colorScheme.primary,
+                    icon: const Icon(Icons.add_comment, color: Colors.white),
+                    label: const Text('Nuevo Chat', style: TextStyle(color: Colors.white)),
+                  );
+                }
+                return const SizedBox.shrink();
               },
             );
           },
@@ -75,14 +88,17 @@ class CommunityScreen extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Create Post'),
+        title: const Text('Crear Post'),
         content: TextField(
           controller: controller,
           maxLines: 4,
-          decoration: const InputDecoration(hintText: "What's on your mind?", border: OutlineInputBorder()),
+          decoration: InputDecoration(
+            hintText: "¿En qué estás pensando?",
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+          ),
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
+          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancelar')),
           ElevatedButton(
             onPressed: () async {
               if (controller.text.trim().isNotEmpty) {
@@ -92,8 +108,11 @@ class CommunityScreen extends StatelessWidget {
                 }
               }
             },
-            style: ElevatedButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.primary),
-            child: const Text('Post', style: TextStyle(color: Colors.white)),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Theme.of(context).colorScheme.primary,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            ),
+            child: const Text('Publicar', style: TextStyle(color: Colors.white)),
           ),
         ],
       ),
@@ -108,6 +127,15 @@ class _FeedTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (provider.isLoading) {
+      return ListView.separated(
+        padding: const EdgeInsets.all(16),
+        itemCount: 5,
+        separatorBuilder: (_, __) => const SizedBox(height: 16),
+        itemBuilder: (context, _) => _buildShimmerCard(context),
+      );
+    }
+
     if (provider.posts.isEmpty) {
       return RefreshIndicator(
         color: Theme.of(context).colorScheme.primary,
@@ -122,10 +150,10 @@ class _FeedTab extends StatelessWidget {
                   const SizedBox(height: 80),
                   Icon(Icons.forum_outlined, size: 64, color: AppColors.textSecondary.withValues(alpha: 0.4)),
                   const SizedBox(height: 16),
-                  Text('No posts yet', style: AppTextStyles.heading4),
+                  Text('No hay publicaciones', style: AppTextStyles.heading4),
                   const SizedBox(height: 8),
                   Text(
-                    'Be the first to share something with the community!',
+                    '¡Sé el primero en compartir algo con la comunidad!',
                     style: AppTextStyles.bodySmall,
                     textAlign: TextAlign.center,
                   ),
@@ -147,15 +175,14 @@ class _FeedTab extends StatelessWidget {
         itemBuilder: (context, i) {
           final post = provider.posts[i];
           final profiles = post['profiles'] as Map<String, dynamic>?;
-          final authorName = profiles?['full_name'] as String? ?? profiles?['username'] as String? ?? 'Anonymous';
+          final authorName = profiles?['full_name'] as String? ?? profiles?['username'] as String? ?? 'Usuario';
           final content = post['content'] as String? ?? '';
           final likes = post['likes_count'] as int? ?? 0;
           final comments = post['comments_count'] as int? ?? 0;
           final createdAt = post['created_at'] as String? ?? '';
+          final isLiked = post['is_liked'] as bool? ?? false;
 
-          final initials = authorName.isNotEmpty
-              ? authorName.split(' ').map((e) => e.isNotEmpty ? e[0] : '').join().toUpperCase()
-              : '?';
+          final avatarUrl = 'https://api.dicebear.com/8.x/initials/png?seed=${Uri.encodeComponent(authorName)}';
 
           String timeAgo = '';
           if (createdAt.isNotEmpty) {
@@ -163,11 +190,11 @@ class _FeedTab extends StatelessWidget {
               final date = DateTime.parse(createdAt);
               final diff = DateTime.now().difference(date);
               if (diff.inDays > 0) {
-                timeAgo = '${diff.inDays}d ago';
+                timeAgo = '${diff.inDays}d';
               } else if (diff.inHours > 0) {
-                timeAgo = '${diff.inHours}h ago';
+                timeAgo = '${diff.inHours}h';
               } else {
-                timeAgo = '${diff.inMinutes}m ago';
+                timeAgo = '${diff.inMinutes}m';
               }
             } catch (_) {}
           }
@@ -177,70 +204,125 @@ class _FeedTab extends StatelessWidget {
               Navigator.push(context, MaterialPageRoute(builder: (context) => PostDetailsScreen(post: post)));
             },
             child: Container(
-              padding: const EdgeInsets.all(16),
+              clipBehavior: Clip.antiAlias,
               decoration: BoxDecoration(
                 color: Theme.of(context).cardTheme.color ?? Colors.white,
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: BorderRadius.circular(20),
                 boxShadow: [
-                  BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 8, offset: const Offset(0, 2)),
+                  BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10, offset: const Offset(0, 4)),
                 ],
               ),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Row(
-                    children: [
-                      CircleAvatar(
-                        backgroundColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
-                        child: Text(
-                          initials,
-                          style: TextStyle(color: Theme.of(context).colorScheme.primary, fontSize: 14),
+                  // Encabezado de la tarjeta
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        CircleAvatar(
+                          backgroundImage: NetworkImage(avatarUrl),
+                          radius: 20,
                         ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(authorName, style: AppTextStyles.bodyMedium.copyWith(fontWeight: FontWeight.w600)),
-                            if (timeAgo.isNotEmpty)
-                              Text(timeAgo, style: AppTextStyles.bodySmall.copyWith(color: AppColors.textSecondary)),
-                          ],
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text(
+                                authorName,
+                                style: AppTextStyles.bodyMedium.copyWith(fontWeight: FontWeight.w800),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              if (timeAgo.isNotEmpty) ...[
+                                const SizedBox(width: 8),
+                                Text(
+                                  '• $timeAgo',
+                                  style: AppTextStyles.bodySmall.copyWith(color: AppColors.textSecondary, fontSize: 12),
+                                ),
+                              ],
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                  const SizedBox(height: 12),
-                  Text(content, style: AppTextStyles.bodyMedium),
-                  const SizedBox(height: 12),
-                  Row(
-                    children: [
-                      InkWell(
-                        onTap: () => provider.toggleLike(post['id']),
-                        child: Row(
-                          children: [
-                            Icon(
-                              (post['is_liked'] ?? false) ? Icons.favorite : Icons.favorite_border,
-                              size: 18,
-                              color: (post['is_liked'] ?? false) ? Colors.red : Theme.of(context).colorScheme.primary,
+                  // Contenido principal
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          Theme.of(context).colorScheme.primary.withValues(alpha: 0.05),
+                          Theme.of(context).colorScheme.primary.withValues(alpha: 0.15),
+                        ],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                    ),
+                    child: Text(
+                      content,
+                      style: AppTextStyles.bodyLarge.copyWith(height: 1.4),
+                    ),
+                  ),
+                  // Barra de Acciones
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).cardTheme.color ?? Colors.white,
+                    ),
+                    child: Row(
+                      children: [
+                        InkWell(
+                          onTap: () => provider.toggleLike(post['id']),
+                          borderRadius: BorderRadius.circular(16),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            child: Row(
+                              children: [
+                                AnimatedSwitcher(
+                                  duration: const Duration(milliseconds: 300),
+                                  transitionBuilder: (child, animation) => ScaleTransition(scale: animation, child: child),
+                                  child: Icon(
+                                    isLiked ? Icons.favorite : Icons.favorite_border,
+                                    key: ValueKey(isLiked),
+                                    size: 22,
+                                    color: isLiked ? Colors.red : AppColors.textSecondary,
+                                  ),
+                                ),
+                                const SizedBox(width: 6),
+                                Text(
+                                  '$likes',
+                                  style: AppTextStyles.bodyMedium.copyWith(
+                                      color: isLiked ? Colors.red : AppColors.textSecondary,
+                                      fontWeight: isLiked ? FontWeight.bold : FontWeight.w600),
+                                ),
+                              ],
                             ),
-                            const SizedBox(width: 4),
-                            Text('$likes', style: AppTextStyles.bodySmall),
-                          ],
+                          ),
                         ),
-                      ),
-                      const SizedBox(width: 16),
-                      InkWell(
-                        onTap: () => _showCommentDialog(context, provider, post['id']),
-                        child: Row(
-                          children: [
-                            const Icon(Icons.mode_comment_outlined, size: 18, color: AppColors.textSecondary),
-                            const SizedBox(width: 4),
-                            Text('$comments', style: AppTextStyles.bodySmall),
-                          ],
+                        const SizedBox(width: 24),
+                        InkWell(
+                          onTap: () => _showCommentDialog(context, provider, post['id']),
+                          borderRadius: BorderRadius.circular(16),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            child: Row(
+                              children: [
+                                const Icon(Icons.chat_bubble_outline_rounded, size: 20, color: AppColors.textSecondary),
+                                const SizedBox(width: 6),
+                                Text(
+                                  '$comments',
+                                  style: AppTextStyles.bodyMedium.copyWith(color: AppColors.textSecondary, fontWeight: FontWeight.w600),
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ],
               ),
@@ -251,19 +333,36 @@ class _FeedTab extends StatelessWidget {
     );
   }
 
+  Widget _buildShimmerCard(BuildContext context) {
+    return Shimmer.fromColors(
+      baseColor: Colors.grey[300]!,
+      highlightColor: Colors.grey[100]!,
+      child: Container(
+        height: 180,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+        ),
+      ),
+    );
+  }
+
   void _showCommentDialog(BuildContext context, CommunityProvider provider, String postId) {
     final controller = TextEditingController();
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Add Comment'),
+        title: const Text('Añadir Comentario'),
         content: TextField(
           controller: controller,
-          decoration: const InputDecoration(hintText: 'Write a comment...'),
+          decoration: InputDecoration(
+            hintText: 'Escribe un comentario...',
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+          ),
           maxLines: 3,
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
+          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancelar')),
           ElevatedButton(
             onPressed: () {
               if (controller.text.trim().isNotEmpty) {
@@ -271,7 +370,11 @@ class _FeedTab extends StatelessWidget {
                 Navigator.pop(context);
               }
             },
-            child: const Text('Post'),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Theme.of(context).colorScheme.primary,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            ),
+            child: const Text('Publicar', style: TextStyle(color: Colors.white)),
           ),
         ],
       ),
@@ -286,6 +389,15 @@ class _MembersTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (provider.isLoading) {
+      return ListView.separated(
+        padding: const EdgeInsets.all(16),
+        itemCount: 8,
+        separatorBuilder: (_, __) => Divider(height: 1, color: Theme.of(context).dividerColor),
+        itemBuilder: (context, _) => _buildShimmerTile(context),
+      );
+    }
+
     if (provider.profiles.isEmpty) {
       return RefreshIndicator(
         color: Theme.of(context).colorScheme.primary,
@@ -300,10 +412,10 @@ class _MembersTab extends StatelessWidget {
                   const SizedBox(height: 80),
                   Icon(Icons.people_outline, size: 64, color: AppColors.textSecondary.withValues(alpha: 0.4)),
                   const SizedBox(height: 16),
-                  Text('No members yet', style: AppTextStyles.heading4),
+                  Text('Aún no hay miembros', style: AppTextStyles.heading4),
                   const SizedBox(height: 8),
                   Text(
-                    'Members will appear here as people join.',
+                    'Los miembros aparecerán aquí cuando se unan.',
                     style: AppTextStyles.bodySmall,
                     textAlign: TextAlign.center,
                   ),
@@ -326,30 +438,28 @@ class _MembersTab extends StatelessWidget {
           final profile = provider.profiles[index];
           final name = (profile['full_name'] as String? ?? '').isNotEmpty
               ? profile['full_name'] as String
-              : profile['username'] as String? ?? 'User';
+              : profile['username'] as String? ?? 'Usuario';
           final fitnessGoal = profile['fitness_goal'] as String? ?? '';
           final activityLevel = profile['activity_level'] as String? ?? '';
           final isOnline = profile['is_online'] as bool? ?? false;
 
-          final initials = name.isNotEmpty
-              ? name.split(' ').map((e) => e.isNotEmpty ? e[0] : '').join().toUpperCase()
-              : '?';
+          final avatarUrl = 'https://api.dicebear.com/8.x/initials/png?seed=${Uri.encodeComponent(name)}';
 
           return ListTile(
             contentPadding: const EdgeInsets.symmetric(vertical: 4),
             leading: Stack(
               children: [
                 CircleAvatar(
-                  backgroundColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
-                  child: Text(initials, style: TextStyle(color: Theme.of(context).colorScheme.primary)),
+                  backgroundImage: NetworkImage(avatarUrl),
+                  radius: 24,
                 ),
                 if (isOnline)
                   Positioned(
                     right: 0,
                     bottom: 0,
                     child: Container(
-                      width: 12,
-                      height: 12,
+                      width: 14,
+                      height: 14,
                       decoration: BoxDecoration(
                         color: AppColors.success,
                         shape: BoxShape.circle,
@@ -377,7 +487,7 @@ class _MembersTab extends StatelessWidget {
                   ),
               ],
             ),
-            trailing: OutlinedButton(
+            trailing: IconButton(
               onPressed: () async {
                 try {
                   final conv = await provider.startConversation(profile['id']);
@@ -391,20 +501,29 @@ class _MembersTab extends StatelessWidget {
                     ),
                   );
                 } catch (e) {
-                  ScaffoldMessenger.of(
-                    context,
-                  ).showSnackBar(SnackBar(content: Text('Error starting conversation: $e')));
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error al iniciar chat: $e')));
                 }
               },
-              style: OutlinedButton.styleFrom(
-                side: BorderSide(color: Theme.of(context).colorScheme.primary),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                padding: const EdgeInsets.symmetric(horizontal: 12),
+              style: IconButton.styleFrom(
+                backgroundColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
               ),
-              child: Text('Chat', style: TextStyle(color: Theme.of(context).colorScheme.primary, fontSize: 12)),
+              icon: Icon(Icons.chat_bubble_outline, color: Theme.of(context).colorScheme.primary, size: 20),
             ),
           );
         },
+      ),
+    );
+  }
+
+  Widget _buildShimmerTile(BuildContext context) {
+    return Shimmer.fromColors(
+      baseColor: Colors.grey[300]!,
+      highlightColor: Colors.grey[100]!,
+      child: ListTile(
+        leading: const CircleAvatar(radius: 24, backgroundColor: Colors.white),
+        title: Container(height: 14, width: 100, color: Colors.white),
+        subtitle: Container(height: 12, width: 150, color: Colors.white, margin: const EdgeInsets.only(top: 8)),
+        trailing: Container(width: 40, height: 40, decoration: const BoxDecoration(shape: BoxShape.circle, color: Colors.white)),
       ),
     );
   }
@@ -417,164 +536,162 @@ class _MessagesTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: ElevatedButton.icon(
-            onPressed: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => const UserSelectionScreen()));
-            },
-            icon: const Icon(Icons.add_comment),
-            label: const Text('Start New Chat'),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Theme.of(context).colorScheme.primary,
-              foregroundColor: Colors.white,
-              minimumSize: const Size(double.infinity, 50),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+    if (provider.isLoading) {
+      return ListView.separated(
+        padding: const EdgeInsets.all(16),
+        itemCount: 8,
+        separatorBuilder: (_, __) => Divider(height: 1, color: Theme.of(context).dividerColor, indent: 70),
+        itemBuilder: (context, _) => _buildShimmerTile(context),
+      );
+    }
+
+    if (provider.conversations.isEmpty) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.chat_bubble_outline, size: 64, color: AppColors.textSecondary.withValues(alpha: 0.4)),
+            const SizedBox(height: 16),
+            Text('No tienes mensajes aún', style: AppTextStyles.heading4),
+            const SizedBox(height: 8),
+            Text(
+              'Inicia una conversación con algún miembro de la comunidad.',
+              style: AppTextStyles.bodySmall,
+              textAlign: TextAlign.center,
             ),
-          ),
+          ],
         ),
-        Expanded(
-          child: provider.conversations.isEmpty
-              ? Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.chat_bubble_outline, size: 64, color: AppColors.textSecondary.withValues(alpha: 0.4)),
-                      const SizedBox(height: 16),
-                      Text('No conversations yet', style: AppTextStyles.heading4),
-                      const SizedBox(height: 8),
-                      Text(
-                        'Start a conversation with a community member.',
-                        style: AppTextStyles.bodySmall,
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
+      );
+    }
+
+    return ListView.separated(
+      itemCount: provider.conversations.length,
+      separatorBuilder: (_, __) => Divider(height: 1, color: Theme.of(context).dividerColor, indent: 70),
+      itemBuilder: (context, index) {
+        final conv = provider.conversations[index];
+        final currentUserId = provider.isLoading ? '' : Supabase.instance.client.auth.currentUser?.id;
+
+        // Identificar al otro participante
+        final isP1Other = conv['participant_1_id'] != currentUserId;
+        final otherProfile = isP1Other ? conv['p1'] : conv['p2'];
+
+        final otherId = otherProfile['id'] as String;
+        final name = otherProfile['full_name'] as String? ?? otherProfile['username'] as String? ?? 'Usuario';
+        final lastMsgText = conv['last_message_text'] as String? ?? 'Sin mensajes';
+        final lastAt = conv['last_message_at'] as String? ?? '';
+        final isOnline = otherProfile['is_online'] as bool? ?? false;
+
+        final avatarUrl = 'https://api.dicebear.com/8.x/initials/png?seed=${Uri.encodeComponent(name)}';
+        final hasUnread = conv['unread_count'] != null && (conv['unread_count'] as int) > 0;
+
+        // Para distinguir el preview del mensaje:
+        final lastMessageSenderId = conv['last_message_sender_id'] as String?;
+        final isMe = lastMessageSenderId == currentUserId;
+        final previewStr = isMe ? 'Tú: $lastMsgText' : '$name: $lastMsgText';
+
+        return ListTile(
+          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) =>
+                    ChatRoomScreen(userName: name, conversationId: conv['id'], otherUserId: otherId),
+              ),
+            );
+          },
+          leading: Stack(
+            children: [
+              CircleAvatar(
+                radius: 26,
+                backgroundImage: NetworkImage(avatarUrl),
+              ),
+              if (isOnline)
+                Positioned(
+                  right: 0,
+                  bottom: 0,
+                  child: Container(
+                    width: 14,
+                    height: 14,
+                    decoration: BoxDecoration(
+                      color: AppColors.success,
+                      shape: BoxShape.circle,
+                      border: Border.all(color: Colors.white, width: 2),
+                    ),
                   ),
-                )
-              : ListView.separated(
-                  itemCount: provider.conversations.length,
-                  separatorBuilder: (_, __) => Divider(height: 1, color: Theme.of(context).dividerColor, indent: 70),
-                  itemBuilder: (context, index) {
-                    final conv = provider.conversations[index];
-                    final currentUserId = provider.isLoading ? '' : Supabase.instance.client.auth.currentUser?.id;
-
-                    // Identificar al otro participante
-                    final isP1Other = conv['participant_1_id'] != currentUserId;
-                    final otherProfile = isP1Other ? conv['p1'] : conv['p2'];
-
-                    final otherId = otherProfile['id'] as String;
-                    final name = otherProfile['full_name'] as String? ?? otherProfile['username'] as String? ?? 'User';
-                    final lastMsg = conv['last_message_text'] as String? ?? 'No messages yet';
-                    final lastAt = conv['last_message_at'] as String? ?? '';
-                    final isOnline = otherProfile['is_online'] as bool? ?? false;
-
-                    final initials = name.isNotEmpty
-                        ? name.split(' ').map((e) => e.isNotEmpty ? e[0] : '').join().toUpperCase()
-                        : '?';
-                    final hasUnread = conv['unread_count'] != null && (conv['unread_count'] as int) > 0;
-
-                    return ListTile(
-                      onTap: () {
-                        // Marcar como leído (pendiente implementar en provider)
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                ChatRoomScreen(userName: name, conversationId: conv['id'], otherUserId: otherId),
-                          ),
-                        );
-                      },
-                      leading: Stack(
-                        children: [
-                          CircleAvatar(
-                            radius: 28,
-                            backgroundColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
-                            child: Text(
-                              initials,
-                              style: TextStyle(
-                                color: Theme.of(context).colorScheme.primary,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                          if (isOnline)
-                            Positioned(
-                              right: 0,
-                              bottom: 0,
-                              child: Container(
-                                width: 14,
-                                height: 14,
-                                decoration: BoxDecoration(
-                                  color: AppColors.success,
-                                  shape: BoxShape.circle,
-                                  border: Border.all(color: Colors.white, width: 2),
-                                ),
-                              ),
-                            ),
-                        ],
-                      ),
-                      title: Row(
-                        children: [
-                          Expanded(
-                            child: Text(name, style: AppTextStyles.bodyMedium.copyWith(fontWeight: FontWeight.bold)),
-                          ),
-                          if (lastAt.isNotEmpty)
-                            Text(
-                              _formatTime(lastAt),
-                              style: AppTextStyles.bodySmall.copyWith(
-                                fontSize: 10,
-                                color: hasUnread ? Theme.of(context).colorScheme.primary : AppColors.textSecondary,
-                                fontWeight: hasUnread ? FontWeight.bold : FontWeight.normal,
-                              ),
-                            ),
-                        ],
-                      ),
-                      subtitle: Row(
-                        children: [
-                          Expanded(
-                            child: Text(
-                              lastMsg,
-                              style: AppTextStyles.bodySmall.copyWith(
-                                color: hasUnread ? AppColors.textPrimary : AppColors.textSecondary,
-                                fontWeight: hasUnread ? FontWeight.w600 : FontWeight.normal,
-                              ),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                          if (hasUnread)
-                            Container(
-                              margin: const EdgeInsets.only(left: 8),
-                              padding: const EdgeInsets.all(6),
-                              decoration: BoxDecoration(
-                                color: Theme.of(context).colorScheme.primary,
-                                shape: BoxShape.circle,
-                              ),
-                              child: Text(
-                                '${conv['unread_count']}',
-                                style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                        ],
-                      ),
-                    );
-                  },
                 ),
-        ),
-      ],
+            ],
+          ),
+          title: Row(
+            children: [
+              Expanded(
+                child: Text(name, style: AppTextStyles.bodyMedium.copyWith(fontWeight: FontWeight.bold)),
+              ),
+              if (lastAt.isNotEmpty)
+                Text(
+                  _formatTime(lastAt),
+                  style: AppTextStyles.bodySmall.copyWith(
+                    fontSize: 12,
+                    color: hasUnread ? AppColors.primary : AppColors.textSecondary,
+                    fontWeight: hasUnread ? FontWeight.bold : FontWeight.normal,
+                  ),
+                ),
+            ],
+          ),
+          subtitle: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  previewStr,
+                  style: AppTextStyles.bodySmall.copyWith(
+                    color: hasUnread ? AppColors.textPrimary : AppColors.textSecondary,
+                    fontWeight: hasUnread ? FontWeight.w600 : FontWeight.normal,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              if (hasUnread)
+                Container(
+                  margin: const EdgeInsets.only(left: 8),
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: const BoxDecoration(
+                    color: Colors.red,
+                    shape: BoxShape.rectangle,
+                    borderRadius: BorderRadius.all(Radius.circular(12)),
+                  ),
+                  child: Text(
+                    '${conv['unread_count']}',
+                    style: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.bold),
+                  ),
+                ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildShimmerTile(BuildContext context) {
+    return Shimmer.fromColors(
+      baseColor: Colors.grey[300]!,
+      highlightColor: Colors.grey[100]!,
+      child: ListTile(
+        leading: const CircleAvatar(radius: 26, backgroundColor: Colors.white),
+        title: Container(height: 14, width: 100, color: Colors.white),
+        subtitle: Container(height: 12, width: 150, color: Colors.white, margin: const EdgeInsets.only(top: 8)),
+      ),
     );
   }
 
   String _formatTime(String dateStr) {
     try {
-      final date = DateTime.parse(dateStr);
+      final date = DateTime.parse(dateStr).toLocal();
       final diff = DateTime.now().difference(date);
       if (diff.inDays > 0) return '${diff.inDays}d';
       if (diff.inHours > 0) return '${diff.inHours}h';
       if (diff.inMinutes > 0) return '${diff.inMinutes}m';
-      return 'now';
+      return 'ahora';
     } catch (_) {
       return '';
     }
