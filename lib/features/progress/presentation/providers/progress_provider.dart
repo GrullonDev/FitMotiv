@@ -94,4 +94,27 @@ class ProgressProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  /// Registra una sesión de entrenamiento
+  Future<bool> logWorkoutSession({
+    required String workoutId,
+    required String workoutName,
+    required int durationMinutes,
+    required int caloriesBurned,
+  }) async {
+    try {
+      await _datasource.logWorkoutSession(
+        workoutId: workoutId,
+        workoutName: workoutName,
+        durationMinutes: durationMinutes,
+        caloriesBurned: caloriesBurned,
+      );
+      await loadAll();
+      return true;
+    } catch (e) {
+      _error = e.toString();
+      notifyListeners();
+      return false;
+    }
+  }
 }

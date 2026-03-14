@@ -13,6 +13,7 @@ import 'package:fit_motiv/features/progress/data/datasources/progress_supabase_d
 import 'package:fit_motiv/features/progress/presentation/providers/progress_provider.dart';
 import 'package:fit_motiv/features/routines/data/datasources/workout_supabase_datasource.dart';
 import 'package:fit_motiv/features/routines/presentation/providers/workout_provider.dart';
+import 'package:fit_motiv/features/routines/presentation/providers/workout_session_provider.dart';
 import 'package:get_it/get_it.dart';
 
 import 'package:fit_motiv/core/di/auth_di.dart';
@@ -65,6 +66,7 @@ Future<void> init() async {
   sl.registerFactory<WorkoutProvider>(
     () => WorkoutProvider(datasource: sl<WorkoutSupabaseDatasource>()),
   );
+  sl.registerFactory<WorkoutSessionProvider>(() => WorkoutSessionProvider());
 
   // ─────────────────────────────────────────
   // Progress feature

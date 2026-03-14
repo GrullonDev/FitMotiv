@@ -100,4 +100,24 @@ class ProgressSupabaseDatasource {
       'updated_at': DateTime.now().toIso8601String(),
     }).eq('id', goalId);
   }
+
+  /// Registra una sesión de entrenamiento
+  Future<void> logWorkoutSession({
+    required String workoutId,
+    required String workoutName,
+    required int durationMinutes,
+    required int caloriesBurned,
+  }) async {
+    final userId = _client.auth.currentUser?.id;
+    if (userId == null) throw Exception('Not logged in');
+
+    await _client.from('workout_sessions').insert({
+      'user_id': userId,
+      'workout_id': workoutId,
+      'workout_name': workoutName,
+      'duration_minutes': durationMinutes,
+      'calories_burned': caloriesBurned,
+      'completed_at': DateTime.now().toIso8601String(),
+    });
+  }
 }

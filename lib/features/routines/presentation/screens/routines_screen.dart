@@ -2,6 +2,7 @@ import 'package:fit_motiv/constants/app_colors.dart';
 import 'package:fit_motiv/constants/app_text_styles.dart';
 import 'package:fit_motiv/core/localization/locale_provider.dart';
 import 'package:fit_motiv/features/routines/presentation/providers/workout_provider.dart';
+import 'package:fit_motiv/features/routines/presentation/screens/routine_detail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -20,8 +21,10 @@ class RoutinesScreen extends StatelessWidget {
           title: Text(context.watch<LocaleProvider>().translate('routines'), style: AppTextStyles.heading3),
           actions: [
             IconButton(
-              icon: Icon(Icons.refresh, color: Theme.of(context).colorScheme.primary),
-              onPressed: () => provider.refreshWorkouts(),
+              icon: Icon(Icons.search, color: Theme.of(context).colorScheme.primary),
+              onPressed: () {
+                // TODO: Implement search
+              },
             ),
           ],
           bottom: TabBar(
@@ -29,11 +32,11 @@ class RoutinesScreen extends StatelessWidget {
             labelColor: Theme.of(context).colorScheme.primary,
             unselectedLabelColor: Theme.of(context).colorScheme.onSurfaceVariant,
             indicatorColor: Theme.of(context).colorScheme.primary,
-            tabs: const [
-              Tab(text: 'All'),
-              Tab(text: 'Cardio'),
-              Tab(text: 'Strength'),
-              Tab(text: 'Flexibility'),
+            tabs: [
+              Tab(text: context.read<LocaleProvider>().translate('all')),
+              Tab(text: context.read<LocaleProvider>().translate('cardio')),
+              Tab(text: context.read<LocaleProvider>().translate('strength')),
+              Tab(text: context.read<LocaleProvider>().translate('flexibility')),
             ],
           ),
         ),
@@ -111,16 +114,19 @@ class RoutinesScreen extends StatelessWidget {
             crossAxisCount: 2,
             mainAxisSpacing: 16,
             crossAxisSpacing: 16,
-            childAspectRatio: 0.75,
+            childAspectRatio: 0.82,
           ),
           itemBuilder: (context, index) {
             final w = workouts[index];
             return _RoutineCard(
+              id: w['id'] as String? ?? index.toString(),
               title: w['name'] as String? ?? 'Untitled',
               duration: w['duration'] as int? ?? 0,
               category: w['category'] as String? ?? 'General',
               difficulty: w['difficulty'] as String? ?? '',
               description: w['description'] as String? ?? '',
+              exerciseCount: w['exercise_count'] as int? ?? (8 + (index % 5)),
+              isCompleted: w['is_completed'] as bool? ?? false,
             );
           },
         ),
@@ -129,22 +135,35 @@ class RoutinesScreen extends StatelessWidget {
   }
 }
 
-class _RoutineCard extends StatelessWidget {
+class _RoutineCard extends StatefulWidget {
   const _RoutineCard({
+    required this.id,
     required this.title,
     required this.duration,
     required this.category,
     required this.difficulty,
     required this.description,
+    required this.exerciseCount,
+    this.isCompleted = false,
   });
+  final String id;
   final String title;
   final int duration;
   final String category;
   final String difficulty;
   final String description;
+  final int exerciseCount;
+  final bool isCompleted;
+
+  @override
+  State<_RoutineCard> createState() => _RoutineCardState();
+}
+
+class _RoutineCardState extends State<_RoutineCard> {
+  bool isFavorite = false;
 
   IconData get _categoryIcon {
-    switch (category.toLowerCase()) {
+    switch (widget.category.toLowerCase()) {
       case 'cardio':
         return Icons.directions_run;
       case 'strength':
@@ -161,12 +180,15 @@ class _RoutineCard extends StatelessWidget {
   }
 
   Color get _difficultyColor {
-    switch (difficulty.toLowerCase()) {
+    switch (widget.difficulty.toLowerCase()) {
       case 'beginner':
+      case 'principiante':
         return AppColors.success;
       case 'intermediate':
+      case 'intermedio':
         return Colors.orange;
       case 'advanced':
+      case 'avanzado':
         return AppColors.error;
       default:
         return AppColors.textSecondary;
@@ -175,73 +197,165 @@ class _RoutineCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Theme.of(context).cardTheme.color ?? Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 8, offset: const Offset(0, 2))],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ClipRRect(
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-            child: Container(
-              height: 100,
-              color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
-              child: Center(child: Icon(_categoryIcon, size: 48, color: Theme.of(context).colorScheme.primary)),
+    final lp = context.read<LocaleProvider>();
+    
+    return Hero(
+      tag: 'routine_${widget.id}',
+      child: GestureDetector(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => RoutineDetailScreen(
+                id: widget.id,
+                title: widget.title,
+                category: widget.category,
+                difficulty: widget.difficulty,
+                duration: widget.duration,
+                exerciseCount: widget.exerciseCount,
+                description: widget.description,
+              ),
             ),
+          );
+        },
+        child: Container(
+          decoration: BoxDecoration(
+            color: Theme.of(context).cardTheme.color ?? Colors.white,
+            borderRadius: BorderRadius.circular(20),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.05),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
+              )
+            ],
           ),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Stack(
                 children: [
-                  Text(
-                    title,
-                    style: AppTextStyles.bodyMedium.copyWith(fontWeight: FontWeight.w600),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  const Spacer(),
-                  Row(
-                    children: [
-                      Text('$duration min', style: AppTextStyles.bodySmall.copyWith(color: AppColors.textSecondary)),
-                      const SizedBox(width: 6),
-                      Text('•', style: AppTextStyles.bodySmall),
-                      const SizedBox(width: 6),
-                      Expanded(
-                        child: Text(
-                          category,
-                          style: AppTextStyles.bodySmall.copyWith(color: AppColors.textSecondary),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 4),
-                  if (difficulty.isNotEmpty)
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                  ClipRRect(
+                    borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+                    child: Container(
+                      height: 110,
+                      width: double.infinity,
                       decoration: BoxDecoration(
-                        color: _difficultyColor.withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(6),
-                      ),
-                      child: Text(
-                        difficulty,
-                        style: AppTextStyles.bodySmall.copyWith(
-                          color: _difficultyColor,
-                          fontSize: 10,
-                          fontWeight: FontWeight.w500,
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
+                            Theme.of(context).colorScheme.primary.withValues(alpha: 0.05),
+                          ],
                         ),
+                      ),
+                      child: Center(
+                        child: Icon(
+                          _categoryIcon,
+                          size: 44,
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    top: 8,
+                    right: 8,
+                    child: GestureDetector(
+                      onTap: () => setState(() => isFavorite = !isFavorite),
+                      child: Container(
+                        padding: const EdgeInsets.all(6),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withValues(alpha: 0.8),
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(
+                          isFavorite ? Icons.favorite : Icons.favorite_border,
+                          size: 18,
+                          color: isFavorite ? Colors.red : Colors.grey,
+                        ),
+                      ),
+                    ),
+                  ),
+                  if (widget.isCompleted)
+                    Positioned(
+                      top: 8,
+                      left: 8,
+                      child: Container(
+                        padding: const EdgeInsets.all(4),
+                        decoration: const BoxDecoration(
+                          color: AppColors.success,
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(Icons.check, size: 12, color: Colors.white),
                       ),
                     ),
                 ],
               ),
-            ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        widget.title,
+                        style: AppTextStyles.bodyMedium.copyWith(
+                          fontWeight: FontWeight.bold,
+                          height: 1.2,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        '${widget.exerciseCount} ${lp.translate('exercises')}',
+                        style: AppTextStyles.bodySmall.copyWith(
+                          color: Theme.of(context).colorScheme.primary,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 10,
+                        ),
+                      ),
+                      const Spacer(),
+                      Row(
+                        children: [
+                          Icon(Icons.timer_outlined, size: 12, color: AppColors.textSecondary),
+                          const SizedBox(width: 4),
+                          Text(
+                            '${widget.duration} min',
+                            style: AppTextStyles.bodySmall.copyWith(
+                              color: AppColors.textSecondary,
+                              fontSize: 10,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 6),
+                      if (widget.difficulty.isNotEmpty)
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                          decoration: BoxDecoration(
+                            color: _difficultyColor.withValues(alpha: 0.1),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Text(
+                            lp.translate(widget.difficulty.toLowerCase()),
+                            style: AppTextStyles.bodySmall.copyWith(
+                              color: _difficultyColor,
+                              fontSize: 9,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 0.5,
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
