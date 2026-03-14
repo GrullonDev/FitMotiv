@@ -1,12 +1,43 @@
-import 'package:fit_motiv/constants/app_colors.dart';
-import 'package:fit_motiv/constants/app_text_styles.dart';
-import 'package:fit_motiv/core/localization/locale_provider.dart';
 import 'package:fit_motiv/features/progress/presentation/providers/progress_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:fl_chart/fl_chart.dart';
+import 'package:intl/intl.dart';
+import 'package:fit_motiv/constants/app_colors.dart';
+import 'package:fit_motiv/constants/app_text_styles.dart';
+import 'package:fit_motiv/core/localization/locale_provider.dart';
 
-class ProgressScreen extends StatelessWidget {
+class ProgressScreen extends StatefulWidget {
   const ProgressScreen({super.key});
+
+  @override
+  State<ProgressScreen> createState() => _ProgressScreenState();
+}
+
+class _ProgressScreenState extends State<ProgressScreen> with SingleTickerProviderStateMixin {
+  late AnimationController _rotationController;
+
+  @override
+  void initState() {
+    super.initState();
+    _rotationController = AnimationController(
+      duration: const Duration(seconds: 1),
+      vsync: this,
+    );
+  }
+
+  @override
+  void dispose() {
+    _rotationController.dispose();
+    super.dispose();
+  }
+
+  void _handleRefresh(ProgressProvider provider) async {
+    _rotationController.repeat();
+    await provider.refreshAll();
+    _rotationController.stop();
+    _rotationController.reset();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -16,12 +47,18 @@ class ProgressScreen extends StatelessWidget {
       length: 3,
       child: Scaffold(
         appBar: AppBar(
-          title: Text(context.watch<LocaleProvider>().translate('progress'), style: AppTextStyles.heading3),
+          title: Text(
+            context.watch<LocaleProvider>().translate('progress'),
+            style: AppTextStyles.heading3,
+          ),
           centerTitle: true,
           actions: [
-            IconButton(
-              icon: Icon(Icons.refresh, color: Theme.of(context).colorScheme.primary),
-              onPressed: () => provider.refreshAll(),
+            RotationTransition(
+              turns: _rotationController,
+              child: IconButton(
+                icon: Icon(Icons.refresh, color: Theme.of(context).colorScheme.primary),
+                onPressed: () => _handleRefresh(provider),
+              ),
             ),
           ],
           bottom: TabBar(
@@ -29,9 +66,9 @@ class ProgressScreen extends StatelessWidget {
             unselectedLabelColor: Theme.of(context).colorScheme.onSurfaceVariant,
             indicatorColor: Theme.of(context).colorScheme.primary,
             tabs: const [
-              Tab(text: 'Overview'),
-              Tab(text: 'Weight'),
-              Tab(text: 'Goals'),
+              Tab(text: 'Resumen'),
+              Tab(text: 'Peso'),
+              Tab(text: 'Metas'),
             ],
           ),
         ),
@@ -44,6 +81,51 @@ class ProgressScreen extends StatelessWidget {
                   _GoalsTab(provider: provider),
                 ],
               ),
+        floatingActionButton: FloatingActionButton.extended(
+          onPressed: () {
+            // TODO: Abrir modal de registro
+            _showActionSheet(context, provider);
+          },
+          label: const Text('Registrar'),
+          icon: const Icon(Icons.add),
+          backgroundColor: Theme.of(context).colorScheme.primary,
+          foregroundColor: Colors.white,
+        ),
+      ),
+    );
+  }
+
+  void _showActionSheet(BuildContext context, ProgressProvider provider) {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => Container(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text('¿Qué deseas registrar?', style: AppTextStyles.heading4),
+            const SizedBox(height: 20),
+            ListTile(
+              leading: const Icon(Icons.monitor_weight_outlined, color: Color(0xFF4ECDC4)),
+              title: const Text('Registrar Peso'),
+              onTap: () {
+                Navigator.pop(context);
+                // Mostrar diálogo de peso
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.fitness_center, color: Colors.blue),
+              title: const Text('Nueva Sesión'),
+              onTap: () {
+                Navigator.pop(context);
+                // Ir a rutinas
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -70,8 +152,8 @@ class _OverviewTab extends StatelessWidget {
               children: [
                 Expanded(
                   child: _StatBox(
-                    icon: Icons.fitness_center,
-                    label: 'Workouts',
+                    icon: Icons.fitness_center_outlined,
+                    label: 'Sesiones',
                     value: '${provider.totalSessions}',
                     color: Theme.of(context).colorScheme.primary,
                   ),
@@ -79,8 +161,8 @@ class _OverviewTab extends StatelessWidget {
                 const SizedBox(width: 12),
                 Expanded(
                   child: _StatBox(
-                    icon: Icons.local_fire_department,
-                    label: 'Calories',
+                    icon: Icons.local_fire_department_outlined,
+                    label: 'Calorías',
                     value: '${provider.totalCalories}',
                     color: const Color(0xFFFF6B6B),
                   ),
@@ -92,11 +174,11 @@ class _OverviewTab extends StatelessWidget {
               children: [
                 Expanded(
                   child: _StatBox(
-                    icon: Icons.monitor_weight,
-                    label: 'Current',
+                    icon: Icons.monitor_weight_outlined,
+                    label: 'Peso Actual',
                     value: provider.latestWeight != null
                         ? '${provider.latestWeight!.toStringAsFixed(1)} lbs'
-                        : '-- lbs',
+                        : 'Pendiente',
                     color: const Color(0xFF4ECDC4),
                   ),
                 ),
@@ -104,7 +186,7 @@ class _OverviewTab extends StatelessWidget {
                 Expanded(
                   child: _StatBox(
                     icon: Icons.trending_down,
-                    label: 'Change',
+                    label: 'Diferencia',
                     value: provider.weightChange != null
                         ? '${provider.weightChange! >= 0 ? "+" : ""}${provider.weightChange!.toStringAsFixed(1)} lbs'
                         : '-- lbs',
@@ -117,28 +199,39 @@ class _OverviewTab extends StatelessWidget {
             ),
             const SizedBox(height: 24),
 
+            // Weekly Activity Chart
+            Text('Actividad Semanal', style: AppTextStyles.heading4),
+            const SizedBox(height: 12),
+            _WeeklyActivityChart(sessions: provider.sessions),
+            const SizedBox(height: 24),
+
             // Recent workout sessions
-            Text('Recent Sessions', style: AppTextStyles.heading4),
+            Text('Sesiones Recientes', style: AppTextStyles.heading4),
             const SizedBox(height: 12),
             if (provider.sessions.isEmpty)
-              _buildEmptyCard(context, 'No sessions yet', 'Complete a workout to see your history.', Icons.history)
+              _buildEmptyCard(
+                context,
+                'Sin sesiones aún',
+                'Completa un entrenamiento para ver tu historial.',
+                Icons.history,
+              )
             else
-              ...provider.sessions.take(5).map((session) => _SessionCard(session: session)),
+              ...provider.sessions.take(3).map((session) => _SessionCard(session: session)),
 
             const SizedBox(height: 24),
 
             // Weight log
-            Text('Weight History', style: AppTextStyles.heading4),
+            Text('Historial de Peso', style: AppTextStyles.heading4),
             const SizedBox(height: 12),
             if (provider.weightLog.isEmpty)
               _buildEmptyCard(
                 context,
-                'No weight entries',
-                'Start tracking your weight to see progress.',
+                'Sin registros de peso',
+                'Empieza a monitorear tu peso para ver el progreso.',
                 Icons.monitor_weight_outlined,
               )
             else
-              ...provider.weightLog.take(5).map((entry) => _WeightEntry(entry: entry)),
+              ...provider.weightLog.take(3).map((entry) => _WeightEntry(entry: entry, showDiff: false)),
           ],
         ),
       ),
@@ -177,42 +270,57 @@ class _WeightTab extends StatelessWidget {
     return RefreshIndicator(
       color: Theme.of(context).colorScheme.primary,
       onRefresh: () => provider.refreshAll(),
-      child: provider.weightLog.isEmpty
-          ? SingleChildScrollView(
-              physics: const AlwaysScrollableScrollPhysics(),
-              child: Padding(
-                padding: const EdgeInsets.all(32),
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const SizedBox(height: 80),
-                      Icon(
-                        Icons.monitor_weight_outlined,
-                        size: 64,
-                        color: AppColors.textSecondary.withValues(alpha: 0.4),
-                      ),
-                      const SizedBox(height: 16),
-                      Text('No weight records', style: AppTextStyles.heading4),
-                      const SizedBox(height: 8),
-                      Text(
-                        'Start logging your weight to track progress over time.',
-                        style: AppTextStyles.bodySmall,
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
+      child: ListView(
+        padding: const EdgeInsets.all(16),
+        children: [
+          // Weight Trend Chart
+          Text('Tendencia de Peso', style: AppTextStyles.heading4),
+          const SizedBox(height: 12),
+          _WeightTrendChart(weightLog: provider.weightLog),
+          const SizedBox(height: 24),
+
+          // Weight History List
+          Text('Historial Completo', style: AppTextStyles.heading4),
+          const SizedBox(height: 12),
+          if (provider.weightLog.isEmpty)
+            _buildEmptyState(
+              context,
+              'Sin registros',
+              'Registra tu peso para ver la evolución.',
+              Icons.monitor_weight_outlined,
             )
-          : ListView.separated(
-              padding: const EdgeInsets.all(16),
-              itemCount: provider.weightLog.length,
-              separatorBuilder: (_, __) => const SizedBox(height: 8),
-              itemBuilder: (context, index) {
-                return _WeightEntry(entry: provider.weightLog[index]);
-              },
+          else
+            ...List.generate(provider.weightLog.length, (index) {
+              final entry = provider.weightLog[index];
+              final previousEntry = index < provider.weightLog.length - 1 ? provider.weightLog[index + 1] : null;
+              return _WeightEntry(entry: entry, previousEntry: previousEntry);
+            }),
+          const SizedBox(height: 80), // Space for FAB
+        ],
+      ),
+    );
+  }
+
+  Widget _buildEmptyState(BuildContext context, String title, String subtitle, IconData icon) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const SizedBox(height: 40),
+          Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: AppColors.textSecondary.withValues(alpha: 0.05),
+              shape: BoxShape.circle,
             ),
+            child: Icon(icon, size: 64, color: AppColors.textSecondary.withValues(alpha: 0.2)),
+          ),
+          const SizedBox(height: 16),
+          Text(title, style: AppTextStyles.heading4),
+          const SizedBox(height: 8),
+          Text(subtitle, style: AppTextStyles.bodySmall, textAlign: TextAlign.center),
+        ],
+      ),
     );
   }
 }
@@ -227,94 +335,57 @@ class _GoalsTab extends StatelessWidget {
     return RefreshIndicator(
       color: Theme.of(context).colorScheme.primary,
       onRefresh: () => provider.refreshAll(),
-      child: provider.goals.isEmpty
-          ? SingleChildScrollView(
-              physics: const AlwaysScrollableScrollPhysics(),
-              child: Padding(
-                padding: const EdgeInsets.all(32),
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const SizedBox(height: 80),
-                      Icon(Icons.flag_outlined, size: 64, color: AppColors.textSecondary.withValues(alpha: 0.4)),
-                      const SizedBox(height: 16),
-                      Text('No goals set', style: AppTextStyles.heading4),
-                      const SizedBox(height: 8),
-                      Text(
-                        'Set goals to track your fitness journey.',
-                        style: AppTextStyles.bodySmall,
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            )
-          : ListView.separated(
-              padding: const EdgeInsets.all(16),
-              itemCount: provider.goals.length,
-              separatorBuilder: (_, __) => const SizedBox(height: 8),
-              itemBuilder: (context, index) {
-                final goal = provider.goals[index];
-                final isCompleted = goal['is_completed'] as bool? ?? false;
-                return Container(
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).cardTheme.color ?? Colors.white,
-                    borderRadius: BorderRadius.circular(14),
-                    boxShadow: [
-                      BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 8, offset: const Offset(0, 2)),
-                    ],
-                  ),
-                  child: Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(10),
-                        decoration: BoxDecoration(
-                          color: (isCompleted ? AppColors.success : Theme.of(context).colorScheme.primary).withValues(
-                            alpha: 0.1,
-                          ),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Icon(
-                          isCompleted ? Icons.check_circle : Icons.flag_outlined,
-                          color: isCompleted ? AppColors.success : Theme.of(context).colorScheme.primary,
-                          size: 24,
-                        ),
-                      ),
-                      const SizedBox(width: 14),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              goal['title'] as String? ?? '',
-                              style: AppTextStyles.bodyMedium.copyWith(
-                                fontWeight: FontWeight.w600,
-                                decoration: isCompleted ? TextDecoration.lineThrough : null,
-                              ),
-                            ),
-                            if ((goal['description'] as String? ?? '').isNotEmpty) ...[
-                              const SizedBox(height: 2),
-                              Text(goal['description'] as String, style: AppTextStyles.bodySmall),
-                            ],
-                          ],
-                        ),
-                      ),
-                      GestureDetector(
-                        onTap: () => provider.toggleGoal(goal['id'] as String, !isCompleted),
-                        child: Icon(
-                          isCompleted ? Icons.check_circle : Icons.radio_button_unchecked,
-                          color: isCompleted ? AppColors.success : AppColors.textSecondary,
-                          size: 28,
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              },
+      child: ListView(
+        padding: const EdgeInsets.all(16),
+        children: [
+          // Predefined Goals Section (Task 7)
+          Text('Metas Sugeridas', style: AppTextStyles.heading4),
+          const SizedBox(height: 12),
+          SizedBox(
+            height: 100,
+            child: ListView(
+              scrollDirection: Axis.horizontal,
+              children: [
+                _SuggestedGoalCard(title: 'Bajar de peso', icon: Icons.trending_down, color: Colors.blue),
+                _SuggestedGoalCard(title: 'Ganar músculo', icon: Icons.fitness_center, color: Colors.orange),
+                _SuggestedGoalCard(title: 'Mantenerse', icon: Icons.accessibility_new, color: Colors.green),
+              ],
             ),
+          ),
+          const SizedBox(height: 24),
+
+          Text('Mis Metas', style: AppTextStyles.heading4),
+          const SizedBox(height: 12),
+          if (provider.goals.isEmpty)
+            _buildEmptyState(
+              context,
+              'Sin metas',
+              'Establece objetivos para medir tu progreso.',
+              Icons.flag_outlined,
+            )
+          else
+            ...provider.goals.map((goal) {
+              return _GoalCard(goal: goal, provider: provider);
+            }),
+          const SizedBox(height: 80),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildEmptyState(BuildContext context, String title, String subtitle, IconData icon) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const SizedBox(height: 40),
+          Icon(icon, size: 64, color: AppColors.textSecondary.withValues(alpha: 0.2)),
+          const SizedBox(height: 16),
+          Text(title, style: AppTextStyles.heading4),
+          const SizedBox(height: 8),
+          Text(subtitle, style: AppTextStyles.bodySmall, textAlign: TextAlign.center),
+        ],
+      ),
     );
   }
 }
@@ -336,17 +407,289 @@ class _StatBox extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Theme.of(context).cardTheme.color ?? Colors.white,
-        borderRadius: BorderRadius.circular(14),
-        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 8, offset: const Offset(0, 2))],
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10, offset: const Offset(0, 4)),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, color: color, size: 24),
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(color: color.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(8)),
+            child: Icon(icon, color: color, size: 20),
+          ),
+          const SizedBox(height: 12),
+          Text(value, style: AppTextStyles.heading3.copyWith(color: color, fontSize: 18)),
+          const SizedBox(height: 4),
+          Text(label, style: AppTextStyles.bodySmall.copyWith(color: AppColors.textSecondary, fontSize: 11)),
+        ],
+      ),
+    );
+  }
+}
+
+class _WeeklyActivityChart extends StatelessWidget {
+  const _WeeklyActivityChart({required this.sessions});
+  final List<Map<String, dynamic>> sessions;
+
+  @override
+  Widget build(BuildContext context) {
+    // Calcular sesiones por día de la semana (últimos 7 días)
+    final now = DateTime.now();
+    final dayCounts = List.generate(7, (index) {
+      final day = now.subtract(Duration(days: 6 - index));
+      return sessions.where((s) {
+        final date = DateTime.parse(s['completed_at'] as String);
+        return date.year == day.year && date.month == day.month && date.day == day.day;
+      }).length;
+    });
+
+    final days = ['L', 'M', 'M', 'J', 'V', 'S', 'D'];
+    final todayIndex = now.weekday - 1;
+    final last7Days = List.generate(7, (i) => days[(todayIndex - 6 + i + 7) % 7]);
+
+    return Container(
+      height: 180,
+      padding: const EdgeInsets.fromLTRB(16, 24, 16, 12),
+      decoration: BoxDecoration(
+        color: Theme.of(context).cardTheme.color ?? Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10, offset: const Offset(0, 4))],
+      ),
+      child: BarChart(
+        BarChartData(
+          alignment: BarChartAlignment.spaceAround,
+          maxY: (dayCounts.reduce((a, b) => a > b ? a : b) + 1).toDouble(),
+          barTouchData: BarTouchData(enabled: false),
+          titlesData: FlTitlesData(
+            show: true,
+            bottomTitles: AxisTitles(
+              sideTitles: SideTitles(
+                showTitles: true,
+                getTitlesWidget: (value, meta) {
+                  return Padding(
+                    padding: const EdgeInsets.only(top: 8.0),
+                    child: Text(last7Days[value.toInt()], style: AppTextStyles.bodySmall.copyWith(fontSize: 10)),
+                  );
+                },
+                reservedSize: 28,
+              ),
+            ),
+            leftTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+            rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+            topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+          ),
+          gridData: const FlGridData(show: false),
+          borderData: FlBorderData(show: false),
+          barGroups: List.generate(7, (i) {
+            return BarChartGroupData(
+              x: i,
+              barRods: [
+                BarChartRodData(
+                  toY: dayCounts[i].toDouble(),
+                  color: dayCounts[i] > 0 ? Theme.of(context).colorScheme.primary : AppColors.textSecondary.withValues(alpha: 0.1),
+                  width: 14,
+                  borderRadius: const BorderRadius.vertical(top: Radius.circular(4)),
+                ),
+              ],
+            );
+          }),
+        ),
+      ),
+    );
+  }
+}
+
+class _WeightTrendChart extends StatelessWidget {
+  const _WeightTrendChart({required this.weightLog});
+  final List<Map<String, dynamic>> weightLog;
+
+  @override
+  Widget build(BuildContext context) {
+    final hasData = weightLog.isNotEmpty;
+    final displayData = hasData ? weightLog.reversed.toList() : _getDemoData();
+
+    return Container(
+      height: 200,
+      padding: const EdgeInsets.fromLTRB(16, 24, 24, 12),
+      decoration: BoxDecoration(
+        color: Theme.of(context).cardTheme.color ?? Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10, offset: const Offset(0, 4))],
+      ),
+      child: Opacity(
+        opacity: hasData ? 1.0 : 0.3,
+        child: LineChart(
+          LineChartData(
+            gridData: const FlGridData(show: false),
+            titlesData: FlTitlesData(
+              show: true,
+              bottomTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+              topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+              rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+              leftTitles: AxisTitles(
+                sideTitles: SideTitles(
+                  showTitles: true,
+                  reservedSize: 40,
+                  getTitlesWidget: (value, meta) {
+                    return Text('${value.toInt()}', style: AppTextStyles.bodySmall.copyWith(fontSize: 10));
+                  },
+                ),
+              ),
+            ),
+            borderData: FlBorderData(show: false),
+            lineBarsData: [
+              LineChartBarData(
+                spots: List.generate(displayData.length, (i) {
+                  final weight = (displayData[i]['weight'] as num).toDouble();
+                  return FlSpot(i.toDouble(), weight);
+                }),
+                isCurved: true,
+                color: Theme.of(context).colorScheme.primary,
+                barWidth: 4,
+                isStrokeCapRound: true,
+                dotData: const FlDotData(show: true),
+                belowBarData: BarAreaData(
+                  show: true,
+                  color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  List<Map<String, dynamic>> _getDemoData() {
+    return [
+      {'weight': 185.0},
+      {'weight': 183.5},
+      {'weight': 184.2},
+      {'weight': 181.8},
+      {'weight': 180.5},
+      {'weight': 179.0},
+    ];
+  }
+}
+
+class _SuggestedGoalCard extends StatelessWidget {
+  const _SuggestedGoalCard({required this.title, required this.icon, required this.color});
+  final String title;
+  final IconData icon;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 140,
+      margin: const EdgeInsets.only(right: 12),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.05),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: color.withValues(alpha: 0.1)),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(icon, color: color, size: 28),
           const SizedBox(height: 8),
-          Text(value, style: AppTextStyles.heading3.copyWith(color: color)),
-          const SizedBox(height: 2),
-          Text(label, style: AppTextStyles.bodySmall),
+          Text(
+            title,
+            style: AppTextStyles.bodySmall.copyWith(fontWeight: FontWeight.bold, color: color),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _GoalCard extends StatelessWidget {
+  const _GoalCard({required this.goal, required this.provider});
+  final Map<String, dynamic> goal;
+  final ProgressProvider provider;
+
+  @override
+  Widget build(BuildContext context) {
+    final isCompleted = goal['is_completed'] as bool? ?? false;
+    final title = goal['title'] as String? ?? '';
+    final description = goal['description'] as String? ?? '';
+    
+    // Simular progreso para demostración (Task 8)
+    double progress = isCompleted ? 1.0 : 0.45;
+    String progressText = isCompleted ? "Meta alcanzada" : "Llevas 5 lbs de 20 lbs";
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.all(18),
+      decoration: BoxDecoration(
+        color: Theme.of(context).cardTheme.color ?? Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10, offset: const Offset(0, 4))],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: (isCompleted ? AppColors.success : Theme.of(context).colorScheme.primary).withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(
+                  isCompleted ? Icons.check_circle : Icons.flag_outlined,
+                  color: isCompleted ? AppColors.success : Theme.of(context).colorScheme.primary,
+                  size: 22,
+                ),
+              ),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: AppTextStyles.bodyMedium.copyWith(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                        decoration: isCompleted ? TextDecoration.lineThrough : null,
+                      ),
+                    ),
+                    if (description.isNotEmpty)
+                      Text(description, style: AppTextStyles.bodySmall.copyWith(fontSize: 12)),
+                  ],
+                ),
+              ),
+              IconButton(
+                icon: Icon(
+                  isCompleted ? Icons.check_circle : Icons.radio_button_unchecked,
+                  color: isCompleted ? AppColors.success : AppColors.textSecondary.withValues(alpha: 0.3),
+                  size: 28,
+                ),
+                onPressed: () => provider.toggleGoal(goal['id'] as String, !isCompleted),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: LinearProgressIndicator(
+              value: progress,
+              backgroundColor: AppColors.textSecondary.withValues(alpha: 0.1),
+              valueColor: AlwaysStoppedAnimation<Color>(
+                isCompleted ? AppColors.success : Theme.of(context).colorScheme.primary,
+              ),
+              minHeight: 8,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(progressText, style: AppTextStyles.bodySmall.copyWith(fontSize: 11, fontWeight: FontWeight.w500)),
         ],
       ),
     );
@@ -359,7 +702,7 @@ class _SessionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final name = session['workout_name'] as String? ?? 'Workout';
+    final name = session['workout_name'] as String? ?? 'Entrenamiento';
     final duration = session['duration_minutes'] as int? ?? 0;
     final calories = session['calories_burned'] as int? ?? 0;
     final completedAt = session['completed_at'] as String? ?? '';
@@ -370,22 +713,22 @@ class _SessionCard extends StatelessWidget {
         final date = DateTime.parse(completedAt);
         final diff = DateTime.now().difference(date);
         if (diff.inDays > 0) {
-          timeAgo = '${diff.inDays}d ago';
+          timeAgo = 'hace ${diff.inDays}d';
         } else if (diff.inHours > 0) {
-          timeAgo = '${diff.inHours}h ago';
+          timeAgo = 'hace ${diff.inHours}h';
         } else {
-          timeAgo = '${diff.inMinutes}m ago';
+          timeAgo = 'hace ${diff.inMinutes}m';
         }
       } catch (_) {}
     }
 
     return Container(
-      margin: const EdgeInsets.only(bottom: 8),
+      margin: const EdgeInsets.only(bottom: 10),
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         color: Theme.of(context).cardTheme.color ?? Colors.white,
-        borderRadius: BorderRadius.circular(14),
-        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 6, offset: const Offset(0, 2))],
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 8, offset: const Offset(0, 2))],
       ),
       child: Row(
         children: [
@@ -395,17 +738,17 @@ class _SessionCard extends StatelessWidget {
               color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: Icon(Icons.fitness_center, color: Theme.of(context).colorScheme.primary, size: 20),
+            child: Icon(Icons.fitness_center_outlined, color: Theme.of(context).colorScheme.primary, size: 20),
           ),
           const SizedBox(width: 14),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(name, style: AppTextStyles.bodyMedium.copyWith(fontWeight: FontWeight.w600)),
-                const SizedBox(height: 2),
+                Text(name, style: AppTextStyles.bodyMedium.copyWith(fontWeight: FontWeight.bold)),
+                const SizedBox(height: 4),
                 Text(
-                  '${duration}min • ${calories}cal ${timeAgo.isNotEmpty ? "• $timeAgo" : ""}',
+                  '${duration} min • ${calories} cal ${timeAgo.isNotEmpty ? "• $timeAgo" : ""}',
                   style: AppTextStyles.bodySmall,
                 ),
               ],
@@ -418,30 +761,37 @@ class _SessionCard extends StatelessWidget {
 }
 
 class _WeightEntry extends StatelessWidget {
-  const _WeightEntry({required this.entry});
+  const _WeightEntry({required this.entry, this.previousEntry, this.showDiff = true});
   final Map<String, dynamic> entry;
+  final Map<String, dynamic>? previousEntry;
+  final bool showDiff;
 
   @override
   Widget build(BuildContext context) {
     final weight = (entry['weight'] as num?)?.toDouble() ?? 0;
     final recordedAt = entry['recorded_at'] as String? ?? '';
-    final notes = entry['notes'] as String? ?? '';
+    
+    double? diff;
+    if (previousEntry != null) {
+      final prevWeight = (previousEntry!['weight'] as num).toDouble();
+      diff = weight - prevWeight;
+    }
 
     String dateStr = '';
     if (recordedAt.isNotEmpty) {
       try {
         final date = DateTime.parse(recordedAt);
-        dateStr = '${date.month}/${date.day}/${date.year}';
+        dateStr = DateFormat('dd MMM').format(date);
       } catch (_) {}
     }
 
     return Container(
-      margin: const EdgeInsets.only(bottom: 8),
+      margin: const EdgeInsets.only(bottom: 10),
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         color: Theme.of(context).cardTheme.color ?? Colors.white,
-        borderRadius: BorderRadius.circular(14),
-        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 6, offset: const Offset(0, 2))],
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 8, offset: const Offset(0, 2))],
       ),
       child: Row(
         children: [
@@ -451,7 +801,7 @@ class _WeightEntry extends StatelessWidget {
               color: const Color(0xFF4ECDC4).withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: const Icon(Icons.monitor_weight, color: Color(0xFF4ECDC4), size: 20),
+            child: const Icon(Icons.monitor_weight_outlined, color: Color(0xFF4ECDC4), size: 20),
           ),
           const SizedBox(width: 14),
           Expanded(
@@ -460,13 +810,27 @@ class _WeightEntry extends StatelessWidget {
               children: [
                 Text(
                   '${weight.toStringAsFixed(1)} lbs',
-                  style: AppTextStyles.bodyMedium.copyWith(fontWeight: FontWeight.w600),
+                  style: AppTextStyles.bodyMedium.copyWith(fontWeight: FontWeight.bold),
                 ),
-                if (notes.isNotEmpty) Text(notes, style: AppTextStyles.bodySmall),
+                Text(dateStr, style: AppTextStyles.bodySmall),
               ],
             ),
           ),
-          if (dateStr.isNotEmpty) Text(dateStr, style: AppTextStyles.bodySmall),
+          if (showDiff && diff != null)
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+              decoration: BoxDecoration(
+                color: (diff <= 0 ? Colors.green : Colors.red).withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Text(
+                '${diff > 0 ? "+" : ""}${diff.toStringAsFixed(1)}',
+                style: AppTextStyles.bodySmall.copyWith(
+                  color: diff <= 0 ? Colors.green : Colors.red,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
         ],
       ),
     );
