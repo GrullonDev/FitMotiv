@@ -46,7 +46,7 @@ class PlansProvider extends ChangeNotifier {
   Future<void> loadAll() async {
     _isLoading = true;
     _error = null;
-    notifyListeners();
+    Future.microtask(() => notifyListeners());
 
     try {
       final results = await Future.wait([
@@ -70,7 +70,7 @@ class PlansProvider extends ChangeNotifier {
       debugPrint('❌ Error loading plans: $e');
     } finally {
       _isLoading = false;
-      notifyListeners();
+      Future.microtask(() => notifyListeners());
     }
   }
 

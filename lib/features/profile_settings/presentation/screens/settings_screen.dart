@@ -33,36 +33,36 @@ class SettingsScreen extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         children: [
-          FadeInDown(duration: const Duration(milliseconds: 400), child: _buildSectionTitle('Profile')),
+          FadeInDown(duration: const Duration(milliseconds: 400), child: _buildSectionTitle(localeProvider.translate('profile'))),
           FadeInDown(
             duration: const Duration(milliseconds: 500),
             child: _buildSectionCard(context, [
               _buildSettingItem(
                 context,
                 icon: Icons.person_outline,
-                title: 'Edit Profile',
-                subtitle: 'Update your personal information',
+                title: localeProvider.translate('edit_profile'),
+                subtitle: localeProvider.translate('update_profile_info'),
                 onTap: () => Navigator.pushNamed(context, '/profile'),
               ),
               _buildDivider(),
               _buildSettingItem(
                 context,
                 icon: Icons.fitness_center_outlined,
-                title: 'Fitness Goals',
-                subtitle: 'Set your workout and health goals',
+                title: localeProvider.translate('fitness_goals_settings'),
+                subtitle: localeProvider.translate('fitness_goals_subtitle'),
                 onTap: () {},
               ),
             ]),
           ),
           const SizedBox(height: 24),
-          FadeInDown(duration: const Duration(milliseconds: 600), child: _buildSectionTitle('Preferences')),
+          FadeInDown(duration: const Duration(milliseconds: 600), child: _buildSectionTitle(localeProvider.translate('preferences'))),
           FadeInDown(
             duration: const Duration(milliseconds: 700),
             child: _buildSectionCard(context, [
               _buildSettingItem(
                 context,
                 icon: Icons.notifications_none,
-                title: 'Notifications',
+                title: localeProvider.translate('notifications'),
                 subtitle: 'Manage your notification preferences',
                 onTap: () => Navigator.pushNamed(context, '/notifications'),
               ),
@@ -70,7 +70,7 @@ class SettingsScreen extends StatelessWidget {
               _buildSettingItem(
                 context,
                 icon: Icons.dark_mode_outlined,
-                title: 'Dark Mode',
+                title: localeProvider.translate('dark_mode'),
                 subtitle: 'Toggle dark mode on/off',
                 trailing: Switch(
                   value: themeProvider.themeMode == ThemeMode.dark,
@@ -85,7 +85,7 @@ class SettingsScreen extends StatelessWidget {
                 context,
                 icon: Icons.language_outlined,
                 title: localeProvider.translate('language'),
-                subtitle: localeProvider.locale.languageCode == 'en' ? 'English' : 'Español',
+                subtitle: localeProvider.locale.languageCode == 'en' ? localeProvider.translate('english') : localeProvider.translate('spanish'),
                 onTap: () {
                   final newLocale = localeProvider.locale.languageCode == 'en'
                       ? const Locale('es')
@@ -94,18 +94,18 @@ class SettingsScreen extends StatelessWidget {
                 },
               ),
               _buildDivider(),
-              _buildColorPicker(context, themeProvider),
+              _buildColorPicker(context, themeProvider, localeProvider),
             ]),
           ),
           const SizedBox(height: 24),
-          FadeInDown(duration: const Duration(milliseconds: 800), child: _buildSectionTitle('Support')),
+          FadeInDown(duration: const Duration(milliseconds: 800), child: _buildSectionTitle(localeProvider.translate('support'))),
           FadeInDown(
             duration: const Duration(milliseconds: 900),
             child: _buildSectionCard(context, [
               _buildSettingItem(
                 context,
                 icon: Icons.help_outline,
-                title: 'Help & FAQ',
+                title: localeProvider.translate('help_faq'),
                 subtitle: 'Get help and find answers',
                 onTap: () => Navigator.pushNamed(context, '/faq'),
               ),
@@ -113,7 +113,7 @@ class SettingsScreen extends StatelessWidget {
               _buildSettingItem(
                 context,
                 icon: Icons.mail_outline,
-                title: 'Send Feedback',
+                title: localeProvider.translate('send_feedback'),
                 subtitle: 'Communicate with support',
                 onTap: _sendEmail,
               ),
@@ -178,7 +178,7 @@ class SettingsScreen extends StatelessWidget {
     return Divider(height: 1, indent: 70, endIndent: 20, color: Colors.grey.withValues(alpha: 0.1));
   }
 
-  Widget _buildColorPicker(BuildContext context, ThemeProvider themeProvider) {
+  Widget _buildColorPicker(BuildContext context, ThemeProvider themeProvider, LocaleProvider localeProvider) {
     final colors = [
       const Color(0xFF00D4A3), // Green
       const Color(0xFF3B82F6), // Blue
@@ -203,7 +203,7 @@ class SettingsScreen extends StatelessWidget {
                 child: Icon(Icons.palette_outlined, color: themeProvider.primaryColor, size: 24),
               ),
               const SizedBox(width: 16),
-              const Text('App Color', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16)),
+              Text(localeProvider.translate('app_color'), style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 16)),
             ],
           ),
           const SizedBox(height: 16),

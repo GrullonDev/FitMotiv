@@ -45,17 +45,21 @@ class NotificationService {
   }
 
   Future<void> _saveToken() async {
-    final userId = _supabase.auth.currentUser?.id;
-    if (userId == null) return;
+    try {
+      final userId = _supabase.auth.currentUser?.id;
+      if (userId == null) return;
 
-    String? token = await _fcm.getToken();
-    if (token != null) {
-      await _supabase.from('fcm_tokens').upsert({
-        'user_id': userId,
-        'token': token,
-        'device_type': Platform.isAndroid ? 'android' : 'ios',
-        'updated_at': DateTime.now().toIso8601String(),
-      });
+      String? token = await _fcm.getToken();
+      if (token != null) {
+        await _supabase.from('fcm_tokens').upsert({
+          'user_id': userId,
+          'token': token,
+          'device_type': Platform.isAndroid ? 'android' : 'ios',
+          'updated_at': DateTime.now().toIso8601String(),
+        });
+      }
+    } catch (e) {
+      debugPrint('🔔 Error saving FCM token: $e');
     }
   }
 

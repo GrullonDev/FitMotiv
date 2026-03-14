@@ -40,7 +40,9 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
   @override
   void initState() {
     super.initState();
-    _loadExercisesFromSupabase();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadExercisesFromSupabase();
+    });
   }
 
   Future<void> _loadExercisesFromSupabase() async {

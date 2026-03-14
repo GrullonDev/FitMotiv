@@ -17,9 +17,9 @@ class DashboardProvider extends ChangeNotifier {
 
   Future<void> fetchQuote() async {
     _loading = true;
-    notifyListeners();
+    Future.microtask(() => notifyListeners());
     _quote = await getDailyQuote();
     _loading = false;
-    notifyListeners();
+    Future.microtask(() => notifyListeners());
   }
 }

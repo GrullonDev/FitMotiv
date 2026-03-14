@@ -44,6 +44,6 @@ class ThemeProvider extends ChangeNotifier {
       _primaryColor = Color(colorValue);
     }
 
-    notifyListeners();
+    Future.microtask(() => notifyListeners());
   }
 }

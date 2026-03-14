@@ -35,9 +35,9 @@ class CommunityScreen extends StatelessWidget {
             unselectedLabelColor: Theme.of(context).colorScheme.onSurfaceVariant,
             indicatorColor: Theme.of(context).colorScheme.primary,
             tabs: [
-              const Tab(text: 'Noticias'),
-              const Tab(text: 'Miembros'),
-              const Tab(text: 'Mensajes'),
+              Tab(text: l10n.translate('feed')),
+              Tab(text: l10n.translate('members')),
+              Tab(text: l10n.translate('messages')),
             ],
           ),
         ),
@@ -60,7 +60,7 @@ class CommunityScreen extends StatelessWidget {
                     onPressed: () => _showCreatePostDialog(context, provider),
                     backgroundColor: Theme.of(context).colorScheme.primary,
                     icon: const Icon(Icons.add, color: Colors.white),
-                    label: const Text('Nuevo Post', style: TextStyle(color: Colors.white)),
+                    label: Text(l10n.translate('new_post'), style: const TextStyle(color: Colors.white)),
                   );
                 }
                 // Mostrar en la pestaña de Mensajes (index 2) para nuevo chat
@@ -71,7 +71,7 @@ class CommunityScreen extends StatelessWidget {
                     },
                     backgroundColor: Theme.of(context).colorScheme.primary,
                     icon: const Icon(Icons.add_comment, color: Colors.white),
-                    label: const Text('Nuevo Chat', style: TextStyle(color: Colors.white)),
+                    label: Text(l10n.translate('new_chat'), style: const TextStyle(color: Colors.white)),
                   );
                 }
                 return const SizedBox.shrink();
@@ -85,20 +85,21 @@ class CommunityScreen extends StatelessWidget {
 
   void _showCreatePostDialog(BuildContext context, CommunityProvider provider) {
     final controller = TextEditingController();
+    final l10n = context.read<LocaleProvider>();
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Crear Post'),
+        title: Text(l10n.translate('create_post')),
         content: TextField(
           controller: controller,
           maxLines: 4,
           decoration: InputDecoration(
-            hintText: "¿En qué estás pensando?",
+            hintText: l10n.translate('whats_on_your_mind'),
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
           ),
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancelar')),
+          TextButton(onPressed: () => Navigator.pop(context), child: Text(l10n.translate('cancel'))),
           ElevatedButton(
             onPressed: () async {
               if (controller.text.trim().isNotEmpty) {
@@ -112,7 +113,7 @@ class CommunityScreen extends StatelessWidget {
               backgroundColor: Theme.of(context).colorScheme.primary,
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             ),
-            child: const Text('Publicar', style: TextStyle(color: Colors.white)),
+            child: Text(l10n.translate('publish'), style: const TextStyle(color: Colors.white)),
           ),
         ],
       ),

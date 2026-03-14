@@ -51,7 +51,7 @@ class ProgressProvider extends ChangeNotifier {
   Future<void> loadAll() async {
     _isLoading = true;
     _error = null;
-    notifyListeners();
+    Future.microtask(() => notifyListeners());
 
     try {
       final results = await Future.wait([
@@ -68,7 +68,7 @@ class ProgressProvider extends ChangeNotifier {
       debugPrint('❌ Error loading progress: $e');
     } finally {
       _isLoading = false;
-      notifyListeners();
+      Future.microtask(() => notifyListeners());
     }
   }
 

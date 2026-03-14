@@ -1,5 +1,6 @@
 import 'package:fit_motiv/constants/app_colors.dart';
 import 'package:fit_motiv/constants/app_text_styles.dart';
+import 'package:fit_motiv/core/localization/locale_provider.dart';
 import 'package:fit_motiv/features/community/presentation/providers/community_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -43,7 +44,8 @@ class _PostDetailsScreenState extends State<PostDetailsScreen> {
     final provider = context.watch<CommunityProvider>();
     final post = widget.post;
     final profiles = post['profiles'] as Map<String, dynamic>?;
-    final authorName = profiles?['full_name'] as String? ?? profiles?['username'] as String? ?? 'Anonymous';
+    final l10n = context.read<LocaleProvider>();
+    final authorName = profiles?['full_name'] as String? ?? profiles?['username'] as String? ?? l10n.translate('anonymous');
     final content = post['content'] as String? ?? '';
 
     final avatarUrl = 'https://api.dicebear.com/8.x/initials/png?seed=${Uri.encodeComponent(authorName)}';
@@ -51,7 +53,7 @@ class _PostDetailsScreenState extends State<PostDetailsScreen> {
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
-        title: const Text('Publicación'),
+        title: Text(l10n.translate('post_view')),
         backgroundColor: AppColors.background,
         elevation: 0,
         leading: IconButton(
@@ -81,13 +83,13 @@ class _PostDetailsScreenState extends State<PostDetailsScreen> {
                   const SizedBox(height: 16),
                   Text(content, style: AppTextStyles.bodyLarge),
                   const Divider(height: 32),
-                  Text('Comentarios', style: AppTextStyles.heading4),
+                  Text(l10n.translate('comments'), style: AppTextStyles.heading4),
                   const SizedBox(height: 16),
 
                   // Comments List
                   if (provider.postComments.isEmpty)
-                    const Center(
-                      child: Padding(padding: EdgeInsets.all(32.0), child: Text('No hay comentarios aún. ¡Sé el primero!')),
+                    Center(
+                      child: Padding(padding: const EdgeInsets.all(32.0), child: Text(l10n.translate('no_comments_yet'))),
                     )
                   else
                     ListView.separated(
@@ -99,7 +101,7 @@ class _PostDetailsScreenState extends State<PostDetailsScreen> {
                         final comment = provider.postComments[index];
                         final cProfiles = comment['profiles'] as Map<String, dynamic>?;
                         final cAuthor =
-                            cProfiles?['full_name'] as String? ?? cProfiles?['username'] as String? ?? 'Usuario';
+                            cProfiles?['full_name'] as String? ?? cProfiles?['username'] as String? ?? l10n.translate('user');
                         final cAvatarUrl = 'https://api.dicebear.com/8.x/initials/png?seed=${Uri.encodeComponent(cAuthor)}';
 
                         return Row(
@@ -155,7 +157,7 @@ class _PostDetailsScreenState extends State<PostDetailsScreen> {
                   child: TextField(
                     controller: _commentController,
                     decoration: InputDecoration(
-                      hintText: 'Escribe un comentario...',
+                      hintText: l10n.translate('write_comment'),
                       hintStyle: AppTextStyles.bodySmall,
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(24), borderSide: const BorderSide(color: AppColors.border)),
                       enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(24), borderSide: const BorderSide(color: AppColors.border)),

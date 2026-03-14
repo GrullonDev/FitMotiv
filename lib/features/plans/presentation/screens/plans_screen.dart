@@ -95,8 +95,8 @@ class PlansScreen extends StatelessWidget {
             if (plans.isEmpty)
               _buildEmptyState(
                 context,
-                'No hay planes disponibles',
-                'Los planes de nutrición aparecerán aquí.',
+                l10n.translate('no_posts'), // Or more specific if added
+                l10n.translate('personalized_meal_plans'),
                 Icons.restaurant_menu,
               )
             else if (isMobile)
@@ -272,7 +272,12 @@ class PlansScreen extends StatelessWidget {
             Text(l10n.translate('did_you_know'), style: AppTextStyles.heading4),
             const SizedBox(height: 16),
             if (provider.tips.isEmpty)
-              _buildEmptyState(context, 'Sin tips', 'Los tips nutricionales aparecerán aquí.', Icons.lightbulb_outline)
+              _buildEmptyState(
+                context,
+                l10n.translate('tips'),
+                'Daily updates here',
+                Icons.lightbulb_outline,
+              )
             else
               SizedBox(
                 height: 190,
@@ -306,8 +311,8 @@ class PlansScreen extends StatelessWidget {
             if (provider.articles.isEmpty)
               _buildEmptyState(
                 context,
-                'Sin artículos',
-                'Los artículos recomendados aparecerán aquí.',
+                l10n.translate('no_account'), // Use descriptive key if available
+                l10n.translate('recipes'),
                 Icons.article_outlined,
               )
             else

@@ -42,7 +42,7 @@ class WorkoutProvider extends ChangeNotifier {
     }
 
     _loadingExercises = true;
-    notifyListeners();
+    Future.microtask(() => notifyListeners());
 
     try {
       final exercises = await _datasource.getExercises(workoutId);
@@ -53,7 +53,7 @@ class WorkoutProvider extends ChangeNotifier {
       return [];
     } finally {
       _loadingExercises = false;
-      notifyListeners();
+      Future.microtask(() => notifyListeners());
     }
   }
 
@@ -61,7 +61,7 @@ class WorkoutProvider extends ChangeNotifier {
   Future<void> loadWorkouts() async {
     _isLoading = true;
     _error = null;
-    notifyListeners();
+    Future.microtask(() => notifyListeners());
 
     try {
       _workouts = await _datasource.getWorkouts();
@@ -72,7 +72,7 @@ class WorkoutProvider extends ChangeNotifier {
       debugPrint('❌ Error loading workouts: $e');
     } finally {
       _isLoading = false;
-      notifyListeners();
+      Future.microtask(() => notifyListeners());
     }
   }
 

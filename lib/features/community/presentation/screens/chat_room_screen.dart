@@ -1,5 +1,6 @@
 import 'package:fit_motiv/constants/app_colors.dart';
 import 'package:fit_motiv/constants/app_text_styles.dart';
+import 'package:fit_motiv/core/localization/locale_provider.dart';
 import 'package:fit_motiv/features/community/presentation/providers/community_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -56,6 +57,8 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     final provider = context.watch<CommunityProvider>();
     final currentUserId = Supabase.instance.client.auth.currentUser?.id;
 
+    final l10n = context.read<LocaleProvider>();
+
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
@@ -84,7 +87,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
         children: [
           Expanded(
             child: provider.currentMessages.isEmpty
-                ? const Center(child: Text('No messages yet. Say hi!'))
+                ? Center(child: Text(l10n.translate('no_conversations')))
                 : ListView.builder(
                     controller: _scrollController,
                     reverse: true,
@@ -97,7 +100,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                     },
                   ),
           ),
-          _buildInputArea(),
+          _buildInputArea(l10n),
         ],
       ),
     );
@@ -126,7 +129,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     );
   }
 
-  Widget _buildInputArea() {
+  Widget _buildInputArea(LocaleProvider l10n) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -143,7 +146,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                 controller: _controller,
                 style: AppTextStyles.bodyMedium,
                 decoration: InputDecoration(
-                  hintText: "Escribe un mensaje...",
+                  hintText: l10n.translate('start_new_chat'),
                   hintStyle: AppTextStyles.bodyMedium.copyWith(color: AppColors.textSecondary),
                   border: InputBorder.none,
                 ),

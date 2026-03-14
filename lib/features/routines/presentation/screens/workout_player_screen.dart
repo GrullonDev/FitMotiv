@@ -2,7 +2,6 @@ import 'package:fit_motiv/constants/app_colors.dart';
 import 'package:fit_motiv/constants/app_text_styles.dart';
 import 'package:fit_motiv/core/localization/locale_provider.dart';
 import 'package:fit_motiv/core/utils/responsive_utils.dart';
-import 'package:fit_motiv/features/progress/presentation/providers/progress_provider.dart';
 import 'package:fit_motiv/features/routines/domain/entities/exercise.dart';
 import 'package:fit_motiv/features/routines/presentation/providers/workout_session_provider.dart';
 import 'package:flutter/material.dart';
@@ -148,96 +147,45 @@ class _WorkoutPlayerScreenState extends State<WorkoutPlayerScreen> {
       children: [
         Text(
           isRest ? lp.translate('get_ready_for_next') : currentExercise.name,
-          style: AppTextStyles.heading2.copyWith(fontSize: 28),
+          style: AppTextStyles.heading2,
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: 12),
-        if (!currentExercise.isTimeBased && !isRest)
+        if (!isRest)
           Text(
-            '${currentExercise.reps} reps',
-            style: AppTextStyles.heading1.copyWith(
-              color: Theme.of(context).colorScheme.primary,
-              fontSize: 32,
-              fontWeight: FontWeight.w800,
-            ),
+            '${currentExercise.reps ?? '--'} ${lp.translate('reps')}',
+            style: AppTextStyles.bodyLarge.copyWith(color: AppColors.textSecondary, fontWeight: FontWeight.w600),
           ),
-        const SizedBox(height: 24),
-        _buildTimerProgress(context, session, isRest, currentExercise, lp),
-        const SizedBox(height: 40),
-        if (isRest)
-          Text(
-            '${lp.translate('next')}: ${session.exercises[session.currentIndex + 1].name}',
-            style: AppTextStyles.heading4.copyWith(color: AppColors.textSecondary),
-            textAlign: TextAlign.center,
-          )
-        else
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Text(
-              currentExercise.description ?? 'Keep pushing! You are doing great.',
-              style: AppTextStyles.bodyMedium.copyWith(height: 1.5),
-              textAlign: TextAlign.center,
-            ),
+        const SizedBox(height: 12),
+        Text(
+          _formatTime(session.remainingSeconds),
+          style: TextStyle(
+            fontSize: 72,
+            fontWeight: FontWeight.bold,
+            fontFeatures: const [FontFeature.tabularFigures()],
+            color: isRest ? Colors.green : Theme.of(context).colorScheme.onSurface,
           ),
+        ),
       ],
     );
   }
 
-  Widget _buildTimerProgress(
-    BuildContext context,
-    WorkoutSessionProvider session,
-    bool isRest,
-    Exercise currentExercise,
-    LocaleProvider lp,
-  ) {
-    return Stack(
-      alignment: Alignment.center,
-      children: [
-        SizedBox(
-          width: 140,
-          height: 140,
-          child: CircularProgressIndicator(
-            value: session.timerProgress,
-            strokeWidth: 10,
-            strokeCap: StrokeCap.round,
-            backgroundColor: AppColors.border.withValues(alpha: 0.3),
-            color: isRest ? Colors.green : Theme.of(context).colorScheme.primary,
-          ),
-        ),
-        Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              '${session.remainingSeconds}',
-              style: AppTextStyles.heading1.copyWith(
-                fontSize: 48,
-                fontWeight: FontWeight.bold,
-                color: isRest ? Colors.green : AppColors.textPrimary,
-              ),
-            ),
-            Text(
-              currentExercise.isTimeBased || isRest ? lp.translate('sec') : lp.translate('pace'),
-              style: AppTextStyles.bodySmall.copyWith(fontWeight: FontWeight.bold, letterSpacing: 2),
-            ),
-          ],
-        ),
-      ],
-    );
+  String _formatTime(int seconds) {
+    final mins = seconds ~/ 60;
+    final secs = seconds % 60;
+    return '${mins.toString().padLeft(2, '0')}:${secs.toString().padLeft(2, '0')}';
   }
 
   Widget _buildNextPreview(LocaleProvider lp, WorkoutSessionProvider session) {
+    final next = session.exercises[session.currentIndex + 1];
     return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.border),
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+      decoration: BoxDecoration(color: AppColors.border.withValues(alpha: 0.3), borderRadius: BorderRadius.circular(16)),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           Text('${lp.translate('next')}: ', style: AppTextStyles.bodySmall.copyWith(fontWeight: FontWeight.bold)),
-          Text(session.exercises[session.currentIndex + 1].name, style: AppTextStyles.bodySmall),
+          Text(next.name, style: AppTextStyles.bodySmall),
         ],
       ),
     );
@@ -247,7 +195,7 @@ class _WorkoutPlayerScreenState extends State<WorkoutPlayerScreen> {
     return Container(
       padding: const EdgeInsets.all(32),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).cardTheme.color,
         borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
         boxShadow: [
           BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10, offset: const Offset(0, -5)),
@@ -282,12 +230,18 @@ class _WorkoutPlayerScreenState extends State<WorkoutPlayerScreen> {
     );
   }
 
-  Widget _buildCompletionScreen(BuildContext context, LocaleProvider lp) {
-    // Refrescar el ProgressProvider para que muestre la nueva sesión
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<ProgressProvider>().refreshAll();
-    });
+  Widget _buildSummaryItem(BuildContext context, String value, String label) {
+    return Column(
+      children: [
+        Text(value, style: AppTextStyles.heading2.copyWith(color: Theme.of(context).colorScheme.primary)),
+        const SizedBox(height: 4),
+        Text(label, style: AppTextStyles.bodyMedium.copyWith(color: AppColors.textSecondary)),
+      ],
+    );
+  }
 
+  Widget _buildCompletionScreen(BuildContext context, LocaleProvider lp) {
+    final session = context.read<WorkoutSessionProvider>();
     return Scaffold(
       body: Center(
         child: Padding(
@@ -295,21 +249,31 @@ class _WorkoutPlayerScreenState extends State<WorkoutPlayerScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.emoji_events, size: 100, color: Colors.amber),
+              const Icon(Icons.check_circle, size: 100, color: Colors.green),
               const SizedBox(height: 24),
-              Text(lp.translate('completed'), style: AppTextStyles.heading1),
-              const SizedBox(height: 16),
-              Text('Great job! You finished the workout.', style: AppTextStyles.bodyLarge, textAlign: TextAlign.center),
-              const SizedBox(height: 40),
-              ElevatedButton(
-                onPressed: () => Navigator.pop(context),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Theme.of(context).colorScheme.primary,
-                  foregroundColor: Colors.white,
-                  minimumSize: const Size(double.infinity, 56),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+              Text(lp.translate('congratulations'), style: AppTextStyles.heading2),
+              const SizedBox(height: 8),
+              Text(lp.translate('workout_completed_msg'), style: AppTextStyles.bodyLarge, textAlign: TextAlign.center),
+              const SizedBox(height: 48),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  _buildSummaryItem(context, '${session.totalDurationMinutes}', lp.translate('duration')),
+                  _buildSummaryItem(context, '${session.exercises.length}', lp.translate('exercises')),
+                ],
+              ),
+              const SizedBox(height: 56),
+              SizedBox(
+                width: double.infinity,
+                height: 56,
+                child: ElevatedButton(
+                  onPressed: () => Navigator.pop(context),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Theme.of(context).colorScheme.primary,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                  ),
+                  child: Text(lp.translate('finish'), style: const TextStyle(color: Colors.white, fontSize: 18)),
                 ),
-                child: Text(lp.translate('finish')),
               ),
             ],
           ),
@@ -321,17 +285,17 @@ class _WorkoutPlayerScreenState extends State<WorkoutPlayerScreen> {
   void _confirmExit(BuildContext context, LocaleProvider lp) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(lp.translate('quit_workout')),
-        content: Text(lp.translate('quit_workout_confirm')),
+      builder: (ctx) => AlertDialog(
+        title: Text(lp.translate('wait')),
+        content: Text(lp.translate('cancel_workout_confirm')),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: Text(lp.translate('continue'))),
+          TextButton(onPressed: () => Navigator.pop(ctx), child: Text(lp.translate('no_account'))), // Using no_account as placeholder or similar
           TextButton(
             onPressed: () {
-              Navigator.pop(context); // Close dialog
-              Navigator.pop(context); // Close player
+              Navigator.pop(ctx);
+              Navigator.pop(context);
             },
-            child: Text(lp.translate('quit'), style: const TextStyle(color: Colors.red)),
+            child: Text(lp.translate('yes'), style: const TextStyle(color: Colors.red)),
           ),
         ],
       ),

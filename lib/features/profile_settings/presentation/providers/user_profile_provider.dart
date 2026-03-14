@@ -32,7 +32,7 @@ class UserProfileProvider extends ChangeNotifier {
   Future<void> loadProfile() async {
     _isLoading = true;
     _error = null;
-    notifyListeners();
+    Future.microtask(() => notifyListeners());
 
     try {
       final data = await _datasource.getCurrentProfile();
@@ -43,7 +43,7 @@ class UserProfileProvider extends ChangeNotifier {
       debugPrint('❌ Error loading profile: $e');
     } finally {
       _isLoading = false;
-      notifyListeners();
+      Future.microtask(() => notifyListeners());
     }
   }
 

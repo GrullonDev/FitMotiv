@@ -41,13 +41,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
               const SizedBox(height: 24),
               _buildUserStatsRow(context),
               const SizedBox(height: 24),
-              _buildProgressSection(),
+              _buildProgressSection(context),
               const SizedBox(height: 24),
               _buildQuoteSection(context),
               const SizedBox(height: 24),
-              _buildWorkoutSection(),
+              _buildWorkoutSection(context),
               const SizedBox(height: 24),
-              _buildRecipeSection(),
+              _buildRecipeSection(context),
             ],
           ),
         ),
@@ -60,7 +60,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final profile = profileProvider.profile;
     final firstName = profile != null
         ? profile.displayName.split(' ').first
-        : 'User';
+        : context.read<LocaleProvider>().translate('profile');
 
     return FadeInDown(
       duration: const Duration(milliseconds: 600),
@@ -71,7 +71,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Welcome back,', style: AppTextStyles.welcome),
+                Text(context.read<LocaleProvider>().translate('welcome_back'), style: AppTextStyles.welcome),
                 const SizedBox(height: 4),
                 Text(
                   firstName,
@@ -188,7 +188,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             Expanded(
               child: _MiniStatCard(
                 icon: Icons.flag_outlined,
-                label: 'Goal',
+                label: context.watch<LocaleProvider>().translate('goal'),
                 value: profile.fitnessGoal,
                 color: const Color(0xFFFF6B6B),
               ),
@@ -198,11 +198,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  Widget _buildProgressSection() => FadeInUp(
-    duration: const Duration(milliseconds: 600),
-    delay: const Duration(milliseconds: 200),
-    child: const ProgressCard(),
-  );
+  Widget _buildProgressSection(BuildContext context) {
+    return FadeInUp(
+      duration: const Duration(milliseconds: 600),
+      delay: const Duration(milliseconds: 200),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(context.read<LocaleProvider>().translate('personal_records'), style: AppTextStyles.heading3),
+          const SizedBox(height: 16),
+          const ProgressCard(),
+        ],
+      ),
+    );
+  }
 
   Widget _buildQuoteSection(BuildContext context) {
     final dashboardProvider = context.watch<DashboardProvider>();
@@ -211,56 +220,63 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return FadeInUp(
       duration: const Duration(milliseconds: 600),
       delay: const Duration(milliseconds: 400),
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.all(24),
-        decoration: BoxDecoration(
-          gradient: AppColors.getQuoteGradient(context),
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.05),
-              spreadRadius: 1,
-              blurRadius: 10,
-              offset: const Offset(0, 2),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(context.read<LocaleProvider>().translate('quote_of_the_day'), style: AppTextStyles.heading3),
+          const SizedBox(height: 16),
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(24),
+            decoration: BoxDecoration(
+              gradient: AppColors.getQuoteGradient(context),
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.05),
+                  spreadRadius: 1,
+                  blurRadius: 10,
+                  offset: const Offset(0, 2),
+                ),
+              ],
             ),
-          ],
-        ),
-        child: Column(
-          children: [
-            Icon(Icons.format_quote, size: 40, color: Theme.of(context).colorScheme.primary),
-            const SizedBox(height: 16),
-            Text(
-              '"$quoteText"',
-              textAlign: TextAlign.center,
-              style: AppTextStyles.quote,
+            child: Column(
+              children: [
+                Icon(Icons.format_quote, size: 40, color: Theme.of(context).colorScheme.primary),
+                const SizedBox(height: 16),
+                Text(
+                  '"$quoteText"',
+                  textAlign: TextAlign.center,
+                  style: AppTextStyles.quote,
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 
-  Widget _buildWorkoutSection() => FadeInUp(
+  Widget _buildWorkoutSection(BuildContext context) => FadeInUp(
     duration: const Duration(milliseconds: 600),
     delay: const Duration(milliseconds: 600),
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Workout of the Day', style: AppTextStyles.heading3),
+        Text(context.read<LocaleProvider>().translate('workout_of_the_day'), style: AppTextStyles.heading3),
         const SizedBox(height: 16),
         const WorkoutCard(),
       ],
     ),
   );
 
-  Widget _buildRecipeSection() => FadeInUp(
+  Widget _buildRecipeSection(BuildContext context) => FadeInUp(
     duration: const Duration(milliseconds: 600),
     delay: const Duration(milliseconds: 800),
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Healthy Recipe', style: AppTextStyles.heading3),
+        Text(context.read<LocaleProvider>().translate('healthy_recipe'), style: AppTextStyles.heading3),
         const SizedBox(height: 16),
         const RecipeCard(),
       ],

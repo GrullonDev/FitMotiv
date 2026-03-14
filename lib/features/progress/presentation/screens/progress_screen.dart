@@ -59,10 +59,10 @@ class _ProgressScreenState extends State<ProgressScreen> with SingleTickerProvid
             labelColor: Theme.of(context).colorScheme.primary,
             unselectedLabelColor: Theme.of(context).colorScheme.onSurfaceVariant,
             indicatorColor: Theme.of(context).colorScheme.primary,
-            tabs: const [
-              Tab(text: 'Resumen'),
-              Tab(text: 'Peso'),
-              Tab(text: 'Metas'),
+            tabs: [
+              Tab(text: context.watch<LocaleProvider>().translate('summary')),
+              Tab(text: context.watch<LocaleProvider>().translate('weight')),
+              Tab(text: context.watch<LocaleProvider>().translate('goals')),
             ],
           ),
         ),
@@ -80,7 +80,7 @@ class _ProgressScreenState extends State<ProgressScreen> with SingleTickerProvid
             // TODO: Abrir modal de registro
             _showActionSheet(context, provider);
           },
-          label: const Text('Registrar'),
+          label: Text(context.watch<LocaleProvider>().translate('register')),
           icon: const Icon(Icons.add),
           backgroundColor: Theme.of(context).colorScheme.primary,
           foregroundColor: Colors.white,
@@ -98,11 +98,11 @@ class _ProgressScreenState extends State<ProgressScreen> with SingleTickerProvid
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text('¿Qué deseas registrar?', style: AppTextStyles.heading4),
+            Text(context.read<LocaleProvider>().translate('what_to_register'), style: AppTextStyles.heading4),
             const SizedBox(height: 20),
             ListTile(
               leading: const Icon(Icons.monitor_weight_outlined, color: Color(0xFF4ECDC4)),
-              title: const Text('Registrar Peso'),
+              title: Text(context.read<LocaleProvider>().translate('register_weight')),
               onTap: () {
                 Navigator.pop(ctx);
                 _showWeightDialog(context, provider);
@@ -110,7 +110,7 @@ class _ProgressScreenState extends State<ProgressScreen> with SingleTickerProvid
             ),
             ListTile(
               leading: const Icon(Icons.flag_outlined, color: Colors.orange),
-              title: const Text('Nueva Meta'),
+              title: Text(context.read<LocaleProvider>().translate('new_goal')),
               onTap: () {
                 Navigator.pop(ctx);
                 _showGoalDialog(context, provider);
@@ -118,7 +118,7 @@ class _ProgressScreenState extends State<ProgressScreen> with SingleTickerProvid
             ),
             ListTile(
               leading: const Icon(Icons.fitness_center, color: Colors.blue),
-              title: const Text('Ir a Rutinas'),
+              title: Text(context.read<LocaleProvider>().translate('go_to_routines')),
               onTap: () {
                 Navigator.pop(ctx);
                 // Navigate to routines tab using bottom navigation
@@ -136,35 +136,31 @@ class _ProgressScreenState extends State<ProgressScreen> with SingleTickerProvid
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Registrar Peso'),
+        title: Text(context.read<LocaleProvider>().translate('register_weight')),
         content: TextField(
           controller: controller,
           keyboardType: const TextInputType.numberWithOptions(decimal: true),
           decoration: InputDecoration(
-            hintText: 'Peso en lbs',
+            hintText: '${context.read<LocaleProvider>().translate('weight')} in lbs',
             suffixText: 'lbs',
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
           ),
           autofocus: true,
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancelar')),
-          ElevatedButton(
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: Text(context.read<LocaleProvider>().translate('cancel')),
+          ),
+          TextButton(
             onPressed: () async {
-              final weight = double.tryParse(controller.text.trim());
-              if (weight != null && weight > 0) {
-                Navigator.pop(ctx);
-                final success = await provider.logWeight(weight);
-                if (success && context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('✅ Peso registrado')));
-                }
+              final weight = double.tryParse(controller.text);
+              if (weight != null) {
+                await provider.logWeight(weight);
+                if (context.mounted) Navigator.pop(ctx);
               }
             },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Theme.of(context).colorScheme.primary,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-            ),
-            child: const Text('Guardar', style: TextStyle(color: Colors.white)),
+            child: Text(context.read<LocaleProvider>().translate('save')),
           ),
         ],
       ),
@@ -173,45 +169,54 @@ class _ProgressScreenState extends State<ProgressScreen> with SingleTickerProvid
 
   void _showGoalDialog(BuildContext context, ProgressProvider provider) {
     final titleController = TextEditingController();
-    final descController = TextEditingController();
+    final valueController = TextEditingController();
+    final l10n = context.read<LocaleProvider>();
+
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Nueva Meta'),
+        title: Text(l10n.translate('new_goal')),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             TextField(
               controller: titleController,
               decoration: InputDecoration(
-                hintText: 'Nombre de la meta',
+                hintText: l10n.translate('full_name'), // Simple re-use of key or add new
+                labelText: l10n.translate('username'),
                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
               ),
               autofocus: true,
             ),
             const SizedBox(height: 12),
             TextField(
-              controller: descController,
+              controller: valueController,
+              keyboardType: TextInputType.number,
               decoration: InputDecoration(
-                hintText: 'Descripción (opcional)',
+                hintText: 'Target value',
+                labelText: 'Target',
                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
               ),
-              maxLines: 2,
             ),
           ],
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancelar')),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: Text(l10n.translate('cancel')),
+          ),
           ElevatedButton(
             onPressed: () async {
               if (titleController.text.trim().isNotEmpty) {
                 Navigator.pop(ctx);
                 final success = await provider.createGoal(
                   title: titleController.text.trim(),
-                  description: descController.text.trim(),
+                  targetValue: double.tryParse(valueController.text) ?? 0,
                 );
                 if (success && context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('✅ Meta creada')));
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('✅ ${l10n.translate('completed')}')),
+                  );
                 }
               }
             },
@@ -219,7 +224,10 @@ class _ProgressScreenState extends State<ProgressScreen> with SingleTickerProvid
               backgroundColor: Theme.of(context).colorScheme.primary,
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             ),
-            child: const Text('Crear', style: TextStyle(color: Colors.white)),
+            child: Text(
+              l10n.translate('save'),
+              style: const TextStyle(color: Colors.white),
+            ),
           ),
         ],
       ),
@@ -249,7 +257,7 @@ class _OverviewTab extends StatelessWidget {
                 Expanded(
                   child: _StatBox(
                     icon: Icons.fitness_center_outlined,
-                    label: 'Sesiones',
+                    label: context.read<LocaleProvider>().translate('routines'),
                     value: '${provider.totalSessions}',
                     color: Theme.of(context).colorScheme.primary,
                   ),
@@ -258,7 +266,7 @@ class _OverviewTab extends StatelessWidget {
                 Expanded(
                   child: _StatBox(
                     icon: Icons.local_fire_department_outlined,
-                    label: 'Calorías',
+                    label: context.read<LocaleProvider>().translate('calories'),
                     value: '${provider.totalCalories}',
                     color: const Color(0xFFFF6B6B),
                   ),
@@ -271,10 +279,10 @@ class _OverviewTab extends StatelessWidget {
                 Expanded(
                   child: _StatBox(
                     icon: Icons.monitor_weight_outlined,
-                    label: 'Peso Actual',
+                    label: '${context.read<LocaleProvider>().translate('weight')} actual',
                     value: provider.latestWeight != null
                         ? '${provider.latestWeight!.toStringAsFixed(1)} lbs'
-                        : 'Pendiente',
+                        : context.read<LocaleProvider>().translate('pending_registration'),
                     color: const Color(0xFF4ECDC4),
                   ),
                 ),
@@ -296,13 +304,13 @@ class _OverviewTab extends StatelessWidget {
             const SizedBox(height: 24),
 
             // Weekly Activity Chart
-            Text('Actividad Semanal', style: AppTextStyles.heading4),
+            Text(context.read<LocaleProvider>().translate('weekly_activity'), style: AppTextStyles.heading4),
             const SizedBox(height: 12),
             _WeeklyActivityChart(sessions: provider.sessions),
             const SizedBox(height: 24),
 
             // Recent workout sessions
-            Text('Sesiones Recientes', style: AppTextStyles.heading4),
+            Text(context.read<LocaleProvider>().translate('completed'), style: AppTextStyles.heading4),
             const SizedBox(height: 12),
             if (provider.sessions.isEmpty)
               _buildEmptyCard(
@@ -312,12 +320,12 @@ class _OverviewTab extends StatelessWidget {
                 Icons.history,
               )
             else
-              ...provider.sessions.take(3).map((session) => _SessionCard(session: session)),
+              ...provider.sessions.take(3).map((session) => _SessionCard(session: session, l10n: context.read<LocaleProvider>())),
 
             const SizedBox(height: 24),
 
             // Weight log
-            Text('Historial de Peso', style: AppTextStyles.heading4),
+            Text('${context.read<LocaleProvider>().translate('weight')} log', style: AppTextStyles.heading4),
             const SizedBox(height: 12),
             if (provider.weightLog.isEmpty)
               _buildEmptyCard(
@@ -370,13 +378,13 @@ class _WeightTab extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         children: [
           // Weight Trend Chart
-          Text('Tendencia de Peso', style: AppTextStyles.heading4),
+          Text(context.read<LocaleProvider>().translate('weight_trend'), style: AppTextStyles.heading4),
           const SizedBox(height: 12),
           _WeightTrendChart(weightLog: provider.weightLog),
           const SizedBox(height: 24),
 
           // Weight History List
-          Text('Historial Completo', style: AppTextStyles.heading4),
+          Text(context.read<LocaleProvider>().translate('summary'), style: AppTextStyles.heading4),
           const SizedBox(height: 12),
           if (provider.weightLog.isEmpty)
             _buildEmptyState(
@@ -440,21 +448,21 @@ class _GoalsTab extends StatelessWidget {
               scrollDirection: Axis.horizontal,
               children: [
                 _SuggestedGoalCard(
-                  title: 'Bajar de peso',
+                  title: context.read<LocaleProvider>().translate('weight_loss_plan'),
                   icon: Icons.trending_down,
                   color: Colors.blue,
                   onTap: () => provider.createGoal(
-                    title: 'Bajar de peso',
-                    description: 'Reducir mi peso corporal de forma saludable.',
+                    title: context.read<LocaleProvider>().translate('weight_trend'),
+                    description: '',
                   ),
                 ),
                 _SuggestedGoalCard(
-                  title: 'Ganar músculo',
+                  title: context.read<LocaleProvider>().translate('muscle_building'),
                   icon: Icons.fitness_center,
                   color: Colors.orange,
                   onTap: () => provider.createGoal(
-                    title: 'Ganar músculo',
-                    description: 'Aumentar mi masa muscular con entrenamiento de fuerza.',
+                    title: context.read<LocaleProvider>().translate('muscle_building'),
+                    description: '',
                   ),
                 ),
                 _SuggestedGoalCard(
@@ -463,7 +471,7 @@ class _GoalsTab extends StatelessWidget {
                   color: Colors.green,
                   onTap: () => provider.createGoal(
                     title: 'Mantenerse activo',
-                    description: 'Mantener una rutina regular de ejercicios.',
+                    description: '',
                   ),
                 ),
               ],
@@ -471,13 +479,13 @@ class _GoalsTab extends StatelessWidget {
           ),
           const SizedBox(height: 24),
 
-          Text('Mis Metas', style: AppTextStyles.heading4),
+          Text(context.read<LocaleProvider>().translate('goals'), style: AppTextStyles.heading4),
           const SizedBox(height: 12),
           if (provider.goals.isEmpty)
             _buildEmptyState(context, 'Sin metas', 'Establece objetivos para medir tu progreso.', Icons.flag_outlined)
           else
             ...provider.goals.map((goal) {
-              return _GoalCard(goal: goal, provider: provider);
+              return _GoalCard(goal: goal, provider: provider, l10n: context.read<LocaleProvider>());
             }),
           const SizedBox(height: 80),
         ],
@@ -725,9 +733,10 @@ class _SuggestedGoalCard extends StatelessWidget {
 }
 
 class _GoalCard extends StatelessWidget {
-  const _GoalCard({required this.goal, required this.provider});
+  const _GoalCard({required this.goal, required this.provider, required this.l10n});
   final Map<String, dynamic> goal;
   final ProgressProvider provider;
+  final LocaleProvider l10n;
 
   @override
   Widget build(BuildContext context) {
@@ -737,7 +746,7 @@ class _GoalCard extends StatelessWidget {
 
     // Simular progreso para demostración (Task 8)
     double progress = isCompleted ? 1.0 : 0.45;
-    String progressText = isCompleted ? "Meta alcanzada" : "Llevas 5 lbs de 20 lbs";
+    String progressText = isCompleted ? l10n.translate('water_reached') : "Llevas 5 lbs de 20 lbs";
 
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
@@ -815,8 +824,9 @@ class _GoalCard extends StatelessWidget {
 }
 
 class _SessionCard extends StatelessWidget {
-  const _SessionCard({required this.session});
+  const _SessionCard({required this.session, required this.l10n});
   final Map<String, dynamic> session;
+  final LocaleProvider l10n;
 
   @override
   Widget build(BuildContext context) {

@@ -35,7 +35,7 @@ class CommunityProvider extends ChangeNotifier {
   Future<void> loadAll() async {
     _isLoading = true;
     _error = null;
-    notifyListeners();
+    Future.microtask(() => notifyListeners());
 
     try {
       // Intentar asegurar que el perfil exista (para Task 1)
@@ -72,7 +72,7 @@ class CommunityProvider extends ChangeNotifier {
       debugPrint('❌ Error loading community: $e');
     } finally {
       _isLoading = false;
-      notifyListeners();
+      Future.microtask(() => notifyListeners());
     }
   }
 
