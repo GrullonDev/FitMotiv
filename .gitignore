@@ -11,11 +11,11 @@
 **/doc/api/
 **/ios/Flutter/.last_build_id
 .dart_tool/
-.flutter-plugins
 .flutter-plugins-dependencies
 .pub-cache/
 .pub/
 /build/
+/coverage/
 .packages
 .metadata
 
@@ -303,6 +303,27 @@ test_data_private/
 mock_data_private/
 .test_env
 
+# Android Studio will place build artifacts here
+/android/app/debug
+/android/app/profile
+/android/app/release
+/android/build/
+
+# Widget Preview related
+.widget_preview/
+
+# DevTools local settings
+devtools_options.yaml
+
+# FVM Version Cache
+.fvm/
+
+# Flutter generated platform folders ignored for this mobile-only repo
+pubspec.lock
+/linux/
+/macos/
+/windows/
+/web/
 # ===============================================
 # 🔧 Tools y Scripts Personales
 # ===============================================
