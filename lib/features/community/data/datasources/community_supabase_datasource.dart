@@ -6,15 +6,21 @@ class CommunitySupabaseDatasource {
   final SupabaseClient _client = Supabase.instance.client;
 
   /// Obtiene la lista de usuarios registrados (perfiles públicos)
-  Future<List<Map<String, dynamic>>> getProfiles({double? myLat, double? myLon}) async {
+  Future<List<Map<String, dynamic>>> getProfiles({
+    double? myLat,
+    double? myLon,
+  }) async {
     try {
       var query = _client
           .from('profiles')
-          .select('id, full_name, username, bio, fitness_goal, activity_level, avatar_url, is_online, last_seen, latitude, longitude')
+          .select(
+            'id, full_name, username, bio, fitness_goal, activity_level, avatar_url, is_online, last_seen, latitude, longitude',
+          )
           .neq('id', _client.auth.currentUser?.id ?? '');
 
       final response = await query.order('created_at', ascending: false);
-      final List<Map<String, dynamic>> profiles = List<Map<String, dynamic>>.from(response);
+      final List<Map<String, dynamic>> profiles =
+          List<Map<String, dynamic>>.from(response);
 
       // Si tenemos coordenadas, calcular cercanía (simulado o manual si no hay PostGIS)
       if (myLat != null && myLon != null) {
@@ -35,12 +41,14 @@ class CommunitySupabaseDatasource {
       final userId = _client.auth.currentUser?.id;
       final response = await _client
           .from('posts')
-          .select('*, profiles(full_name, username, avatar_url), post_likes(user_id)')
+          .select(
+            '*, profiles(full_name, username, avatar_url), post_likes(user_id)',
+          )
           .order('created_at', ascending: false)
           .limit(50);
 
       final posts = List<Map<String, dynamic>>.from(response);
-      
+
       // Mark if current user liked the post
       if (userId != null) {
         for (var post in posts) {
@@ -48,7 +56,7 @@ class CommunitySupabaseDatasource {
           post['is_liked'] = likes?.any((l) => l['user_id'] == userId) ?? false;
         }
       }
-      
+
       return posts;
     } catch (e) {
       debugPrint('❌ Error fetching feed posts: $e');
@@ -116,10 +124,7 @@ class CommunitySupabaseDatasource {
     final userId = _client.auth.currentUser?.id;
     if (userId == null) throw Exception('Not logged in');
 
-    await _client.from('posts').insert({
-      'user_id': userId,
-      'content': content,
-    });
+    await _client.from('posts').insert({'user_id': userId, 'content': content});
   }
 
   /// === CHAT METHODS ===
@@ -132,7 +137,9 @@ class CommunitySupabaseDatasource {
     try {
       final response = await _client
           .from('conversations')
-          .select('*, p1:profiles!conversations_participant_1_id_fkey(*), p2:profiles!conversations_participant_2_id_fkey(*)')
+          .select(
+            '*, p1:profiles!conversations_participant_1_id_fkey(*), p2:profiles!conversations_participant_2_id_fkey(*)',
+          )
           .or('participant_1_id.eq.$userId,participant_2_id.eq.$userId')
           .order('last_message_at', ascending: false);
 
@@ -186,7 +193,9 @@ class CommunitySupabaseDatasource {
   }
 
   /// Busca o crea una conversación con otro usuario
-  Future<Map<String, dynamic>> getOrCreateConversation(String otherUserId) async {
+  Future<Map<String, dynamic>> getOrCreateConversation(
+    String otherUserId,
+  ) async {
     final userId = _client.auth.currentUser?.id;
     if (userId == null) throw Exception('Not logged in');
 
@@ -194,7 +203,9 @@ class CommunitySupabaseDatasource {
     final response = await _client
         .from('conversations')
         .select()
-        .or('and(participant_1_id.eq.$userId,participant_2_id.eq.$otherUserId),and(participant_1_id.eq.$otherUserId,participant_2_id.eq.$userId)')
+        .or(
+          'and(participant_1_id.eq.$userId,participant_2_id.eq.$otherUserId),and(participant_1_id.eq.$otherUserId,participant_2_id.eq.$userId)',
+        )
         .maybeSingle();
 
     if (response != null) {
@@ -203,7 +214,7 @@ class CommunitySupabaseDatasource {
 
     // Si no existe, crearla
     final participants = [userId, otherUserId]..sort();
-    
+
     final created = await _client
         .from('conversations')
         .insert({
@@ -222,14 +233,20 @@ class CommunitySupabaseDatasource {
     if (user == null) return;
 
     try {
-      final profile = await _client.from('profiles').select().eq('id', user.id).maybeSingle();
-      
+      final profile = await _client
+          .from('profiles')
+          .select()
+          .eq('id', user.id)
+          .maybeSingle();
+
       if (profile == null) {
         debugPrint('Creating missing profile for user ${user.id}');
         await _client.from('profiles').insert({
           'id': user.id,
           'full_name': user.userMetadata?['full_name'] ?? 'User',
-          'username': user.userMetadata?['username'] ?? 'user_${user.id.substring(0, 5)}',
+          'username':
+              user.userMetadata?['username'] ??
+              'user_${user.id.substring(0, 5)}',
           'email': user.email,
         });
       }
@@ -244,11 +261,14 @@ class CommunitySupabaseDatasource {
     if (userId == null) return;
 
     try {
-      await _client.from('profiles').update({
-        'latitude': lat,
-        'longitude': lon,
-        'last_seen': DateTime.now().toIso8601String(),
-      }).eq('id', userId);
+      await _client
+          .from('profiles')
+          .update({
+            'latitude': lat,
+            'longitude': lon,
+            'last_seen': DateTime.now().toIso8601String(),
+          })
+          .eq('id', userId);
     } catch (e) {
       debugPrint('Error updating location: $e');
     }

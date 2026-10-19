@@ -120,7 +120,9 @@ class ErrorMessageExtractor {
       return 'Too many requests. Please wait a moment before trying again';
     } else if (failureString.contains('500')) {
       return 'Internal server error. Please try again later';
-    } else if (failureString.contains('502') || failureString.contains('503') || failureString.contains('504')) {
+    } else if (failureString.contains('502') ||
+        failureString.contains('503') ||
+        failureString.contains('504')) {
       return 'Service temporarily unavailable. Please try again later';
     }
 
@@ -133,7 +135,8 @@ class ErrorMessageExtractor {
       return 'Password does not meet requirements';
     } else if (failureString.contains('token')) {
       return 'Your session has expired. Please login again';
-    } else if (failureString.contains('network') || failureString.contains('connection')) {
+    } else if (failureString.contains('network') ||
+        failureString.contains('connection')) {
       return 'Network error. Please check your internet connection';
     } else if (failureString.contains('timeout')) {
       return 'Request timed out. Please try again';

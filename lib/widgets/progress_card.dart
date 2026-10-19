@@ -43,7 +43,9 @@ class ProgressCard extends StatelessWidget {
               Text('Weight Progress', style: AppTextStyles.heading4),
               Text(
                 '${absDiff.toStringAsFixed(1)} lbs ${isLosing ? 'lost' : 'gained'}',
-                style: AppTextStyles.heading4.copyWith(color: isLosing ? Colors.green : Colors.orange),
+                style: AppTextStyles.heading4.copyWith(
+                  color: isLosing ? Colors.green : Colors.orange,
+                ),
               ),
             ],
           ),
@@ -52,7 +54,9 @@ class ProgressCard extends StatelessWidget {
             padding: EdgeInsets.zero,
             lineHeight: 8.0,
             percent: progress.clamp(0.0, 1.0),
-            backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
+            backgroundColor: Theme.of(
+              context,
+            ).colorScheme.surfaceContainerHighest,
             progressColor: Theme.of(context).colorScheme.primary,
             barRadius: const Radius.circular(4),
             animation: true,

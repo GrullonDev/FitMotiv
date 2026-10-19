@@ -6,7 +6,8 @@ import 'package:fit_motiv/features/auth/data/model/request/register_request.dart
 import 'package:fit_motiv/features/auth/data/model/response/login_response.dart';
 import 'package:fit_motiv/features/auth/data/model/response/register_response.dart';
 
-class AuthSupabaseDataSource extends BaseRemoteDataSource implements AuthDataSource {
+class AuthSupabaseDataSource extends BaseRemoteDataSource
+    implements AuthDataSource {
   final SupabaseClient _supabase = Supabase.instance.client;
 
   @override
@@ -14,7 +15,7 @@ class AuthSupabaseDataSource extends BaseRemoteDataSource implements AuthDataSou
     // Supabase supports only email/password for basic auth out-of-the-box.
     // Assuming the request provides an email in the username field.
     final response = await _supabase.auth.signInWithPassword(
-      email: request.username, 
+      email: request.username,
       password: request.password,
     );
 
@@ -77,7 +78,9 @@ class AuthSupabaseDataSource extends BaseRemoteDataSource implements AuthDataSou
   }
 
   @override
-  Future<Map<String, dynamic>> changePassword(Map<String, dynamic> passwordData) async {
+  Future<Map<String, dynamic>> changePassword(
+    Map<String, dynamic> passwordData,
+  ) async {
     await _supabase.auth.updateUser(
       UserAttributes(password: passwordData['newPassword']),
     );
@@ -103,13 +106,17 @@ class AuthSupabaseDataSource extends BaseRemoteDataSource implements AuthDataSou
   }
 
   @override
-  Future<Map<String, dynamic>> forgotPassword(Map<String, dynamic> emailData) async {
+  Future<Map<String, dynamic>> forgotPassword(
+    Map<String, dynamic> emailData,
+  ) async {
     await _supabase.auth.resetPasswordForEmail(emailData['email']);
     return {'message': 'Recovery email sent'};
   }
 
   @override
-  Future<Map<String, dynamic>> resetPassword(Map<String, dynamic> resetData) async {
+  Future<Map<String, dynamic>> resetPassword(
+    Map<String, dynamic> resetData,
+  ) async {
     await _supabase.auth.updateUser(
       UserAttributes(password: resetData['newPassword']),
     );
@@ -117,13 +124,20 @@ class AuthSupabaseDataSource extends BaseRemoteDataSource implements AuthDataSou
   }
 
   @override
-  Future<Map<String, dynamic>> verifyEmail(Map<String, dynamic> verificationData) async {
+  Future<Map<String, dynamic>> verifyEmail(
+    Map<String, dynamic> verificationData,
+  ) async {
     return {'message': 'Email verification handled by Supabase SDK'};
   }
 
   @override
-  Future<Map<String, dynamic>> resendVerification(Map<String, dynamic> emailData) async {
-    await _supabase.auth.resend(type: OtpType.signup, email: emailData['email']);
+  Future<Map<String, dynamic>> resendVerification(
+    Map<String, dynamic> emailData,
+  ) async {
+    await _supabase.auth.resend(
+      type: OtpType.signup,
+      email: emailData['email'],
+    );
     return {'message': 'Verification email resent'};
   }
 
@@ -131,15 +145,13 @@ class AuthSupabaseDataSource extends BaseRemoteDataSource implements AuthDataSou
   Future<Map<String, dynamic>> getCurrentUserProfile() async {
     final user = _supabase.auth.currentUser;
     if (user == null) throw Exception('No user logged in');
-    return {
-      'id': user.id,
-      'email': user.email,
-      ...user.userMetadata ?? {},
-    };
+    return {'id': user.id, 'email': user.email, ...user.userMetadata ?? {}};
   }
 
   @override
-  Future<Map<String, dynamic>> updateCurrentUserProfile(Map<String, dynamic> profileData) async {
+  Future<Map<String, dynamic>> updateCurrentUserProfile(
+    Map<String, dynamic> profileData,
+  ) async {
     final response = await _supabase.auth.updateUser(
       UserAttributes(data: profileData),
     );

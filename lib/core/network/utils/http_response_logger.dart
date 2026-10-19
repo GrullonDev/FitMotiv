@@ -11,10 +11,14 @@ class HttpResponseLogger {
     Map<String, dynamic>? data,
   }) {
     final operationText = operation != null ? ' ($operation)' : '';
-    print('$_tag SUCCESS$operationText: $endpoint - Status $statusCode'); // ignore: avoid_print
+    print(
+      '$_tag SUCCESS$operationText: $endpoint - Status $statusCode',
+    ); // ignore: avoid_print
 
     if (data != null && data.isNotEmpty) {
-      print('$_tag Response Data Keys: ${data.keys.toList()}'); // ignore: avoid_print
+      print(
+        '$_tag Response Data Keys: ${data.keys.toList()}',
+      ); // ignore: avoid_print
     }
   }
 
@@ -29,7 +33,9 @@ class HttpResponseLogger {
     final operationText = operation != null ? ' ($operation)' : '';
     final statusText = statusCode != null ? ' - Status $statusCode' : '';
 
-    print('$_tag ERROR$operationText: $endpoint$statusText'); // ignore: avoid_print
+    print(
+      '$_tag ERROR$operationText: $endpoint$statusText',
+    ); // ignore: avoid_print
 
     if (errorMessage != null) {
       print('$_tag Error Message: $errorMessage'); // ignore: avoid_print

@@ -38,22 +38,38 @@ Future<void> init() async {
   // Dashboard feature
   // ─────────────────────────────────────────
   sl.registerLazySingleton<QuoteLocalDatasource>(() => QuoteLocalDatasource());
-  sl.registerLazySingleton<QuoteSupabaseDatasource>(() => QuoteSupabaseDatasource());
-  sl.registerLazySingleton<QuoteRepository>(() => QuoteRepositoryImpl(localDatasource: sl<QuoteLocalDatasource>()));
-  sl.registerLazySingleton<GetDailyQuote>(() => GetDailyQuote(sl<QuoteRepository>()));
-  sl.registerFactory<DashboardProvider>(() => DashboardProvider(getDailyQuote: sl<GetDailyQuote>()));
+  sl.registerLazySingleton<QuoteSupabaseDatasource>(
+    () => QuoteSupabaseDatasource(),
+  );
+  sl.registerLazySingleton<QuoteRepository>(
+    () => QuoteRepositoryImpl(localDatasource: sl<QuoteLocalDatasource>()),
+  );
+  sl.registerLazySingleton<GetDailyQuote>(
+    () => GetDailyQuote(sl<QuoteRepository>()),
+  );
+  sl.registerFactory<DashboardProvider>(
+    () => DashboardProvider(getDailyQuote: sl<GetDailyQuote>()),
+  );
 
   // ─────────────────────────────────────────
   // Profile feature
   // ─────────────────────────────────────────
-  sl.registerLazySingleton<ProfileSupabaseDatasource>(() => ProfileSupabaseDatasource());
-  sl.registerFactory<UserProfileProvider>(() => UserProfileProvider(datasource: sl<ProfileSupabaseDatasource>()));
+  sl.registerLazySingleton<ProfileSupabaseDatasource>(
+    () => ProfileSupabaseDatasource(),
+  );
+  sl.registerFactory<UserProfileProvider>(
+    () => UserProfileProvider(datasource: sl<ProfileSupabaseDatasource>()),
+  );
 
   // ─────────────────────────────────────────
   // Routines/Workouts feature
   // ─────────────────────────────────────────
-  sl.registerLazySingleton<WorkoutSupabaseDatasource>(() => WorkoutSupabaseDatasource());
-  sl.registerFactory<WorkoutProvider>(() => WorkoutProvider(datasource: sl<WorkoutSupabaseDatasource>()));
+  sl.registerLazySingleton<WorkoutSupabaseDatasource>(
+    () => WorkoutSupabaseDatasource(),
+  );
+  sl.registerFactory<WorkoutProvider>(
+    () => WorkoutProvider(datasource: sl<WorkoutSupabaseDatasource>()),
+  );
   sl.registerFactory<WorkoutSessionProvider>(
     () => WorkoutSessionProvider(
       progressDatasource: sl<ProgressSupabaseDatasource>(),
@@ -64,22 +80,35 @@ Future<void> init() async {
   // ─────────────────────────────────────────
   // Progress feature
   // ─────────────────────────────────────────
-  sl.registerLazySingleton<ProgressSupabaseDatasource>(() => ProgressSupabaseDatasource());
+  sl.registerLazySingleton<ProgressSupabaseDatasource>(
+    () => ProgressSupabaseDatasource(),
+  );
   sl.registerFactory<ProgressProvider>(
-    () => ProgressProvider(datasource: sl<ProgressSupabaseDatasource>(), analyticsService: sl<AnalyticsService>()),
+    () => ProgressProvider(
+      datasource: sl<ProgressSupabaseDatasource>(),
+      analyticsService: sl<AnalyticsService>(),
+    ),
   );
 
   // ─────────────────────────────────────────
   // Community feature
   // ─────────────────────────────────────────
-  sl.registerLazySingleton<CommunitySupabaseDatasource>(() => CommunitySupabaseDatasource());
-  sl.registerFactory<CommunityProvider>(() => CommunityProvider(datasource: sl<CommunitySupabaseDatasource>()));
+  sl.registerLazySingleton<CommunitySupabaseDatasource>(
+    () => CommunitySupabaseDatasource(),
+  );
+  sl.registerFactory<CommunityProvider>(
+    () => CommunityProvider(datasource: sl<CommunitySupabaseDatasource>()),
+  );
 
   // ─────────────────────────────────────────
   // Plans/Nutrition feature
   // ─────────────────────────────────────────
-  sl.registerLazySingleton<PlansSupabaseDatasource>(() => PlansSupabaseDatasource());
-  sl.registerFactory<PlansProvider>(() => PlansProvider(datasource: sl<PlansSupabaseDatasource>()));
+  sl.registerLazySingleton<PlansSupabaseDatasource>(
+    () => PlansSupabaseDatasource(),
+  );
+  sl.registerFactory<PlansProvider>(
+    () => PlansProvider(datasource: sl<PlansSupabaseDatasource>()),
+  );
 
   // ─────────────────────────────────────────
   // Services

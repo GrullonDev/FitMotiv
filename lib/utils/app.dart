@@ -26,10 +26,7 @@ class FitMotivApp extends StatelessWidget {
     return MaterialApp(
       title: 'FitMotiv',
       locale: localeProvider.locale,
-      supportedLocales: const [
-        Locale('en'),
-        Locale('es'),
-      ],
+      supportedLocales: const [Locale('en'), Locale('es')],
       localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
@@ -64,7 +61,9 @@ class FitMotivApp extends StatelessWidget {
         cardTheme: CardThemeData(
           color: Colors.white,
           elevation: 2,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
         ),
       ),
       darkTheme: ThemeData(
@@ -94,7 +93,9 @@ class FitMotivApp extends StatelessWidget {
         cardTheme: CardThemeData(
           color: const Color(0xFF1E1E1E),
           elevation: 2,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
         ),
       ),
       initialRoute: '/',

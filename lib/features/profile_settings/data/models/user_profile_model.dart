@@ -87,8 +87,12 @@ class UserProfileModel {
 
       if (diff.inDays < 1) return 'Joined today';
       if (diff.inDays < 7) return 'Joined ${diff.inDays} days ago';
-      if (diff.inDays < 30) return 'Joined ${(diff.inDays / 7).floor()} weeks ago';
-      if (diff.inDays < 365) return 'Joined ${(diff.inDays / 30).floor()} months ago';
+      if (diff.inDays < 30) {
+        return 'Joined ${(diff.inDays / 7).floor()} weeks ago';
+      }
+      if (diff.inDays < 365) {
+        return 'Joined ${(diff.inDays / 30).floor()} months ago';
+      }
       return 'Joined ${(diff.inDays / 365).floor()} years ago';
     } catch (_) {
       return '';

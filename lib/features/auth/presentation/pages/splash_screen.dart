@@ -13,7 +13,8 @@ class SplashScreen extends StatefulWidget {
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderStateMixin {
+class _SplashScreenState extends State<SplashScreen>
+    with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
   late Animation<double> _scaleAnimation;
@@ -60,7 +61,9 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
 
         // Verificar de nuevo después del refresh
         final refreshedSession = Supabase.instance.client.auth.currentSession;
-        if (refreshedSession != null && !refreshedSession.isExpired && mounted) {
+        if (refreshedSession != null &&
+            !refreshedSession.isExpired &&
+            mounted) {
           Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
           return;
         }
@@ -104,7 +107,10 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
                       height: 120,
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
-                          colors: [AppColors.primary, AppColors.primary.withValues(alpha: 0.7)],
+                          colors: [
+                            AppColors.primary,
+                            AppColors.primary.withValues(alpha: 0.7),
+                          ],
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
                         ),
@@ -150,7 +156,9 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
                       height: 28,
                       child: CircularProgressIndicator(
                         strokeWidth: 3,
-                        valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                          AppColors.primary,
+                        ),
                       ),
                     ),
                   ],
@@ -166,7 +174,10 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
               right: 0,
               child: Center(
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 6,
+                  ),
                   decoration: BoxDecoration(
                     color: Colors.orange.shade100,
                     borderRadius: BorderRadius.circular(20),
@@ -175,7 +186,11 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(Icons.build_rounded, size: 14, color: Colors.orange.shade800),
+                      Icon(
+                        Icons.build_rounded,
+                        size: 14,
+                        color: Colors.orange.shade800,
+                      ),
                       const SizedBox(width: 6),
                       Text(
                         'DEV Environment',

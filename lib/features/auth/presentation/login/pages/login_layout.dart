@@ -26,10 +26,12 @@ class LoginLayout extends StatelessWidget {
               const SizedBox(height: 24),
 
               // Mensaje de éxito si existe
-              if (model.successMessage != null) MessageCard(message: model.successMessage!, isError: false),
+              if (model.successMessage != null)
+                MessageCard(message: model.successMessage!, isError: false),
 
               // Mensaje de error si existe
-              if (model.errorMessage != null) MessageCard(message: model.errorMessage!, isError: true),
+              if (model.errorMessage != null)
+                MessageCard(message: model.errorMessage!, isError: true),
 
               // Botón para reenviar verificación de email
               if (model.isEmailNotConfirmed)
@@ -38,14 +40,18 @@ class LoginLayout extends StatelessWidget {
                   child: SizedBox(
                     width: double.infinity,
                     child: OutlinedButton.icon(
-                      onPressed: model.isLoading ? null : () => model.resendVerificationEmail(),
+                      onPressed: model.isLoading
+                          ? null
+                          : () => model.resendVerificationEmail(),
                       icon: const Icon(Icons.email_outlined, size: 18),
                       label: const Text('Resend Verification Email'),
                       style: OutlinedButton.styleFrom(
                         foregroundColor: Colors.orange.shade700,
                         side: BorderSide(color: Colors.orange.shade400),
                         padding: const EdgeInsets.symmetric(vertical: 14),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
                       ),
                     ),
                   ),
@@ -65,7 +71,10 @@ class LoginLayout extends StatelessWidget {
                     // TODO: Navegar a forgot password screen
                     // Navigator.pushNamed(context, '/forgot-password');
                   },
-                  child: Text('Forgot Password?', style: TextStyle(color: Colors.grey[600], fontSize: 16)),
+                  child: Text(
+                    'Forgot Password?',
+                    style: TextStyle(color: Colors.grey[600], fontSize: 16),
+                  ),
                 ),
               ),
 

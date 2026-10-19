@@ -1,5 +1,10 @@
 class LoginResponse {
-  LoginResponse({required this.accessToken, required this.refreshToken, required this.tokenType, this.errorDetail});
+  LoginResponse({
+    required this.accessToken,
+    required this.refreshToken,
+    required this.tokenType,
+    this.errorDetail,
+  });
 
   factory LoginResponse.fromJson(Map<String, dynamic> json) {
     return LoginResponse(

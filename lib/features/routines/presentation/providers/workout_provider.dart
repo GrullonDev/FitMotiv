@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 
 /// Provider que gestiona los workouts desde Supabase
 class WorkoutProvider extends ChangeNotifier {
-  WorkoutProvider({required WorkoutSupabaseDatasource datasource}) : _datasource = datasource {
+  WorkoutProvider({required WorkoutSupabaseDatasource datasource})
+    : _datasource = datasource {
     loadWorkouts();
   }
 

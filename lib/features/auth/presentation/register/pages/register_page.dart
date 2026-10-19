@@ -13,8 +13,10 @@ class RegisterPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<RegisterBloc>(
-      create: (_) =>
-          RegisterBloc(authRepository: sl.get<AuthRepository>(), analyticsService: sl.get<AnalyticsService>()),
+      create: (_) => RegisterBloc(
+        authRepository: sl.get<AuthRepository>(),
+        analyticsService: sl.get<AnalyticsService>(),
+      ),
       child: Scaffold(
         backgroundColor: AppColors.background,
         body: SafeArea(child: RegisterLayout()),

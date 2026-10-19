@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
@@ -7,7 +6,7 @@ import 'package:fit_motiv/features/community/data/datasources/community_supabase
 /// Provider que gestiona los datos de la comunidad
 class CommunityProvider extends ChangeNotifier {
   CommunityProvider({required CommunitySupabaseDatasource datasource})
-      : _datasource = datasource {
+    : _datasource = datasource {
     loadAll();
   }
 
@@ -40,7 +39,7 @@ class CommunityProvider extends ChangeNotifier {
     try {
       // Intentar asegurar que el perfil exista (para Task 1)
       await _datasource.ensureProfileExists();
-      
+
       // Intentar obtener ubicación (para Task 3)
       await _updateUserLocation();
 
@@ -82,11 +81,15 @@ class CommunityProvider extends ChangeNotifier {
       if (permission == LocationPermission.denied) {
         permission = await Geolocator.requestPermission();
       }
-      
-      if (permission == LocationPermission.whileInUse || permission == LocationPermission.always) {
+
+      if (permission == LocationPermission.whileInUse ||
+          permission == LocationPermission.always) {
         _currentPosition = await Geolocator.getCurrentPosition();
         if (_currentPosition != null) {
-          await _datasource.updateLocation(_currentPosition!.latitude, _currentPosition!.longitude);
+          await _datasource.updateLocation(
+            _currentPosition!.latitude,
+            _currentPosition!.longitude,
+          );
         }
       }
     } catch (e) {
@@ -96,9 +99,13 @@ class CommunityProvider extends ChangeNotifier {
 
   double _calculateDistance(dynamic lat, dynamic lon) {
     if (lat == null || lon == null || _currentPosition == null) return 999999.0;
-    
-    final double targetLat = (lat is num) ? lat.toDouble() : double.tryParse(lat.toString()) ?? 0.0;
-    final double targetLon = (lon is num) ? lon.toDouble() : double.tryParse(lon.toString()) ?? 0.0;
+
+    final double targetLat = (lat is num)
+        ? lat.toDouble()
+        : double.tryParse(lat.toString()) ?? 0.0;
+    final double targetLon = (lon is num)
+        ? lon.toDouble()
+        : double.tryParse(lon.toString()) ?? 0.0;
 
     return Geolocator.distanceBetween(
       _currentPosition!.latitude,
@@ -140,7 +147,8 @@ class CommunityProvider extends ChangeNotifier {
         final post = _posts[index];
         final bool currentlyLiked = post['is_liked'] ?? false;
         post['is_liked'] = !currentlyLiked;
-        post['likes_count'] = (post['likes_count'] as int) + (currentlyLiked ? -1 : 1);
+        post['likes_count'] =
+            (post['likes_count'] as int) + (currentlyLiked ? -1 : 1);
         notifyListeners();
       }
       // Luego refrescar de la DB por si acaso
@@ -179,7 +187,7 @@ class CommunityProvider extends ChangeNotifier {
   Future<void> loadMessages(String conversationId) async {
     _currentMessages = [];
     notifyListeners();
-    
+
     try {
       _currentMessages = await _datasource.getMessages(conversationId);
       notifyListeners();
@@ -189,7 +197,11 @@ class CommunityProvider extends ChangeNotifier {
   }
 
   /// Envía un mensaje en una conversación
-  Future<void> sendMessage(String conversationId, String receiverId, String text) async {
+  Future<void> sendMessage(
+    String conversationId,
+    String receiverId,
+    String text,
+  ) async {
     try {
       await _datasource.sendMessage(
         conversationId: conversationId,
@@ -205,7 +217,9 @@ class CommunityProvider extends ChangeNotifier {
   /// Inicia o recupera una conversación con un usuario
   Future<Map<String, dynamic>> startConversation(String otherUserId) async {
     try {
-      final conversation = await _datasource.getOrCreateConversation(otherUserId);
+      final conversation = await _datasource.getOrCreateConversation(
+        otherUserId,
+      );
       await refreshAll(); // Recargar lista de conversaciones
       return conversation;
     } catch (e) {
@@ -218,7 +232,9 @@ class CommunityProvider extends ChangeNotifier {
   void subscribeToMessages(String conversationId) {
     debugPrint('📩 Subscribing to messages for: $conversationId');
     _messagesSubscription?.cancel();
-    _messagesSubscription = _datasource.streamMessages(conversationId).listen((messages) {
+    _messagesSubscription = _datasource.streamMessages(conversationId).listen((
+      messages,
+    ) {
       _currentMessages = messages;
       notifyListeners();
     });

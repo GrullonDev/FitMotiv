@@ -16,7 +16,9 @@ abstract class AuthDataSource extends BaseDataSource {
 
   Future<Map<String, dynamic>> logout();
 
-  Future<Map<String, dynamic>> changePassword(Map<String, dynamic> passwordData);
+  Future<Map<String, dynamic>> changePassword(
+    Map<String, dynamic> passwordData,
+  );
 
   Future<Map<String, dynamic>> verifyToken();
 
@@ -28,14 +30,20 @@ abstract class AuthDataSource extends BaseDataSource {
   Future<Map<String, dynamic>> resetPassword(Map<String, dynamic> resetData);
 
   // Email verification operations
-  Future<Map<String, dynamic>> verifyEmail(Map<String, dynamic> verificationData);
+  Future<Map<String, dynamic>> verifyEmail(
+    Map<String, dynamic> verificationData,
+  );
 
-  Future<Map<String, dynamic>> resendVerification(Map<String, dynamic> emailData);
+  Future<Map<String, dynamic>> resendVerification(
+    Map<String, dynamic> emailData,
+  );
 
   // User profile operations
   Future<Map<String, dynamic>> getCurrentUserProfile();
 
-  Future<Map<String, dynamic>> updateCurrentUserProfile(Map<String, dynamic> profileData);
+  Future<Map<String, dynamic>> updateCurrentUserProfile(
+    Map<String, dynamic> profileData,
+  );
 
   Future<Map<String, dynamic>> deleteCurrentUserAccount();
 

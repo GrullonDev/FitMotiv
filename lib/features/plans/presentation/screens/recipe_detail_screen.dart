@@ -49,7 +49,9 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
           SliverAppBar(
             expandedHeight: 300,
             pinned: true,
-            flexibleSpace: FlexibleSpaceBar(background: Image.network(imageUrl, fit: BoxFit.cover)),
+            flexibleSpace: FlexibleSpaceBar(
+              background: Image.network(imageUrl, fit: BoxFit.cover),
+            ),
             actions: [
               IconButton(
                 onPressed: () {},
@@ -69,16 +71,24 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Expanded(child: Text(title, style: AppTextStyles.heading3)),
+                      Expanded(
+                        child: Text(title, style: AppTextStyles.heading3),
+                      ),
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 6,
+                        ),
                         decoration: BoxDecoration(
                           color: primaryColor.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Text(
                           l10n.translate('easy'),
-                          style: TextStyle(color: primaryColor, fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                            color: primaryColor,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                     ],
@@ -94,7 +104,10 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                     ],
                   ),
                   const SizedBox(height: 32),
-                  Text(l10n.translate('ingredients'), style: AppTextStyles.heading4),
+                  Text(
+                    l10n.translate('ingredients'),
+                    style: AppTextStyles.heading4,
+                  ),
                   const SizedBox(height: 16),
                   _buildIngredientItem('2 aguacates maduros'),
                   _buildIngredientItem('2 huevos orgánicos'),
@@ -102,12 +115,27 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                   _buildIngredientItem('Sal marina y pimienta negra'),
                   _buildIngredientItem('Semillas de sésamo'),
                   const SizedBox(height: 32),
-                  Text(l10n.translate('preparation'), style: AppTextStyles.heading4),
+                  Text(
+                    l10n.translate('preparation'),
+                    style: AppTextStyles.heading4,
+                  ),
                   const SizedBox(height: 16),
-                  _buildPreparationStep(1, 'Tostar el pan integral hasta que esté crujiente.'),
-                  _buildPreparationStep(2, 'Machacar el aguacate en un bol con sal y pimienta.'),
-                  _buildPreparationStep(3, 'Cocinar los huevos (escalfados o revueltos).'),
-                  _buildPreparationStep(4, 'Untar el aguacate sobre el pan y colocar el huevo encima.'),
+                  _buildPreparationStep(
+                    1,
+                    'Tostar el pan integral hasta que esté crujiente.',
+                  ),
+                  _buildPreparationStep(
+                    2,
+                    'Machacar el aguacate en un bol con sal y pimienta.',
+                  ),
+                  _buildPreparationStep(
+                    3,
+                    'Cocinar los huevos (escalfados o revueltos).',
+                  ),
+                  _buildPreparationStep(
+                    4,
+                    'Untar el aguacate sobre el pan y colocar el huevo encima.',
+                  ),
                   const SizedBox(height: 50),
                 ],
               ),
@@ -133,7 +161,11 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
       padding: const EdgeInsets.only(bottom: 12),
       child: Row(
         children: [
-          const Icon(Icons.check_circle_outline, color: AppColors.success, size: 20),
+          const Icon(
+            Icons.check_circle_outline,
+            color: AppColors.success,
+            size: 20,
+          ),
           const SizedBox(width: 12),
           Text(name, style: AppTextStyles.bodyMedium),
         ],
@@ -152,7 +184,11 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
             backgroundColor: AppColors.primary,
             child: Text(
               '$step',
-              style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold),
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
           const SizedBox(width: 16),

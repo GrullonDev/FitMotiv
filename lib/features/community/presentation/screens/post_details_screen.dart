@@ -45,10 +45,14 @@ class _PostDetailsScreenState extends State<PostDetailsScreen> {
     final post = widget.post;
     final profiles = post['profiles'] as Map<String, dynamic>?;
     final l10n = context.read<LocaleProvider>();
-    final authorName = profiles?['full_name'] as String? ?? profiles?['username'] as String? ?? l10n.translate('anonymous');
+    final authorName =
+        profiles?['full_name'] as String? ??
+        profiles?['username'] as String? ??
+        l10n.translate('anonymous');
     final content = post['content'] as String? ?? '';
 
-    final avatarUrl = 'https://api.dicebear.com/8.x/initials/png?seed=${Uri.encodeComponent(authorName)}';
+    final avatarUrl =
+        'https://api.dicebear.com/8.x/initials/png?seed=${Uri.encodeComponent(authorName)}';
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -77,19 +81,30 @@ class _PostDetailsScreenState extends State<PostDetailsScreen> {
                         backgroundImage: NetworkImage(avatarUrl),
                       ),
                       const SizedBox(width: 12),
-                      Text(authorName, style: AppTextStyles.bodyMedium.copyWith(fontWeight: FontWeight.bold)),
+                      Text(
+                        authorName,
+                        style: AppTextStyles.bodyMedium.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ],
                   ),
                   const SizedBox(height: 16),
                   Text(content, style: AppTextStyles.bodyLarge),
                   const Divider(height: 32),
-                  Text(l10n.translate('comments'), style: AppTextStyles.heading4),
+                  Text(
+                    l10n.translate('comments'),
+                    style: AppTextStyles.heading4,
+                  ),
                   const SizedBox(height: 16),
 
                   // Comments List
                   if (provider.postComments.isEmpty)
                     Center(
-                      child: Padding(padding: const EdgeInsets.all(32.0), child: Text(l10n.translate('no_comments_yet'))),
+                      child: Padding(
+                        padding: const EdgeInsets.all(32.0),
+                        child: Text(l10n.translate('no_comments_yet')),
+                      ),
                     )
                   else
                     ListView.separated(
@@ -99,10 +114,14 @@ class _PostDetailsScreenState extends State<PostDetailsScreen> {
                       separatorBuilder: (_, __) => const SizedBox(height: 16),
                       itemBuilder: (context, index) {
                         final comment = provider.postComments[index];
-                        final cProfiles = comment['profiles'] as Map<String, dynamic>?;
+                        final cProfiles =
+                            comment['profiles'] as Map<String, dynamic>?;
                         final cAuthor =
-                            cProfiles?['full_name'] as String? ?? cProfiles?['username'] as String? ?? l10n.translate('user');
-                        final cAvatarUrl = 'https://api.dicebear.com/8.x/initials/png?seed=${Uri.encodeComponent(cAuthor)}';
+                            cProfiles?['full_name'] as String? ??
+                            cProfiles?['username'] as String? ??
+                            l10n.translate('user');
+                        final cAvatarUrl =
+                            'https://api.dicebear.com/8.x/initials/png?seed=${Uri.encodeComponent(cAuthor)}';
 
                         return Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -114,9 +133,14 @@ class _PostDetailsScreenState extends State<PostDetailsScreen> {
                             const SizedBox(width: 12),
                             Expanded(
                               child: Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                  vertical: 12,
+                                ),
                                 decoration: BoxDecoration(
-                                  color: AppColors.textSecondary.withValues(alpha: 0.08),
+                                  color: AppColors.textSecondary.withValues(
+                                    alpha: 0.08,
+                                  ),
                                   borderRadius: const BorderRadius.only(
                                     topRight: Radius.circular(20),
                                     bottomRight: Radius.circular(20),
@@ -126,9 +150,18 @@ class _PostDetailsScreenState extends State<PostDetailsScreen> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(cAuthor, style: AppTextStyles.bodySmall.copyWith(fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
+                                    Text(
+                                      cAuthor,
+                                      style: AppTextStyles.bodySmall.copyWith(
+                                        fontWeight: FontWeight.bold,
+                                        color: AppColors.textPrimary,
+                                      ),
+                                    ),
                                     const SizedBox(height: 4),
-                                    Text(comment['content'] ?? '', style: AppTextStyles.bodyMedium),
+                                    Text(
+                                      comment['content'] ?? '',
+                                      style: AppTextStyles.bodyMedium,
+                                    ),
                                   ],
                                 ),
                               ),
@@ -144,11 +177,20 @@ class _PostDetailsScreenState extends State<PostDetailsScreen> {
 
           // Comment Input
           Container(
-            padding: EdgeInsets.only(left: 16, right: 16, top: 12, bottom: MediaQuery.of(context).padding.bottom + 12),
+            padding: EdgeInsets.only(
+              left: 16,
+              right: 16,
+              top: 12,
+              bottom: MediaQuery.of(context).padding.bottom + 12,
+            ),
             decoration: BoxDecoration(
               color: AppColors.surface,
               boxShadow: [
-                BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10, offset: const Offset(0, -2)),
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.05),
+                  blurRadius: 10,
+                  offset: const Offset(0, -2),
+                ),
               ],
             ),
             child: Row(
@@ -159,12 +201,26 @@ class _PostDetailsScreenState extends State<PostDetailsScreen> {
                     decoration: InputDecoration(
                       hintText: l10n.translate('write_comment'),
                       hintStyle: AppTextStyles.bodySmall,
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(24), borderSide: const BorderSide(color: AppColors.border)),
-                      enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(24), borderSide: const BorderSide(color: AppColors.border)),
-                      focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(24), borderSide: BorderSide(color: Theme.of(context).colorScheme.primary)),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(24),
+                        borderSide: const BorderSide(color: AppColors.border),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(24),
+                        borderSide: const BorderSide(color: AppColors.border),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(24),
+                        borderSide: BorderSide(
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                      ),
                       filled: true,
                       fillColor: AppColors.background,
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 12,
+                      ),
                     ),
                   ),
                 ),
@@ -175,7 +231,11 @@ class _PostDetailsScreenState extends State<PostDetailsScreen> {
                     shape: BoxShape.circle,
                   ),
                   child: IconButton(
-                    icon: const Icon(Icons.send_rounded, color: Colors.white, size: 20),
+                    icon: const Icon(
+                      Icons.send_rounded,
+                      color: Colors.white,
+                      size: 20,
+                    ),
                     onPressed: _submitComment,
                   ),
                 ),

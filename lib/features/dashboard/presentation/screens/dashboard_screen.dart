@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:animate_do/animate_do.dart';
 import 'package:provider/provider.dart';
@@ -27,7 +26,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         onRefresh: () async {
           final profileProvider = context.read<UserProfileProvider>();
           final dashboardProvider = context.read<DashboardProvider>();
-          
+
           await profileProvider.refreshProfile();
           await dashboardProvider.fetchQuote();
         },
@@ -71,7 +70,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(context.read<LocaleProvider>().translate('welcome_back'), style: AppTextStyles.welcome),
+                Text(
+                  context.read<LocaleProvider>().translate('welcome_back'),
+                  style: AppTextStyles.welcome,
+                ),
                 const SizedBox(height: 4),
                 Text(
                   firstName,
@@ -92,14 +94,21 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     height: 44,
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
-                      colors: [Theme.of(context).colorScheme.primary, Theme.of(context).colorScheme.primary.withValues(alpha: 0.7)],
+                        colors: [
+                          Theme.of(context).colorScheme.primary,
+                          Theme.of(
+                            context,
+                          ).colorScheme.primary.withValues(alpha: 0.7),
+                        ],
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                       ),
                       borderRadius: BorderRadius.circular(14),
                       boxShadow: [
                         BoxShadow(
-                          color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.3),
+                          color: Theme.of(
+                            context,
+                          ).colorScheme.primary.withValues(alpha: 0.3),
                           blurRadius: 8,
                           offset: const Offset(0, 2),
                         ),
@@ -182,7 +191,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 color: const Color(0xFF45B7D1),
               ),
             ),
-          if ((profile.weight > 0 || profile.height > 0) && profile.fitnessGoal.isNotEmpty)
+          if ((profile.weight > 0 || profile.height > 0) &&
+              profile.fitnessGoal.isNotEmpty)
             const SizedBox(width: 12),
           if (profile.fitnessGoal.isNotEmpty)
             Expanded(
@@ -205,7 +215,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(context.read<LocaleProvider>().translate('personal_records'), style: AppTextStyles.heading3),
+          Text(
+            context.read<LocaleProvider>().translate('personal_records'),
+            style: AppTextStyles.heading3,
+          ),
           const SizedBox(height: 16),
           const ProgressCard(),
         ],
@@ -223,7 +236,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(context.read<LocaleProvider>().translate('quote_of_the_day'), style: AppTextStyles.heading3),
+          Text(
+            context.read<LocaleProvider>().translate('quote_of_the_day'),
+            style: AppTextStyles.heading3,
+          ),
           const SizedBox(height: 16),
           Container(
             width: double.infinity,
@@ -242,7 +258,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ),
             child: Column(
               children: [
-                Icon(Icons.format_quote, size: 40, color: Theme.of(context).colorScheme.primary),
+                Icon(
+                  Icons.format_quote,
+                  size: 40,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
                 const SizedBox(height: 16),
                 Text(
                   '"$quoteText"',
@@ -263,7 +283,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(context.read<LocaleProvider>().translate('workout_of_the_day'), style: AppTextStyles.heading3),
+        Text(
+          context.read<LocaleProvider>().translate('workout_of_the_day'),
+          style: AppTextStyles.heading3,
+        ),
         const SizedBox(height: 16),
         const WorkoutCard(),
       ],
@@ -276,7 +299,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(context.read<LocaleProvider>().translate('healthy_recipe'), style: AppTextStyles.heading3),
+        Text(
+          context.read<LocaleProvider>().translate('healthy_recipe'),
+          style: AppTextStyles.heading3,
+        ),
         const SizedBox(height: 16),
         const RecipeCard(),
       ],

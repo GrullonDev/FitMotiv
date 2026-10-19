@@ -4,7 +4,6 @@ import 'package:fit_motiv/features/dashboard/data/datasources/quote_local_dataso
 
 /// Implementación de [QuoteRepository] usando data source local
 class QuoteRepositoryImpl implements QuoteRepository {
-
   QuoteRepositoryImpl({required this.localDatasource});
   final QuoteLocalDatasource localDatasource;
 

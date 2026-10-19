@@ -26,7 +26,8 @@ class _UserSelectionScreenState extends State<UserSelectionScreen> {
         : allProfiles.where((p) {
             final name = (p['full_name'] as String? ?? '').toLowerCase();
             final username = (p['username'] as String? ?? '').toLowerCase();
-            return name.contains(_searchQuery) || username.contains(_searchQuery);
+            return name.contains(_searchQuery) ||
+                username.contains(_searchQuery);
           }).toList();
 
     return Scaffold(
@@ -46,19 +47,27 @@ class _UserSelectionScreenState extends State<UserSelectionScreen> {
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: TextField(
-              onChanged: (value) => setState(() => _searchQuery = value.toLowerCase()),
+              onChanged: (value) =>
+                  setState(() => _searchQuery = value.toLowerCase()),
               decoration: InputDecoration(
                 hintText: "Search users...",
                 prefixIcon: const Icon(Icons.search),
                 filled: true,
                 fillColor: AppColors.surface,
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide.none,
+                ),
               ),
             ),
           ),
           if (provider.isLoading)
             Expanded(
-              child: Center(child: CircularProgressIndicator(color: Theme.of(context).colorScheme.primary)),
+              child: Center(
+                child: CircularProgressIndicator(
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+              ),
             )
           else if (filtered.isEmpty)
             Expanded(
@@ -66,10 +75,16 @@ class _UserSelectionScreenState extends State<UserSelectionScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.search_off, size: 48, color: AppColors.textSecondary.withValues(alpha: 0.4)),
+                    Icon(
+                      Icons.search_off,
+                      size: 48,
+                      color: AppColors.textSecondary.withValues(alpha: 0.4),
+                    ),
                     const SizedBox(height: 12),
                     Text(
-                      _searchQuery.isEmpty ? 'No users found' : 'No results for "$_searchQuery"',
+                      _searchQuery.isEmpty
+                          ? 'No users found'
+                          : 'No results for "$_searchQuery"',
                       style: AppTextStyles.bodyMedium,
                     ),
                   ],
@@ -80,7 +95,8 @@ class _UserSelectionScreenState extends State<UserSelectionScreen> {
             Expanded(
               child: ListView.separated(
                 itemCount: filtered.length,
-                separatorBuilder: (_, __) => const Divider(height: 1, color: AppColors.surface),
+                separatorBuilder: (_, __) =>
+                    const Divider(height: 1, color: AppColors.surface),
                 itemBuilder: (context, index) {
                   final user = filtered[index];
                   final name = (user['full_name'] as String? ?? '').isNotEmpty
@@ -90,15 +106,26 @@ class _UserSelectionScreenState extends State<UserSelectionScreen> {
                   final isOnline = user['is_online'] as bool? ?? false;
 
                   final initials = name.isNotEmpty
-                      ? name.split(' ').map((e) => e.isNotEmpty ? e[0] : '').join().toUpperCase()
+                      ? name
+                            .split(' ')
+                            .map((e) => e.isNotEmpty ? e[0] : '')
+                            .join()
+                            .toUpperCase()
                       : '?';
 
                   return ListTile(
                     leading: Stack(
                       children: [
                         CircleAvatar(
-                          backgroundColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
-                          child: Text(initials, style: TextStyle(color: Theme.of(context).colorScheme.primary)),
+                          backgroundColor: Theme.of(
+                            context,
+                          ).colorScheme.primary.withValues(alpha: 0.1),
+                          child: Text(
+                            initials,
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
+                          ),
                         ),
                         if (isOnline)
                           Positioned(
@@ -110,13 +137,21 @@ class _UserSelectionScreenState extends State<UserSelectionScreen> {
                               decoration: BoxDecoration(
                                 color: AppColors.success,
                                 shape: BoxShape.circle,
-                                border: Border.all(color: Colors.white, width: 2),
+                                border: Border.all(
+                                  color: Colors.white,
+                                  width: 2,
+                                ),
                               ),
                             ),
                           ),
                       ],
                     ),
-                    title: Text(name, style: AppTextStyles.bodyMedium.copyWith(fontWeight: FontWeight.bold)),
+                    title: Text(
+                      name,
+                      style: AppTextStyles.bodyMedium.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                     subtitle: Text(
                       isOnline
                           ? 'Online'
@@ -127,20 +162,27 @@ class _UserSelectionScreenState extends State<UserSelectionScreen> {
                     ),
                     onTap: () async {
                       try {
-                        final conv = await provider.startConversation(user['id']);
+                        final conv = await provider.startConversation(
+                          user['id'],
+                        );
                         if (!context.mounted) return;
 
                         Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
-                            builder: (context) =>
-                                ChatRoomScreen(userName: name, conversationId: conv['id'], otherUserId: user['id']),
+                            builder: (context) => ChatRoomScreen(
+                              userName: name,
+                              conversationId: conv['id'],
+                              otherUserId: user['id'],
+                            ),
                           ),
                         );
                       } catch (e) {
-                        ScaffoldMessenger.of(
-                          context,
-                        ).showSnackBar(SnackBar(content: Text('Error starting conversation: $e')));
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('Error starting conversation: $e'),
+                          ),
+                        );
                       }
                     },
                   );

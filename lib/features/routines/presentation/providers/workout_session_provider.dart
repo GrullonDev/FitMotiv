@@ -34,9 +34,14 @@ class WorkoutSessionProvider extends ChangeNotifier {
   WorkoutState get state => _state;
   Exercise get currentExercise => _exercises[_currentIndex];
   double get progress => _currentIndex / _exercises.length;
-  double get timerProgress => _totalSeconds > 0 ? _remainingSeconds / _totalSeconds : 0.0;
+  double get timerProgress =>
+      _totalSeconds > 0 ? _remainingSeconds / _totalSeconds : 0.0;
 
-  void startWorkout(List<Exercise> exercises, {String workoutId = '', String workoutName = ''}) {
+  void startWorkout(
+    List<Exercise> exercises, {
+    String workoutId = '',
+    String workoutName = '',
+  }) {
     _exercises = exercises;
     _currentIndex = 0;
     _totalDurationMinutes = 0;
@@ -46,7 +51,9 @@ class WorkoutSessionProvider extends ChangeNotifier {
     _state = WorkoutState.playing;
 
     // Log tracking
-    analyticsService?.logWorkoutStarted(workoutName.isNotEmpty ? workoutName : 'Workout');
+    analyticsService?.logWorkoutStarted(
+      workoutName.isNotEmpty ? workoutName : 'Workout',
+    );
 
     _prepareCurrentExercise();
     notifyListeners();
@@ -106,12 +113,14 @@ class WorkoutSessionProvider extends ChangeNotifier {
   }
 
   void nextExercise() {
-    if (_state == WorkoutState.playing && _currentIndex < _exercises.length - 1) {
+    if (_state == WorkoutState.playing &&
+        _currentIndex < _exercises.length - 1) {
       _state = WorkoutState.rest;
       _remainingSeconds = 15; // 15 seconds rest
       _totalSeconds = 15;
       _startTimer();
-    } else if (_currentIndex < _exercises.length - 1 || _state == WorkoutState.rest) {
+    } else if (_currentIndex < _exercises.length - 1 ||
+        _state == WorkoutState.rest) {
       if (_state == WorkoutState.rest) {
         _currentIndex++;
       }

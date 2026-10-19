@@ -13,7 +13,10 @@ class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<LoginBloc>(
-      create: (_) => LoginBloc(authRepository: sl.get<AuthRepository>(), analyticsService: sl.get<AnalyticsService>()),
+      create: (_) => LoginBloc(
+        authRepository: sl.get<AuthRepository>(),
+        analyticsService: sl.get<AnalyticsService>(),
+      ),
       child: Scaffold(
         backgroundColor: AppColors.background,
         body: SafeArea(child: LoginLayout()),

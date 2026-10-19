@@ -53,13 +53,10 @@ class NutritionPlanCard extends StatelessWidget {
             Positioned.fill(
               child: Opacity(
                 opacity: isDark ? 0.3 : 0.15,
-                child: Image.network(
-                  imageUrl,
-                  fit: BoxFit.cover,
-                ),
+                child: Image.network(imageUrl, fit: BoxFit.cover),
               ),
             ),
-            
+
             // Gradient overlay for better text readability
             Positioned.fill(
               child: Container(
@@ -80,7 +77,12 @@ class NutritionPlanCard extends StatelessWidget {
               color: Colors.transparent,
               child: InkWell(
                 onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => PlanDetailScreen(title: title)));
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => PlanDetailScreen(title: title),
+                    ),
+                  );
                 },
                 child: Padding(
                   padding: const EdgeInsets.all(20),
@@ -100,7 +102,10 @@ class NutritionPlanCard extends StatelessWidget {
                           ),
                           if (isRecommended)
                             Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 6,
+                              ),
                               decoration: BoxDecoration(
                                 color: primaryColor,
                                 borderRadius: BorderRadius.circular(20),
@@ -115,7 +120,11 @@ class NutritionPlanCard extends StatelessWidget {
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  const Icon(Icons.star, color: Colors.white, size: 14),
+                                  const Icon(
+                                    Icons.star,
+                                    color: Colors.white,
+                                    size: 14,
+                                  ),
                                   const SizedBox(width: 4),
                                   Text(
                                     l10n.translate('recommended_for_you'),
@@ -131,7 +140,10 @@ class NutritionPlanCard extends StatelessWidget {
                             )
                           else
                             Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 6,
+                              ),
                               decoration: BoxDecoration(
                                 color: isDark ? Colors.white10 : Colors.white70,
                                 borderRadius: BorderRadius.circular(20),
@@ -140,7 +152,9 @@ class NutritionPlanCard extends StatelessWidget {
                               child: Text(
                                 badgeText,
                                 style: TextStyle(
-                                  color: isDark ? Colors.white70 : AppColors.textSecondary,
+                                  color: isDark
+                                      ? Colors.white70
+                                      : AppColors.textSecondary,
                                   fontSize: 11,
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -160,7 +174,9 @@ class NutritionPlanCard extends StatelessWidget {
                       Text(
                         description,
                         style: AppTextStyles.bodyMedium.copyWith(
-                          color: isDark ? Colors.white70 : AppColors.textSecondary,
+                          color: isDark
+                              ? Colors.white70
+                              : AppColors.textSecondary,
                           fontWeight: FontWeight.w500,
                         ),
                         maxLines: 2,
@@ -169,9 +185,19 @@ class NutritionPlanCard extends StatelessWidget {
                       const SizedBox(height: 12),
                       Row(
                         children: [
-                          _buildMiniBadge(Icons.bolt, calories, Colors.orange, isDark),
+                          _buildMiniBadge(
+                            Icons.bolt,
+                            calories,
+                            Colors.orange,
+                            isDark,
+                          ),
                           const SizedBox(width: 12),
-                          _buildMiniBadge(Icons.timer_outlined, badgeText, Colors.blue, isDark),
+                          _buildMiniBadge(
+                            Icons.timer_outlined,
+                            badgeText,
+                            Colors.blue,
+                            isDark,
+                          ),
                         ],
                       ),
                     ],

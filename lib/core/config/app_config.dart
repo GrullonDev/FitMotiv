@@ -16,7 +16,8 @@ enum AppFlavor { dev, prod }
 class AppConfig {
   AppConfig._internal();
   static AppConfig? _instance;
-  static AppConfig get instance => _instance ?? (_instance = AppConfig._internal());
+  static AppConfig get instance =>
+      _instance ?? (_instance = AppConfig._internal());
 
   AppFlavor _flavor = AppFlavor.dev;
   bool _isInitialized = false;
@@ -96,7 +97,9 @@ class AppConfig {
 
   /// Configuración para timeouts de HTTP según el entorno
   Duration get httpTimeout {
-    return isDevelopment ? const Duration(seconds: 30) : const Duration(seconds: 15);
+    return isDevelopment
+        ? const Duration(seconds: 30)
+        : const Duration(seconds: 15);
   }
 
   /// Configuración para logging según el entorno
@@ -106,8 +109,12 @@ class AppConfig {
   String getApiUrl(String endpoint) {
     final baseUrl = apiBaseUrl;
     // Asegurar que no haya doble slash
-    final cleanEndpoint = endpoint.startsWith('/') ? endpoint.substring(1) : endpoint;
-    final cleanBaseUrl = baseUrl.endsWith('/') ? baseUrl.substring(0, baseUrl.length - 1) : baseUrl;
+    final cleanEndpoint = endpoint.startsWith('/')
+        ? endpoint.substring(1)
+        : endpoint;
+    final cleanBaseUrl = baseUrl.endsWith('/')
+        ? baseUrl.substring(0, baseUrl.length - 1)
+        : baseUrl;
 
     return '$cleanBaseUrl/$cleanEndpoint';
   }
@@ -131,7 +138,9 @@ class AppConfig {
   /// Helper para verificar que la configuración fue inicializada
   void _ensureInitialized() {
     if (!_isInitialized) {
-      throw Exception('AppConfig no ha sido inicializado. Llama a initialize() primero.');
+      throw Exception(
+        'AppConfig no ha sido inicializado. Llama a initialize() primero.',
+      );
     }
   }
 }

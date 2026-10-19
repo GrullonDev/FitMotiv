@@ -17,7 +17,11 @@ class OnboardingScreen extends StatelessWidget {
               const SizedBox(),
               Column(
                 children: [
-                  Text('Welcome to FitMotiv!', style: AppTextStyles.heading1, textAlign: TextAlign.center),
+                  Text(
+                    'Welcome to FitMotiv!',
+                    style: AppTextStyles.heading1,
+                    textAlign: TextAlign.center,
+                  ),
                   const SizedBox(height: 16),
                   Text(
                     'Your journey to a healthier, happier you starts here. Get personalized plans, track your progress, and join our supportive community.',
@@ -31,11 +35,14 @@ class OnboardingScreen extends StatelessWidget {
                 child: SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: () => Navigator.pushReplacementNamed(context, '/login'),
+                    onPressed: () =>
+                        Navigator.pushReplacementNamed(context, '/login'),
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 16),
                       backgroundColor: Theme.of(context).colorScheme.primary,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
                     ),
                     child: Text('Get Started', style: AppTextStyles.buttonText),
                   ),

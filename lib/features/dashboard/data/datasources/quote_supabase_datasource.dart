@@ -19,15 +19,14 @@ class QuoteSupabaseDatasource {
   /// Obtiene una quote random desde Supabase, con fallback local
   Future<Map<String, dynamic>> getRandomQuote() async {
     try {
-      final response = await _client
-          .from('quotes')
-          .select()
-          .limit(20);
+      final response = await _client.from('quotes').select().limit(20);
 
       final quotes = List<Map<String, dynamic>>.from(response);
       if (quotes.isEmpty) return _fallbackQuote();
 
-      final dayOfYear = DateTime.now().difference(DateTime(DateTime.now().year)).inDays;
+      final dayOfYear = DateTime.now()
+          .difference(DateTime(DateTime.now().year))
+          .inDays;
       final index = dayOfYear % quotes.length;
       return quotes[index];
     } catch (_) {
@@ -36,11 +35,10 @@ class QuoteSupabaseDatasource {
   }
 
   Map<String, dynamic> _fallbackQuote() {
-    final dayOfYear = DateTime.now().difference(DateTime(DateTime.now().year)).inDays;
+    final dayOfYear = DateTime.now()
+        .difference(DateTime(DateTime.now().year))
+        .inDays;
     final index = dayOfYear % _fallbackQuotes.length;
-    return {
-      'text': _fallbackQuotes[index],
-      'author': 'Unknown',
-    };
+    return {'text': _fallbackQuotes[index], 'author': 'Unknown'};
   }
 }

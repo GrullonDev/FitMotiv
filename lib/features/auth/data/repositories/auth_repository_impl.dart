@@ -9,27 +9,38 @@ import 'package:fit_motiv/features/auth/data/model/response/register_response.da
 import 'package:fit_motiv/features/auth/domain/repositories/auth_repository.dart';
 
 class AuthRepositoryImpl extends BaseRepositoryImpl implements AuthRepository {
-  AuthRepositoryImpl({required AuthDataSource remoteDataSource}) : _remoteDataSource = remoteDataSource;
+  AuthRepositoryImpl({required AuthDataSource remoteDataSource})
+    : _remoteDataSource = remoteDataSource;
   final AuthDataSource _remoteDataSource;
 
   @override
-  Future<Either<ApiException, RegisterResponse>> register(RegisterRequest request) async {
+  Future<Either<ApiException, RegisterResponse>> register(
+    RegisterRequest request,
+  ) async {
     try {
       final result = await _remoteDataSource.register(request);
       return Right(result);
     } catch (error, stackTrace) {
-      final apiException = ApiErrorHandler.handleGeneralError(error, stackTrace);
+      final apiException = ApiErrorHandler.handleGeneralError(
+        error,
+        stackTrace,
+      );
       return Left(apiException);
     }
   }
 
   @override
-  Future<Either<ApiException, LoginResponse>> login(LoginRequest request) async {
+  Future<Either<ApiException, LoginResponse>> login(
+    LoginRequest request,
+  ) async {
     try {
       final result = await _remoteDataSource.login(request);
       return Right(result);
     } catch (error, stackTrace) {
-      final apiException = ApiErrorHandler.handleGeneralError(error, stackTrace);
+      final apiException = ApiErrorHandler.handleGeneralError(
+        error,
+        stackTrace,
+      );
       return Left(apiException);
     }
   }
@@ -41,18 +52,26 @@ class AuthRepositoryImpl extends BaseRepositoryImpl implements AuthRepository {
       // Handle successful logout with token clearing
       return await handleLogoutResult(Right(result));
     } catch (error, stackTrace) {
-      final apiException = ApiErrorHandler.handleGeneralError(error, stackTrace);
+      final apiException = ApiErrorHandler.handleGeneralError(
+        error,
+        stackTrace,
+      );
       return Left(apiException);
     }
   }
 
   @override
-  Future<Either<ApiException, Map<String, dynamic>>> changePassword(Map<String, dynamic> passwordData) async {
+  Future<Either<ApiException, Map<String, dynamic>>> changePassword(
+    Map<String, dynamic> passwordData,
+  ) async {
     try {
       final result = await _remoteDataSource.changePassword(passwordData);
       return Right(result);
     } catch (error, stackTrace) {
-      final apiException = ApiErrorHandler.handleGeneralError(error, stackTrace);
+      final apiException = ApiErrorHandler.handleGeneralError(
+        error,
+        stackTrace,
+      );
       return Left(apiException);
     }
   }
@@ -63,7 +82,10 @@ class AuthRepositoryImpl extends BaseRepositoryImpl implements AuthRepository {
       final result = await _remoteDataSource.verifyToken();
       return Right(result);
     } catch (error, stackTrace) {
-      final apiException = ApiErrorHandler.handleGeneralError(error, stackTrace);
+      final apiException = ApiErrorHandler.handleGeneralError(
+        error,
+        stackTrace,
+      );
       return Left(apiException);
     }
   }
@@ -75,98 +97,140 @@ class AuthRepositoryImpl extends BaseRepositoryImpl implements AuthRepository {
       // Handle successful token refresh
       return await handleAuthenticationResult(Right(result));
     } catch (error, stackTrace) {
-      final apiException = ApiErrorHandler.handleGeneralError(error, stackTrace);
+      final apiException = ApiErrorHandler.handleGeneralError(
+        error,
+        stackTrace,
+      );
       return Left(apiException);
     }
   }
 
   @override
-  Future<Either<ApiException, Map<String, dynamic>>> forgotPassword(Map<String, dynamic> emailData) async {
+  Future<Either<ApiException, Map<String, dynamic>>> forgotPassword(
+    Map<String, dynamic> emailData,
+  ) async {
     try {
       final result = await _remoteDataSource.forgotPassword(emailData);
       return Right(result);
     } catch (error, stackTrace) {
-      final apiException = ApiErrorHandler.handleGeneralError(error, stackTrace);
+      final apiException = ApiErrorHandler.handleGeneralError(
+        error,
+        stackTrace,
+      );
       return Left(apiException);
     }
   }
 
   @override
-  Future<Either<ApiException, Map<String, dynamic>>> resetPassword(Map<String, dynamic> resetData) async {
+  Future<Either<ApiException, Map<String, dynamic>>> resetPassword(
+    Map<String, dynamic> resetData,
+  ) async {
     try {
       final result = await _remoteDataSource.resetPassword(resetData);
       return Right(result);
     } catch (error, stackTrace) {
-      final apiException = ApiErrorHandler.handleGeneralError(error, stackTrace);
+      final apiException = ApiErrorHandler.handleGeneralError(
+        error,
+        stackTrace,
+      );
       return Left(apiException);
     }
   }
 
   @override
-  Future<Either<ApiException, Map<String, dynamic>>> verifyEmail(Map<String, dynamic> verificationData) async {
+  Future<Either<ApiException, Map<String, dynamic>>> verifyEmail(
+    Map<String, dynamic> verificationData,
+  ) async {
     try {
       final result = await _remoteDataSource.verifyEmail(verificationData);
       return Right(result);
     } catch (error, stackTrace) {
-      final apiException = ApiErrorHandler.handleGeneralError(error, stackTrace);
+      final apiException = ApiErrorHandler.handleGeneralError(
+        error,
+        stackTrace,
+      );
       return Left(apiException);
     }
   }
 
   @override
-  Future<Either<ApiException, Map<String, dynamic>>> resendVerification(Map<String, dynamic> emailData) async {
+  Future<Either<ApiException, Map<String, dynamic>>> resendVerification(
+    Map<String, dynamic> emailData,
+  ) async {
     try {
       final result = await _remoteDataSource.resendVerification(emailData);
       return Right(result);
     } catch (error, stackTrace) {
-      final apiException = ApiErrorHandler.handleGeneralError(error, stackTrace);
+      final apiException = ApiErrorHandler.handleGeneralError(
+        error,
+        stackTrace,
+      );
       return Left(apiException);
     }
   }
 
   @override
-  Future<Either<ApiException, Map<String, dynamic>>> getCurrentUserProfile() async {
+  Future<Either<ApiException, Map<String, dynamic>>>
+  getCurrentUserProfile() async {
     try {
       final result = await _remoteDataSource.getCurrentUserProfile();
       // Handle successful profile retrieval with caching
       return await handleProfileResult(Right(result));
     } catch (error, stackTrace) {
-      final apiException = ApiErrorHandler.handleGeneralError(error, stackTrace);
+      final apiException = ApiErrorHandler.handleGeneralError(
+        error,
+        stackTrace,
+      );
       return Left(apiException);
     }
   }
 
   @override
-  Future<Either<ApiException, Map<String, dynamic>>> updateCurrentUserProfile(Map<String, dynamic> profileData) async {
+  Future<Either<ApiException, Map<String, dynamic>>> updateCurrentUserProfile(
+    Map<String, dynamic> profileData,
+  ) async {
     try {
-      final result = await _remoteDataSource.updateCurrentUserProfile(profileData);
+      final result = await _remoteDataSource.updateCurrentUserProfile(
+        profileData,
+      );
       // Handle successful profile update with caching
       return await handleProfileResult(Right(result));
     } catch (error, stackTrace) {
-      final apiException = ApiErrorHandler.handleGeneralError(error, stackTrace);
+      final apiException = ApiErrorHandler.handleGeneralError(
+        error,
+        stackTrace,
+      );
       return Left(apiException);
     }
   }
 
   @override
-  Future<Either<ApiException, Map<String, dynamic>>> deleteCurrentUserAccount() async {
+  Future<Either<ApiException, Map<String, dynamic>>>
+  deleteCurrentUserAccount() async {
     try {
       final result = await _remoteDataSource.deleteCurrentUserAccount();
       // Handle successful account deletion with cleanup
       return await handleLogoutResult(Right(result));
     } catch (error, stackTrace) {
-      final apiException = ApiErrorHandler.handleGeneralError(error, stackTrace);
+      final apiException = ApiErrorHandler.handleGeneralError(
+        error,
+        stackTrace,
+      );
       return Left(apiException);
     }
   }
 
   @override
-  Future<Either<ApiException, Map<String, dynamic>>> reactivateCurrentUserAccount() async {
+  Future<Either<ApiException, Map<String, dynamic>>>
+  reactivateCurrentUserAccount() async {
     try {
       final result = await _remoteDataSource.reactivateCurrentUserAccount();
       return Right(result);
     } catch (error, stackTrace) {
-      final apiException = ApiErrorHandler.handleGeneralError(error, stackTrace);
+      final apiException = ApiErrorHandler.handleGeneralError(
+        error,
+        stackTrace,
+      );
       return Left(apiException);
     }
   }
@@ -177,7 +241,10 @@ class AuthRepositoryImpl extends BaseRepositoryImpl implements AuthRepository {
       final result = await _remoteDataSource.healthCheck();
       return Right(result);
     } catch (error, stackTrace) {
-      final apiException = ApiErrorHandler.handleGeneralError(error, stackTrace);
+      final apiException = ApiErrorHandler.handleGeneralError(
+        error,
+        stackTrace,
+      );
       return Left(apiException);
     }
   }
@@ -188,7 +255,10 @@ class AuthRepositoryImpl extends BaseRepositoryImpl implements AuthRepository {
       final result = await _remoteDataSource.getHealthStatus();
       return Right(result);
     } catch (error, stackTrace) {
-      final apiException = ApiErrorHandler.handleGeneralError(error, stackTrace);
+      final apiException = ApiErrorHandler.handleGeneralError(
+        error,
+        stackTrace,
+      );
       return Left(apiException);
     }
   }

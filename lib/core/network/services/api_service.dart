@@ -47,7 +47,9 @@ class ApiService {
             HttpResponseLogger.logSuccess(
               endpoint: response.requestOptions.path,
               statusCode: response.statusCode!,
-              operation: _getOperationFromMethod(response.requestOptions.method),
+              operation: _getOperationFromMethod(
+                response.requestOptions.method,
+              ),
             );
           }
           handler.next(response);
@@ -97,7 +99,8 @@ class ApiService {
         requestOptions: response.requestOptions,
         response: response,
         type: DioExceptionType.badResponse,
-        message: '$operation failed: Unexpected status code ${response.statusCode}',
+        message:
+            '$operation failed: Unexpected status code ${response.statusCode}',
       );
     }
   }
@@ -154,12 +157,18 @@ class ApiService {
 
   /// POST /auth/verify-email - Verify email address
   Future<Response> verifyEmail(Map<String, dynamic> verificationData) async {
-    return await _dio.post('$baseUrl/default/verify-email', data: verificationData);
+    return await _dio.post(
+      '$baseUrl/default/verify-email',
+      data: verificationData,
+    );
   }
 
   /// POST /auth/resend-verification - Resend email verification
   Future<Response> resendVerification(Map<String, dynamic> emailData) async {
-    return await _dio.post('$baseUrl/default/resend-verification', data: emailData);
+    return await _dio.post(
+      '$baseUrl/default/resend-verification',
+      data: emailData,
+    );
   }
 
   // ============================================================================
@@ -172,7 +181,9 @@ class ApiService {
   }
 
   /// PUT /auth/me - Update current user profile
-  Future<Response> updateCurrentUserProfile(Map<String, dynamic> profileData) async {
+  Future<Response> updateCurrentUserProfile(
+    Map<String, dynamic> profileData,
+  ) async {
     return await _dio.put('$baseUrl/default/me', data: profileData);
   }
 
@@ -206,7 +217,10 @@ class ApiService {
   }
 
   /// PUT /workouts/{id} - Update workout
-  Future<Response> updateWorkout(String workoutId, Map<String, dynamic> workoutData) async {
+  Future<Response> updateWorkout(
+    String workoutId,
+    Map<String, dynamic> workoutData,
+  ) async {
     return await _dio.put('$baseUrl/workouts/$workoutId', data: workoutData);
   }
 
@@ -221,18 +235,36 @@ class ApiService {
   }
 
   /// POST /workouts/{id}/sessions - Start workout session
-  Future<Response> startWorkoutSession(String workoutId, Map<String, dynamic> sessionData) async {
-    return await _dio.post('$baseUrl/workouts/$workoutId/sessions', data: sessionData);
+  Future<Response> startWorkoutSession(
+    String workoutId,
+    Map<String, dynamic> sessionData,
+  ) async {
+    return await _dio.post(
+      '$baseUrl/workouts/$workoutId/sessions',
+      data: sessionData,
+    );
   }
 
   /// PUT /workout-sessions/{id} - Update workout session
-  Future<Response> updateWorkoutSession(String sessionId, Map<String, dynamic> sessionData) async {
-    return await _dio.put('$baseUrl/workout-sessions/$sessionId', data: sessionData);
+  Future<Response> updateWorkoutSession(
+    String sessionId,
+    Map<String, dynamic> sessionData,
+  ) async {
+    return await _dio.put(
+      '$baseUrl/workout-sessions/$sessionId',
+      data: sessionData,
+    );
   }
 
   /// POST /workout-sessions/{id}/complete - Complete workout session
-  Future<Response> completeWorkoutSession(String sessionId, Map<String, dynamic> sessionData) async {
-    return await _dio.post('$baseUrl/workout-sessions/$sessionId/complete', data: sessionData);
+  Future<Response> completeWorkoutSession(
+    String sessionId,
+    Map<String, dynamic> sessionData,
+  ) async {
+    return await _dio.post(
+      '$baseUrl/workout-sessions/$sessionId/complete',
+      data: sessionData,
+    );
   }
 
   // ============================================================================
@@ -241,7 +273,10 @@ class ApiService {
 
   /// GET /nutrition/meals - Get user meals
   Future<Response> getMeals({Map<String, dynamic>? queryParams}) async {
-    return await _dio.get('$baseUrl/nutrition/meals', queryParameters: queryParams);
+    return await _dio.get(
+      '$baseUrl/nutrition/meals',
+      queryParameters: queryParams,
+    );
   }
 
   /// POST /nutrition/meals - Create new meal
@@ -251,7 +286,10 @@ class ApiService {
 
   /// GET /nutrition/foods - Search foods database
   Future<Response> searchFoods({Map<String, dynamic>? queryParams}) async {
-    return await _dio.get('$baseUrl/nutrition/foods', queryParameters: queryParams);
+    return await _dio.get(
+      '$baseUrl/nutrition/foods',
+      queryParameters: queryParams,
+    );
   }
 
   /// GET /nutrition/goals - Get nutrition goals
@@ -269,8 +307,13 @@ class ApiService {
   // ============================================================================
 
   /// GET /progress/weight - Get weight progress
-  Future<Response> getWeightProgress({Map<String, dynamic>? queryParams}) async {
-    return await _dio.get('$baseUrl/progress/weight', queryParameters: queryParams);
+  Future<Response> getWeightProgress({
+    Map<String, dynamic>? queryParams,
+  }) async {
+    return await _dio.get(
+      '$baseUrl/progress/weight',
+      queryParameters: queryParams,
+    );
   }
 
   /// POST /progress/weight - Log weight entry
@@ -279,18 +322,33 @@ class ApiService {
   }
 
   /// GET /progress/measurements - Get body measurements
-  Future<Response> getBodyMeasurements({Map<String, dynamic>? queryParams}) async {
-    return await _dio.get('$baseUrl/progress/measurements', queryParameters: queryParams);
+  Future<Response> getBodyMeasurements({
+    Map<String, dynamic>? queryParams,
+  }) async {
+    return await _dio.get(
+      '$baseUrl/progress/measurements',
+      queryParameters: queryParams,
+    );
   }
 
   /// POST /progress/measurements - Log body measurements
-  Future<Response> logBodyMeasurements(Map<String, dynamic> measurementData) async {
-    return await _dio.post('$baseUrl/progress/measurements', data: measurementData);
+  Future<Response> logBodyMeasurements(
+    Map<String, dynamic> measurementData,
+  ) async {
+    return await _dio.post(
+      '$baseUrl/progress/measurements',
+      data: measurementData,
+    );
   }
 
   /// GET /progress/photos - Get progress photos
-  Future<Response> getProgressPhotos({Map<String, dynamic>? queryParams}) async {
-    return await _dio.get('$baseUrl/progress/photos', queryParameters: queryParams);
+  Future<Response> getProgressPhotos({
+    Map<String, dynamic>? queryParams,
+  }) async {
+    return await _dio.get(
+      '$baseUrl/progress/photos',
+      queryParameters: queryParams,
+    );
   }
 
   /// POST /progress/photos - Upload progress photo
@@ -324,12 +382,18 @@ class ApiService {
 
   /// GET /social/friends - Get friends list
   Future<Response> getFriends({Map<String, dynamic>? queryParams}) async {
-    return await _dio.get('$baseUrl/social/friends', queryParameters: queryParams);
+    return await _dio.get(
+      '$baseUrl/social/friends',
+      queryParameters: queryParams,
+    );
   }
 
   /// POST /social/friends/request - Send friend request
   Future<Response> sendFriendRequest(Map<String, dynamic> requestData) async {
-    return await _dio.post('$baseUrl/social/friends/request', data: requestData);
+    return await _dio.post(
+      '$baseUrl/social/friends/request',
+      data: requestData,
+    );
   }
 
   // ============================================================================
@@ -351,7 +415,10 @@ class ApiService {
   // ============================================================================
 
   /// Generic GET request
-  Future<Response> get(String endpoint, {Map<String, dynamic>? queryParams}) async {
+  Future<Response> get(
+    String endpoint, {
+    Map<String, dynamic>? queryParams,
+  }) async {
     return await _dio.get('$baseUrl$endpoint', queryParameters: queryParams);
   }
 

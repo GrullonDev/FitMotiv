@@ -29,11 +29,19 @@ class SettingsScreen extends StatelessWidget {
     final primaryColor = Theme.of(context).colorScheme.primary;
 
     return Scaffold(
-      appBar: AppBar(title: Text(localeProvider.translate('settings'), style: AppTextStyles.heading3)),
+      appBar: AppBar(
+        title: Text(
+          localeProvider.translate('settings'),
+          style: AppTextStyles.heading3,
+        ),
+      ),
       body: ListView(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         children: [
-          FadeInDown(duration: const Duration(milliseconds: 400), child: _buildSectionTitle(localeProvider.translate('profile'))),
+          FadeInDown(
+            duration: const Duration(milliseconds: 400),
+            child: _buildSectionTitle(localeProvider.translate('profile')),
+          ),
           FadeInDown(
             duration: const Duration(milliseconds: 500),
             child: _buildSectionCard(context, [
@@ -55,7 +63,10 @@ class SettingsScreen extends StatelessWidget {
             ]),
           ),
           const SizedBox(height: 24),
-          FadeInDown(duration: const Duration(milliseconds: 600), child: _buildSectionTitle(localeProvider.translate('preferences'))),
+          FadeInDown(
+            duration: const Duration(milliseconds: 600),
+            child: _buildSectionTitle(localeProvider.translate('preferences')),
+          ),
           FadeInDown(
             duration: const Duration(milliseconds: 700),
             child: _buildSectionCard(context, [
@@ -75,7 +86,9 @@ class SettingsScreen extends StatelessWidget {
                 trailing: Switch(
                   value: themeProvider.themeMode == ThemeMode.dark,
                   onChanged: (v) {
-                    themeProvider.setThemeMode(v ? ThemeMode.dark : ThemeMode.light);
+                    themeProvider.setThemeMode(
+                      v ? ThemeMode.dark : ThemeMode.light,
+                    );
                   },
                   activeThumbColor: primaryColor,
                 ),
@@ -85,7 +98,9 @@ class SettingsScreen extends StatelessWidget {
                 context,
                 icon: Icons.language_outlined,
                 title: localeProvider.translate('language'),
-                subtitle: localeProvider.locale.languageCode == 'en' ? localeProvider.translate('english') : localeProvider.translate('spanish'),
+                subtitle: localeProvider.locale.languageCode == 'en'
+                    ? localeProvider.translate('english')
+                    : localeProvider.translate('spanish'),
                 onTap: () {
                   final newLocale = localeProvider.locale.languageCode == 'en'
                       ? const Locale('es')
@@ -98,7 +113,10 @@ class SettingsScreen extends StatelessWidget {
             ]),
           ),
           const SizedBox(height: 24),
-          FadeInDown(duration: const Duration(milliseconds: 800), child: _buildSectionTitle(localeProvider.translate('support'))),
+          FadeInDown(
+            duration: const Duration(milliseconds: 800),
+            child: _buildSectionTitle(localeProvider.translate('support')),
+          ),
           FadeInDown(
             duration: const Duration(milliseconds: 900),
             child: _buildSectionCard(context, [
@@ -128,7 +146,13 @@ class SettingsScreen extends StatelessWidget {
   Widget _buildSectionTitle(String title) {
     return Padding(
       padding: const EdgeInsets.only(left: 4, bottom: 12),
-      child: Text(title, style: AppTextStyles.heading4.copyWith(color: Colors.grey[600], letterSpacing: 0.5)),
+      child: Text(
+        title,
+        style: AppTextStyles.heading4.copyWith(
+          color: Colors.grey[600],
+          letterSpacing: 0.5,
+        ),
+      ),
     );
   }
 
@@ -138,7 +162,11 @@ class SettingsScreen extends StatelessWidget {
         color: Theme.of(context).cardTheme.color,
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
-          BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 20, offset: const Offset(0, 10)),
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.04),
+            blurRadius: 20,
+            offset: const Offset(0, 10),
+          ),
         ],
       ),
       child: Column(children: children),
@@ -158,7 +186,10 @@ class SettingsScreen extends StatelessWidget {
       contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
       leading: Container(
         padding: const EdgeInsets.all(10),
-        decoration: BoxDecoration(color: primaryColor.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(12)),
+        decoration: BoxDecoration(
+          color: primaryColor.withValues(alpha: 0.1),
+          borderRadius: BorderRadius.circular(12),
+        ),
         child: Icon(icon, color: primaryColor, size: 24),
       ),
       title: Text(
@@ -168,17 +199,31 @@ class SettingsScreen extends StatelessWidget {
           color: Theme.of(context).colorScheme.onSurface,
         ),
       ),
-      subtitle: Text(subtitle, style: AppTextStyles.bodySmall.copyWith(color: Colors.grey[500])),
-      trailing: trailing ?? Icon(Icons.arrow_forward_ios, size: 14, color: Colors.grey[400]),
+      subtitle: Text(
+        subtitle,
+        style: AppTextStyles.bodySmall.copyWith(color: Colors.grey[500]),
+      ),
+      trailing:
+          trailing ??
+          Icon(Icons.arrow_forward_ios, size: 14, color: Colors.grey[400]),
       onTap: onTap,
     );
   }
 
   Widget _buildDivider() {
-    return Divider(height: 1, indent: 70, endIndent: 20, color: Colors.grey.withValues(alpha: 0.1));
+    return Divider(
+      height: 1,
+      indent: 70,
+      endIndent: 20,
+      color: Colors.grey.withValues(alpha: 0.1),
+    );
   }
 
-  Widget _buildColorPicker(BuildContext context, ThemeProvider themeProvider, LocaleProvider localeProvider) {
+  Widget _buildColorPicker(
+    BuildContext context,
+    ThemeProvider themeProvider,
+    LocaleProvider localeProvider,
+  ) {
     final colors = [
       const Color(0xFF00D4A3), // Green
       const Color(0xFF3B82F6), // Blue
@@ -200,17 +245,28 @@ class SettingsScreen extends StatelessWidget {
                   color: themeProvider.primaryColor.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: Icon(Icons.palette_outlined, color: themeProvider.primaryColor, size: 24),
+                child: Icon(
+                  Icons.palette_outlined,
+                  color: themeProvider.primaryColor,
+                  size: 24,
+                ),
               ),
               const SizedBox(width: 16),
-              Text(localeProvider.translate('app_color'), style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 16)),
+              Text(
+                localeProvider.translate('app_color'),
+                style: const TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 16,
+                ),
+              ),
             ],
           ),
           const SizedBox(height: 16),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: colors.map((color) {
-              final isSelected = themeProvider.primaryColor.value == color.value;
+              final isSelected =
+                  themeProvider.primaryColor.toARGB32() == color.toARGB32();
               return GestureDetector(
                 onTap: () => themeProvider.setPrimaryColor(color),
                 child: Container(
@@ -219,12 +275,22 @@ class SettingsScreen extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: color,
                     shape: BoxShape.circle,
-                    border: Border.all(color: isSelected ? Colors.white : Colors.transparent, width: 3),
+                    border: Border.all(
+                      color: isSelected ? Colors.white : Colors.transparent,
+                      width: 3,
+                    ),
                     boxShadow: [
-                      if (isSelected) BoxShadow(color: color.withValues(alpha: 0.4), blurRadius: 8, spreadRadius: 2),
+                      if (isSelected)
+                        BoxShadow(
+                          color: color.withValues(alpha: 0.4),
+                          blurRadius: 8,
+                          spreadRadius: 2,
+                        ),
                     ],
                   ),
-                  child: isSelected ? const Icon(Icons.check, color: Colors.white, size: 20) : null,
+                  child: isSelected
+                      ? const Icon(Icons.check, color: Colors.white, size: 20)
+                      : null,
                 ),
               );
             }).toList(),

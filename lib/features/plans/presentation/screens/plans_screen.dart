@@ -30,18 +30,24 @@ class PlansScreen extends StatelessWidget {
             ),
             child: Text(
               l10n.translate('nutrition'),
-              style: (Responsive.isMobile(context) ? AppTextStyles.heading2 : AppTextStyles.heading1).copyWith(
-                fontWeight: FontWeight.w800,
-              ),
+              style:
+                  (Responsive.isMobile(context)
+                          ? AppTextStyles.heading2
+                          : AppTextStyles.heading1)
+                      .copyWith(fontWeight: FontWeight.w800),
             ),
           ),
           bottom: TabBar(
             labelColor: primaryColor,
-            unselectedLabelColor: Theme.of(context).colorScheme.onSurfaceVariant,
+            unselectedLabelColor: Theme.of(
+              context,
+            ).colorScheme.onSurfaceVariant,
             indicatorColor: primaryColor,
             indicatorWeight: 4,
             isScrollable: Responsive.isMobile(context) ? false : true,
-            labelStyle: AppTextStyles.bodyMedium.copyWith(fontWeight: FontWeight.bold),
+            labelStyle: AppTextStyles.bodyMedium.copyWith(
+              fontWeight: FontWeight.bold,
+            ),
             unselectedLabelStyle: AppTextStyles.bodyMedium,
             tabs: [
               Tab(text: l10n.translate('meal_plans')),
@@ -62,7 +68,11 @@ class PlansScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildMealPlansTab(BuildContext context, LocaleProvider l10n, Color primaryColor) {
+  Widget _buildMealPlansTab(
+    BuildContext context,
+    LocaleProvider l10n,
+    Color primaryColor,
+  ) {
     final provider = context.watch<PlansProvider>();
     bool isMobile = Responsive.isMobile(context);
 
@@ -83,11 +93,17 @@ class PlansScreen extends StatelessWidget {
           children: [
             Row(
               children: [
-                Icon(Icons.auto_awesome, color: primaryColor, size: isMobile ? 20 : 24),
+                Icon(
+                  Icons.auto_awesome,
+                  color: primaryColor,
+                  size: isMobile ? 20 : 24,
+                ),
                 const SizedBox(width: 8),
                 Text(
                   l10n.translate('personalized_meal_plans'),
-                  style: isMobile ? AppTextStyles.heading4 : AppTextStyles.heading3,
+                  style: isMobile
+                      ? AppTextStyles.heading4
+                      : AppTextStyles.heading3,
                 ),
               ],
             ),
@@ -107,7 +123,9 @@ class PlansScreen extends StatelessWidget {
                     title: plan['title'] as String? ?? '',
                     description: plan['description'] as String? ?? '',
                     calories: plan['calories'] as String? ?? '',
-                    icon: _getIconForString(plan['icon'] as String? ?? 'restaurant'),
+                    icon: _getIconForString(
+                      plan['icon'] as String? ?? 'restaurant',
+                    ),
                     badgeText: plan['badge_text'] as String? ?? '',
                     imageUrl: plan['image_url'] as String? ?? '',
                     isRecommended: plan['is_recommended'] as bool? ?? false,
@@ -126,10 +144,13 @@ class PlansScreen extends StatelessWidget {
                           title: plan['title'] as String? ?? '',
                           description: plan['description'] as String? ?? '',
                           calories: plan['calories'] as String? ?? '',
-                          icon: _getIconForString(plan['icon'] as String? ?? 'restaurant'),
+                          icon: _getIconForString(
+                            plan['icon'] as String? ?? 'restaurant',
+                          ),
                           badgeText: plan['badge_text'] as String? ?? '',
                           imageUrl: plan['image_url'] as String? ?? '',
-                          isRecommended: plan['is_recommended'] as bool? ?? false,
+                          isRecommended:
+                              plan['is_recommended'] as bool? ?? false,
                         ),
                       ),
                     )
@@ -141,7 +162,11 @@ class PlansScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildRecipesTab(BuildContext context, LocaleProvider l10n, Color primaryColor) {
+  Widget _buildRecipesTab(
+    BuildContext context,
+    LocaleProvider l10n,
+    Color primaryColor,
+  ) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final isMobile = Responsive.isMobile(context);
     final provider = context.watch<PlansProvider>();
@@ -160,14 +185,22 @@ class PlansScreen extends StatelessWidget {
         children: [
           // Search Bar
           Padding(
-            padding: EdgeInsets.fromLTRB(isMobile ? 20 : 40, 20, isMobile ? 20 : 40, 10),
+            padding: EdgeInsets.fromLTRB(
+              isMobile ? 20 : 40,
+              20,
+              isMobile ? 20 : 40,
+              10,
+            ),
             child: TextField(
               decoration: InputDecoration(
                 hintText: l10n.translate('search_recipes'),
                 prefixIcon: const Icon(Icons.search),
                 filled: true,
                 fillColor: isDark ? Colors.white10 : Colors.white,
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: BorderSide.none),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(16),
+                  borderSide: BorderSide.none,
+                ),
                 contentPadding: const EdgeInsets.symmetric(vertical: 0),
               ),
             ),
@@ -200,7 +233,11 @@ class PlansScreen extends StatelessWidget {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.restaurant_menu, size: 48, color: AppColors.textSecondary.withValues(alpha: 0.3)),
+                        Icon(
+                          Icons.restaurant_menu,
+                          size: 48,
+                          color: AppColors.textSecondary.withValues(alpha: 0.3),
+                        ),
                         const SizedBox(height: 12),
                         Text('No hay recetas', style: AppTextStyles.bodyMedium),
                       ],
@@ -232,7 +269,12 @@ class PlansScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildFilterChip(String label, bool isSelected, Color primary, VoidCallback onTap) {
+  Widget _buildFilterChip(
+    String label,
+    bool isSelected,
+    Color primary,
+    VoidCallback onTap,
+  ) {
     return Container(
       margin: const EdgeInsets.only(right: 8, top: 4, bottom: 4),
       child: FilterChip(
@@ -246,7 +288,9 @@ class PlansScreen extends StatelessWidget {
           color: isSelected ? primary : AppColors.textSecondary,
           fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
         ),
-        shape: StadiumBorder(side: BorderSide(color: isSelected ? primary : AppColors.border)),
+        shape: StadiumBorder(
+          side: BorderSide(color: isSelected ? primary : AppColors.border),
+        ),
       ),
     );
   }
@@ -284,7 +328,9 @@ class PlansScreen extends StatelessWidget {
                 child: PageView(
                   physics: const BouncingScrollPhysics(),
                   children: provider.tips.map((tip) {
-                    final color = _parseColor(tip['color'] as String? ?? '#3B82F6');
+                    final color = _parseColor(
+                      tip['color'] as String? ?? '#3B82F6',
+                    );
                     return _buildMythCard(
                       context,
                       tip['title'] as String? ?? '',
@@ -299,19 +345,27 @@ class PlansScreen extends StatelessWidget {
             const SizedBox(height: 32),
 
             // Water Calculator — persistido en Supabase
-            Text(l10n.translate('water_tracker'), style: AppTextStyles.heading4),
+            Text(
+              l10n.translate('water_tracker'),
+              style: AppTextStyles.heading4,
+            ),
             const SizedBox(height: 16),
             _WaterTrackerWidget(provider: provider),
 
             const SizedBox(height: 32),
 
             // Articles — desde Supabase
-            Text(l10n.translate('recommended_articles'), style: AppTextStyles.heading4),
+            Text(
+              l10n.translate('recommended_articles'),
+              style: AppTextStyles.heading4,
+            ),
             const SizedBox(height: 16),
             if (provider.articles.isEmpty)
               _buildEmptyState(
                 context,
-                l10n.translate('no_account'), // Use descriptive key if available
+                l10n.translate(
+                  'no_account',
+                ), // Use descriptive key if available
                 l10n.translate('recipes'),
                 Icons.article_outlined,
               )
@@ -330,28 +384,58 @@ class PlansScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildEmptyState(BuildContext context, String title, String subtitle, IconData icon) {
+  Widget _buildEmptyState(
+    BuildContext context,
+    String title,
+    String subtitle,
+    IconData icon,
+  ) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
         color: Theme.of(context).cardTheme.color ?? Colors.white,
         borderRadius: BorderRadius.circular(16),
-        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 8, offset: const Offset(0, 2))],
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: Column(
         children: [
-          Icon(icon, size: 40, color: AppColors.textSecondary.withValues(alpha: 0.4)),
+          Icon(
+            icon,
+            size: 40,
+            color: AppColors.textSecondary.withValues(alpha: 0.4),
+          ),
           const SizedBox(height: 12),
-          Text(title, style: AppTextStyles.bodyMedium.copyWith(fontWeight: FontWeight.w600)),
+          Text(
+            title,
+            style: AppTextStyles.bodyMedium.copyWith(
+              fontWeight: FontWeight.w600,
+            ),
+          ),
           const SizedBox(height: 4),
-          Text(subtitle, style: AppTextStyles.bodySmall, textAlign: TextAlign.center),
+          Text(
+            subtitle,
+            style: AppTextStyles.bodySmall,
+            textAlign: TextAlign.center,
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildMythCard(BuildContext context, String title, String description, Color color, Color primary) {
+  Widget _buildMythCard(
+    BuildContext context,
+    String title,
+    String description,
+    Color color,
+    Color primary,
+  ) {
     final l10n = context.read<LocaleProvider>();
     return Container(
       margin: const EdgeInsets.only(right: 12),
@@ -364,7 +448,13 @@ class PlansScreen extends StatelessWidget {
           colors: [color.withValues(alpha: 0.8), color],
         ),
         borderRadius: BorderRadius.circular(24),
-        boxShadow: [BoxShadow(color: color.withValues(alpha: 0.3), blurRadius: 10, offset: const Offset(0, 4))],
+        boxShadow: [
+          BoxShadow(
+            color: color.withValues(alpha: 0.3),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Stack(
         children: [
@@ -373,7 +463,11 @@ class PlansScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Icon(Icons.lightbulb_outline, color: Colors.white, size: 28),
+                const Icon(
+                  Icons.lightbulb_outline,
+                  color: Colors.white,
+                  size: 28,
+                ),
                 const SizedBox(height: 12),
                 Text(
                   title,
@@ -387,7 +481,11 @@ class PlansScreen extends StatelessWidget {
                 const SizedBox(height: 6),
                 Text(
                   description,
-                  style: TextStyle(color: Colors.white.withValues(alpha: 0.9), fontSize: 13, height: 1.4),
+                  style: TextStyle(
+                    color: Colors.white.withValues(alpha: 0.9),
+                    fontSize: 13,
+                    height: 1.4,
+                  ),
                 ),
               ],
             ),
@@ -399,16 +497,26 @@ class PlansScreen extends StatelessWidget {
               onPressed: () {},
               style: IconButton.styleFrom(
                 backgroundColor: Colors.white12,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
               ),
               icon: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Icon(Icons.share_outlined, color: Colors.white, size: 16),
+                  const Icon(
+                    Icons.share_outlined,
+                    color: Colors.white,
+                    size: 16,
+                  ),
                   const SizedBox(width: 4),
                   Text(
                     l10n.translate('share'),
-                    style: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.bold),
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 11,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ],
               ),
@@ -434,17 +542,36 @@ class PlansScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
-                Text(subtitle, style: AppTextStyles.bodySmall.copyWith(color: AppColors.textSecondary)),
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 15,
+                  ),
+                ),
+                Text(
+                  subtitle,
+                  style: AppTextStyles.bodySmall.copyWith(
+                    color: AppColors.textSecondary,
+                  ),
+                ),
                 const SizedBox(height: 8),
                 Text(
                   readTime,
-                  style: const TextStyle(color: Colors.blue, fontSize: 12, fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                    color: Colors.blue,
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ],
             ),
           ),
-          const Icon(Icons.arrow_forward_ios, size: 14, color: AppColors.textSecondary),
+          const Icon(
+            Icons.arrow_forward_ios,
+            size: 14,
+            color: AppColors.textSecondary,
+          ),
         ],
       ),
     );
@@ -491,10 +618,14 @@ class _WaterTrackerWidget extends StatelessWidget {
       duration: const Duration(milliseconds: 500),
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: isComplete ? Colors.green.withValues(alpha: 0.1) : primaryColor.withValues(alpha: 0.1),
+        color: isComplete
+            ? Colors.green.withValues(alpha: 0.1)
+            : primaryColor.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(28),
         border: Border.all(
-          color: isComplete ? Colors.green.withValues(alpha: 0.3) : primaryColor.withValues(alpha: 0.2),
+          color: isComplete
+              ? Colors.green.withValues(alpha: 0.3)
+              : primaryColor.withValues(alpha: 0.2),
           width: 2,
         ),
       ),
@@ -512,12 +643,18 @@ class _WaterTrackerWidget extends StatelessWidget {
                       color: isComplete ? Colors.green : primaryColor,
                       fontWeight: FontWeight.w900,
                     ),
-                    child: Text('$glassesValue / 8 ${l10n.translate('glasses')}'),
+                    child: Text(
+                      '$glassesValue / 8 ${l10n.translate('glasses')}',
+                    ),
                   ),
                   Text(
-                    isComplete ? l10n.translate('water_reached') : l10n.translate('water_target'),
+                    isComplete
+                        ? l10n.translate('water_reached')
+                        : l10n.translate('water_target'),
                     style: TextStyle(
-                      color: isComplete ? Colors.green : AppColors.textSecondary,
+                      color: isComplete
+                          ? Colors.green
+                          : AppColors.textSecondary,
                       fontWeight: FontWeight.bold,
                       fontSize: 12,
                     ),

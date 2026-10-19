@@ -12,7 +12,11 @@ class RegisterHeader extends StatelessWidget {
     return Column(
       children: [
         const SizedBox(height: 40),
-        Text('Create Your Account', style: AppTextStyles.heading1, textAlign: TextAlign.center),
+        Text(
+          'Create Your Account',
+          style: AppTextStyles.heading1,
+          textAlign: TextAlign.center,
+        ),
         const SizedBox(height: 8),
         Text(
           'Join FitMotiv and start your fitness journey today',

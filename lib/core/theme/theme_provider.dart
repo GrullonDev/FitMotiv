@@ -25,12 +25,12 @@ class ThemeProvider extends ChangeNotifier {
     notifyListeners();
 
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setInt('primary_color', color.value);
+    await prefs.setInt('primary_color', color.toARGB32());
   }
 
   void _loadTheme() async {
     final prefs = await SharedPreferences.getInstance();
-    
+
     // Load theme mode
     final themeName = prefs.getString('theme_mode') ?? ThemeMode.system.name;
     _themeMode = ThemeMode.values.firstWhere(

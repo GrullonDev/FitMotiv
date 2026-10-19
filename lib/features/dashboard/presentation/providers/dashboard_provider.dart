@@ -4,7 +4,6 @@ import 'package:fit_motiv/features/dashboard/domain/usecases/get_daily_quote.dar
 
 /// Provider para el dashboard que gestiona la cita diaria
 class DashboardProvider extends ChangeNotifier {
-
   DashboardProvider({required this.getDailyQuote}) {
     fetchQuote();
   }

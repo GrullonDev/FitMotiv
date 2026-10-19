@@ -41,7 +41,10 @@ class StatsCard extends StatelessWidget {
               Icon(icon, color: color, size: 24),
               Container(
                 padding: const EdgeInsets.all(4),
-                decoration: BoxDecoration(color: color.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(4)),
+                decoration: BoxDecoration(
+                  color: color.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(4),
+                ),
                 child: Icon(Icons.trending_up, color: color, size: 12),
               ),
             ],
@@ -52,7 +55,10 @@ class StatsCard extends StatelessWidget {
             children: [
               Text(value, style: AppTextStyles.heading2.copyWith(color: color)),
               const SizedBox(width: 4),
-              Text(unit, style: AppTextStyles.bodyMedium.copyWith(color: color)),
+              Text(
+                unit,
+                style: AppTextStyles.bodyMedium.copyWith(color: color),
+              ),
             ],
           ),
           const SizedBox(height: 4),
@@ -90,7 +96,13 @@ class StatsGrid extends StatelessWidget {
           icon: Icons.local_fire_department,
           color: Color(0xFFFF6B6B),
         ),
-        const StatsCard(title: 'Workout Time', value: '45', unit: 'min', icon: Icons.timer, color: Color(0xFF4ECDC4)),
+        const StatsCard(
+          title: 'Workout Time',
+          value: '45',
+          unit: 'min',
+          icon: Icons.timer,
+          color: Color(0xFF4ECDC4),
+        ),
         const StatsCard(
           title: 'Water Intake',
           value: '1.2',

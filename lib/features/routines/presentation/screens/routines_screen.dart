@@ -18,10 +18,16 @@ class RoutinesScreen extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          title: Text(context.watch<LocaleProvider>().translate('routines'), style: AppTextStyles.heading3),
+          title: Text(
+            context.watch<LocaleProvider>().translate('routines'),
+            style: AppTextStyles.heading3,
+          ),
           actions: [
             IconButton(
-              icon: Icon(Icons.search, color: Theme.of(context).colorScheme.primary),
+              icon: Icon(
+                Icons.search,
+                color: Theme.of(context).colorScheme.primary,
+              ),
               onPressed: () {
                 // TODO: Implement search
               },
@@ -30,26 +36,46 @@ class RoutinesScreen extends StatelessWidget {
           bottom: TabBar(
             isScrollable: true,
             labelColor: Theme.of(context).colorScheme.primary,
-            unselectedLabelColor: Theme.of(context).colorScheme.onSurfaceVariant,
+            unselectedLabelColor: Theme.of(
+              context,
+            ).colorScheme.onSurfaceVariant,
             indicatorColor: Theme.of(context).colorScheme.primary,
             tabs: [
               Tab(text: context.read<LocaleProvider>().translate('all')),
               Tab(text: context.read<LocaleProvider>().translate('cardio')),
               Tab(text: context.read<LocaleProvider>().translate('strength')),
-              Tab(text: context.read<LocaleProvider>().translate('flexibility')),
+              Tab(
+                text: context.read<LocaleProvider>().translate('flexibility'),
+              ),
             ],
           ),
         ),
         body: provider.isLoading
-            ? Center(child: CircularProgressIndicator(color: Theme.of(context).colorScheme.primary))
+            ? Center(
+                child: CircularProgressIndicator(
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+              )
             : provider.workouts.isEmpty
             ? _buildEmptyState(context, provider)
             : TabBarView(
                 children: [
                   _buildGrid(context, provider.getByCategory('All'), provider),
-                  _buildGrid(context, provider.getByCategory('Cardio'), provider),
-                  _buildGrid(context, provider.getByCategory('Strength'), provider),
-                  _buildGrid(context, provider.getByCategory('Flexibility'), provider),
+                  _buildGrid(
+                    context,
+                    provider.getByCategory('Cardio'),
+                    provider,
+                  ),
+                  _buildGrid(
+                    context,
+                    provider.getByCategory('Strength'),
+                    provider,
+                  ),
+                  _buildGrid(
+                    context,
+                    provider.getByCategory('Flexibility'),
+                    provider,
+                  ),
                 ],
               ),
       ),
@@ -63,7 +89,11 @@ class RoutinesScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.fitness_center_outlined, size: 64, color: AppColors.textSecondary.withValues(alpha: 0.5)),
+            Icon(
+              Icons.fitness_center_outlined,
+              size: 64,
+              color: AppColors.textSecondary.withValues(alpha: 0.5),
+            ),
             const SizedBox(height: 16),
             Text('No routines yet', style: AppTextStyles.heading4),
             const SizedBox(height: 8),
@@ -80,7 +110,9 @@ class RoutinesScreen extends StatelessWidget {
               style: ElevatedButton.styleFrom(
                 backgroundColor: Theme.of(context).colorScheme.primary,
                 foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
               ),
             ),
           ],
@@ -89,15 +121,26 @@ class RoutinesScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildGrid(BuildContext context, List<Map<String, dynamic>> workouts, WorkoutProvider provider) {
+  Widget _buildGrid(
+    BuildContext context,
+    List<Map<String, dynamic>> workouts,
+    WorkoutProvider provider,
+  ) {
     if (workouts.isEmpty) {
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.search_off, size: 48, color: AppColors.textSecondary.withValues(alpha: 0.4)),
+            Icon(
+              Icons.search_off,
+              size: 48,
+              color: AppColors.textSecondary.withValues(alpha: 0.4),
+            ),
             const SizedBox(height: 12),
-            Text('No workouts in this category', style: AppTextStyles.bodyMedium),
+            Text(
+              'No workouts in this category',
+              style: AppTextStyles.bodyMedium,
+            ),
           ],
         ),
       );
@@ -198,7 +241,7 @@ class _RoutineCardState extends State<_RoutineCard> {
   @override
   Widget build(BuildContext context) {
     final lp = context.read<LocaleProvider>();
-    
+
     return Hero(
       tag: 'routine_${widget.id}',
       child: GestureDetector(
@@ -227,7 +270,7 @@ class _RoutineCardState extends State<_RoutineCard> {
                 color: Colors.black.withValues(alpha: 0.05),
                 blurRadius: 10,
                 offset: const Offset(0, 4),
-              )
+              ),
             ],
           ),
           child: Column(
@@ -236,7 +279,9 @@ class _RoutineCardState extends State<_RoutineCard> {
               Stack(
                 children: [
                   ClipRRect(
-                    borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+                    borderRadius: const BorderRadius.vertical(
+                      top: Radius.circular(20),
+                    ),
                     child: Container(
                       height: 110,
                       width: double.infinity,
@@ -245,8 +290,12 @@ class _RoutineCardState extends State<_RoutineCard> {
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
                           colors: [
-                            Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
-                            Theme.of(context).colorScheme.primary.withValues(alpha: 0.05),
+                            Theme.of(
+                              context,
+                            ).colorScheme.primary.withValues(alpha: 0.1),
+                            Theme.of(
+                              context,
+                            ).colorScheme.primary.withValues(alpha: 0.05),
                           ],
                         ),
                       ),
@@ -288,7 +337,11 @@ class _RoutineCardState extends State<_RoutineCard> {
                           color: AppColors.success,
                           shape: BoxShape.circle,
                         ),
-                        child: const Icon(Icons.check, size: 12, color: Colors.white),
+                        child: const Icon(
+                          Icons.check,
+                          size: 12,
+                          color: Colors.white,
+                        ),
                       ),
                     ),
                 ],
@@ -320,7 +373,11 @@ class _RoutineCardState extends State<_RoutineCard> {
                       const Spacer(),
                       Row(
                         children: [
-                          Icon(Icons.timer_outlined, size: 12, color: AppColors.textSecondary),
+                          Icon(
+                            Icons.timer_outlined,
+                            size: 12,
+                            color: AppColors.textSecondary,
+                          ),
                           const SizedBox(width: 4),
                           Text(
                             '${widget.duration} min',
@@ -334,7 +391,10 @@ class _RoutineCardState extends State<_RoutineCard> {
                       const SizedBox(height: 6),
                       if (widget.difficulty.isNotEmpty)
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 3,
+                          ),
                           decoration: BoxDecoration(
                             color: _difficultyColor.withValues(alpha: 0.1),
                             borderRadius: BorderRadius.circular(8),

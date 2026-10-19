@@ -36,9 +36,7 @@ class ProfileSupabaseDatasource {
     if (userId == null) throw Exception('No user logged in');
 
     // 1. Update Auth metadata
-    await _client.auth.updateUser(
-      UserAttributes(data: data),
-    );
+    await _client.auth.updateUser(UserAttributes(data: data));
 
     // 2. Update public.profiles table
     await _client.from('profiles').update(data).eq('id', userId);
@@ -50,16 +48,21 @@ class ProfileSupabaseDatasource {
     if (userId == null) throw Exception('No user logged in');
 
     final fileExt = file.path.split('.').last;
-    final fileName = '$userId.${DateTime.now().millisecondsSinceEpoch}.$fileExt';
+    final fileName =
+        '$userId.${DateTime.now().millisecondsSinceEpoch}.$fileExt';
     final filePath = 'avatars/$fileName';
 
-    await _client.storage.from('avatars').upload(
+    await _client.storage
+        .from('avatars')
+        .upload(
           filePath,
           file,
           fileOptions: const FileOptions(cacheControl: '3600', upsert: false),
         );
 
-    final String publicUrl = _client.storage.from('avatars').getPublicUrl(filePath);
+    final String publicUrl = _client.storage
+        .from('avatars')
+        .getPublicUrl(filePath);
     return publicUrl;
   }
 }

@@ -47,12 +47,21 @@ class CustomButton extends StatelessWidget {
           backgroundColor: isButtonDisabled
               ? Colors.grey.shade400
               : backgroundColor ?? Theme.of(context).colorScheme.primary,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(borderRadius)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(borderRadius),
+          ),
           elevation: isButtonDisabled ? 0 : elevation,
         ),
         child: isLoading
             ? _buildLoadingContent(context)
-            : Text(text, style: textStyle ?? AppTextStyles.buttonText.copyWith(color: textColor ?? Colors.white)),
+            : Text(
+                text,
+                style:
+                    textStyle ??
+                    AppTextStyles.buttonText.copyWith(
+                      color: textColor ?? Colors.white,
+                    ),
+              ),
       ),
     );
   }
@@ -66,7 +75,9 @@ class CustomButton extends StatelessWidget {
           height: 20,
           child: CircularProgressIndicator(
             strokeWidth: 2,
-            valueColor: AlwaysStoppedAnimation<Color>(textColor ?? Theme.of(context).scaffoldBackgroundColor),
+            valueColor: AlwaysStoppedAnimation<Color>(
+              textColor ?? Theme.of(context).scaffoldBackgroundColor,
+            ),
           ),
         ),
         const SizedBox(width: 12),
@@ -74,7 +85,9 @@ class CustomButton extends StatelessWidget {
           loadingText ?? 'Loading...',
           style:
               textStyle ??
-              AppTextStyles.buttonText.copyWith(color: textColor ?? Theme.of(context).scaffoldBackgroundColor),
+              AppTextStyles.buttonText.copyWith(
+                color: textColor ?? Theme.of(context).scaffoldBackgroundColor,
+              ),
         ),
       ],
     );

@@ -167,7 +167,8 @@ class LocaleProvider extends ChangeNotifier {
         'workout_completed_msg': 'Workout completed successfully!',
         'wait': 'Wait!',
         'yes': 'Yes',
-        'cancel_workout_confirm': 'Are you sure you want to stop? Progress won\'t be saved.',
+        'cancel_workout_confirm':
+            'Are you sure you want to stop? Progress won\'t be saved.',
         'muscle_building': 'Muscle Building',
         'weight_loss_plan': 'Weight Loss Plan',
         'healthy_recipe': 'Healthy Recipe',
@@ -335,7 +336,8 @@ class LocaleProvider extends ChangeNotifier {
         'workout_completed_msg': '¡Entrenamiento completado con éxito!',
         'wait': '¡Espera!',
         'yes': 'Sí',
-        'cancel_workout_confirm': '¿Estás seguro de que quieres parar? El progreso no se guardará.',
+        'cancel_workout_confirm':
+            '¿Estás seguro de que quieres parar? El progreso no se guardará.',
         'muscle_building': 'Ganar Músculo',
         'weight_loss_plan': 'Plan de Pérdida de Peso',
         'healthy_recipe': 'Receta Saludable',
@@ -360,7 +362,8 @@ class LocaleProvider extends ChangeNotifier {
         'edit_profile': 'Editar Perfil',
         'update_profile_info': 'Actualiza tu información personal',
         'fitness_goals_settings': 'Metas de Fitness',
-        'fitness_goals_subtitle': 'Establece tus metas de entrenamiento y salud',
+        'fitness_goals_subtitle':
+            'Establece tus metas de entrenamiento y salud',
       },
     };
 

@@ -21,7 +21,11 @@ class RecipeCard extends StatelessWidget {
           color: Theme.of(context).cardTheme.color ?? Colors.white,
           borderRadius: BorderRadius.circular(16),
         ),
-        child: Center(child: CircularProgressIndicator(color: Theme.of(context).colorScheme.primary)),
+        child: Center(
+          child: CircularProgressIndicator(
+            color: Theme.of(context).colorScheme.primary,
+          ),
+        ),
       );
     }
 
@@ -48,12 +52,17 @@ class RecipeCard extends StatelessWidget {
               Icon(
                 Icons.restaurant_menu,
                 size: 48,
-                color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.3),
+                color: Theme.of(
+                  context,
+                ).colorScheme.primary.withValues(alpha: 0.3),
               ),
               const SizedBox(height: 12),
               Text('No hay recetas aún', style: AppTextStyles.bodyMedium),
               const SizedBox(height: 4),
-              Text('Agrega recetas a la base de datos', style: AppTextStyles.bodySmall),
+              Text(
+                'Agrega recetas a la base de datos',
+                style: AppTextStyles.bodySmall,
+              ),
             ],
           ),
         ),
@@ -61,7 +70,9 @@ class RecipeCard extends StatelessWidget {
     }
 
     final title = recipe['title'] as String? ?? 'Recipe';
-    final description = recipe['description'] as String? ?? 'A nutritious and delicious recipe.';
+    final description =
+        recipe['description'] as String? ??
+        'A nutritious and delicious recipe.';
     final time = recipe['time'] as String? ?? '';
     final calories = recipe['calories'] as String? ?? '';
     final rating = (recipe['rating'] as num?)?.toDouble() ?? 0;
@@ -85,14 +96,18 @@ class RecipeCard extends StatelessWidget {
         children: [
           // Imagen de la receta
           ClipRRect(
-            borderRadius: const BorderRadius.only(topLeft: Radius.circular(16), topRight: Radius.circular(16)),
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(16),
+              topRight: Radius.circular(16),
+            ),
             child: imageUrl.isNotEmpty
                 ? Image.network(
                     imageUrl,
                     height: 180,
                     width: double.infinity,
                     fit: BoxFit.cover,
-                    errorBuilder: (_, __, ___) => _buildPlaceholderImage(context),
+                    errorBuilder: (_, __, ___) =>
+                        _buildPlaceholderImage(context),
                   )
                 : _buildPlaceholderImage(context),
           ),
@@ -114,13 +129,25 @@ class RecipeCard extends StatelessWidget {
                 Row(
                   children: [
                     if (time.isNotEmpty)
-                      _buildInfoChip(icon: Icons.access_time, text: time, color: const Color(0xFF00D4A3)),
+                      _buildInfoChip(
+                        icon: Icons.access_time,
+                        text: time,
+                        color: const Color(0xFF00D4A3),
+                      ),
                     if (time.isNotEmpty) const SizedBox(width: 12),
                     if (calories.isNotEmpty)
-                      _buildInfoChip(icon: Icons.local_fire_department, text: calories, color: const Color(0xFFFF6B6B)),
+                      _buildInfoChip(
+                        icon: Icons.local_fire_department,
+                        text: calories,
+                        color: const Color(0xFFFF6B6B),
+                      ),
                     if (calories.isNotEmpty) const SizedBox(width: 12),
                     if (rating > 0)
-                      _buildInfoChip(icon: Icons.star, text: rating.toStringAsFixed(1), color: const Color(0xFFFFA726)),
+                      _buildInfoChip(
+                        icon: Icons.star,
+                        text: rating.toStringAsFixed(1),
+                        color: const Color(0xFFFFA726),
+                      ),
                   ],
                 ),
                 const SizedBox(height: 16),
@@ -131,13 +158,20 @@ class RecipeCard extends StatelessWidget {
                       Navigator.pushNamed(context, '/plans');
                     },
                     style: OutlinedButton.styleFrom(
-                      side: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2),
+                      side: BorderSide(
+                        color: Theme.of(context).colorScheme.primary,
+                        width: 2,
+                      ),
                       padding: const EdgeInsets.symmetric(vertical: 12),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
                     ),
                     child: Text(
                       'View Recipe',
-                      style: AppTextStyles.buttonText.copyWith(color: Theme.of(context).colorScheme.primary),
+                      style: AppTextStyles.buttonText.copyWith(
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
                     ),
                   ),
                 ),
@@ -155,15 +189,26 @@ class RecipeCard extends StatelessWidget {
       width: double.infinity,
       color: const Color(0xFFF3F4F6),
       child: Center(
-        child: Icon(Icons.restaurant, size: 60, color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.3)),
+        child: Icon(
+          Icons.restaurant,
+          size: 60,
+          color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.3),
+        ),
       ),
     );
   }
 
-  Widget _buildInfoChip({required IconData icon, required String text, required Color color}) {
+  Widget _buildInfoChip({
+    required IconData icon,
+    required String text,
+    required Color color,
+  }) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(color: color.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(6)),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(6),
+      ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [

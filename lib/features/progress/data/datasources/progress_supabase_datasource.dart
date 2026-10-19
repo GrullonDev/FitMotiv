@@ -95,10 +95,13 @@ class ProgressSupabaseDatasource {
 
   /// Marca una meta como completada
   Future<void> toggleGoalCompleted(String goalId, bool completed) async {
-    await _client.from('goals').update({
-      'is_completed': completed,
-      'updated_at': DateTime.now().toIso8601String(),
-    }).eq('id', goalId);
+    await _client
+        .from('goals')
+        .update({
+          'is_completed': completed,
+          'updated_at': DateTime.now().toIso8601String(),
+        })
+        .eq('id', goalId);
   }
 
   /// Registra una sesión de entrenamiento

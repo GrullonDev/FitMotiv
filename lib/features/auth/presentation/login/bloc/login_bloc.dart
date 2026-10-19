@@ -5,9 +5,11 @@ import 'package:fit_motiv/features/auth/domain/repositories/auth_repository.dart
 import 'package:flutter/material.dart';
 
 class LoginBloc extends ChangeNotifier {
-  LoginBloc({required AuthRepository authRepository, required AnalyticsService analyticsService})
-    : _authRepository = authRepository,
-      _analyticsService = analyticsService;
+  LoginBloc({
+    required AuthRepository authRepository,
+    required AnalyticsService analyticsService,
+  }) : _authRepository = authRepository,
+       _analyticsService = analyticsService;
 
   final AuthRepository _authRepository;
   final AnalyticsService _analyticsService;
@@ -61,7 +63,10 @@ class LoginBloc extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final request = LoginRequest(username: usernameController.text.trim(), password: passwordController.text.trim());
+      final request = LoginRequest(
+        username: usernameController.text.trim(),
+        password: passwordController.text.trim(),
+      );
 
       final result = await _authRepository.login(request);
 
@@ -71,9 +76,11 @@ class LoginBloc extends ChangeNotifier {
 
           // Detectar si es error de email no confirmado
           if (failure.message.toLowerCase().contains('email') &&
-              (failure.message.toLowerCase().contains('confirm') || failure.message.toLowerCase().contains('verify'))) {
+              (failure.message.toLowerCase().contains('confirm') ||
+                  failure.message.toLowerCase().contains('verify'))) {
             _isEmailNotConfirmed = true;
-            _errorMessage = 'Please verify your email before signing in. Check your inbox for a confirmation link.';
+            _errorMessage =
+                'Please verify your email before signing in. Check your inbox for a confirmation link.';
             SnackBarService.showWarning(_errorMessage!);
           } else {
             _errorMessage = failure.message;
@@ -106,7 +113,8 @@ class LoginBloc extends ChangeNotifier {
       // Detectar error de email no confirmado desde excepción cruda de Supabase
       if (errorStr.contains('email_not_confirmed')) {
         _isEmailNotConfirmed = true;
-        _errorMessage = 'Please verify your email before signing in. Check your inbox for a confirmation link.';
+        _errorMessage =
+            'Please verify your email before signing in. Check your inbox for a confirmation link.';
         SnackBarService.showWarning(_errorMessage!);
       } else {
         _errorMessage = 'An unexpected error occurred. Please try again.';
@@ -136,7 +144,9 @@ class LoginBloc extends ChangeNotifier {
       notifyListeners();
     } catch (e) {
       _isLoading = false;
-      SnackBarService.showError('Could not resend verification email. Please try again later.');
+      SnackBarService.showError(
+        'Could not resend verification email. Please try again later.',
+      );
       notifyListeners();
     }
   }

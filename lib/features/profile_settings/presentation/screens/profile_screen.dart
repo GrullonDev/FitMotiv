@@ -20,46 +20,75 @@ class ProfileScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(context.watch<LocaleProvider>().translate('profile'), style: AppTextStyles.heading3),
+        title: Text(
+          context.watch<LocaleProvider>().translate('profile'),
+          style: AppTextStyles.heading3,
+        ),
         centerTitle: true,
         actions: [
           IconButton(
-            icon: Icon(Icons.refresh, color: Theme.of(context).colorScheme.primary),
+            icon: Icon(
+              Icons.refresh,
+              color: Theme.of(context).colorScheme.primary,
+            ),
             onPressed: () => provider.refreshProfile(),
           ),
         ],
       ),
       body: isLoading
           ? Center(
-              child: CircularProgressIndicator(color: Theme.of(context).colorScheme.primary),
+              child: CircularProgressIndicator(
+                color: Theme.of(context).colorScheme.primary,
+              ),
             )
           : profile == null
-              ? _buildErrorState(context, provider)
-              : RefreshIndicator(
-                  color: Theme.of(context).colorScheme.primary,
-                  onRefresh: () => provider.refreshProfile(),
-                  child: ListView(
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    padding: const EdgeInsets.all(20),
-                    children: [
-                      _buildProfileHeader(context, provider),
-                      const SizedBox(height: 24),
-                      _buildWeightProgress(context, profile),
-                      const SizedBox(height: 24),
-                      _buildInfoSection(context, profile.bio, profile.activityLevel, profile.fitnessGoal),
-                      const SizedBox(height: 24),
-                      _buildSettingsSection(context),
-                      const SizedBox(height: 24),
-                      Text(l10n.translate('body_metrics'), style: AppTextStyles.heading4),
-                      const SizedBox(height: 12),
-                      _buildMetricsCard(context, profile.weight, profile.height, profile.age),
-                      const SizedBox(height: 24),
-                      Text(l10n.translate('account_info'), style: AppTextStyles.heading4),
-                      const SizedBox(height: 12),
-                      _buildAccountCard(context, profile.email, profile.username, profile.memberSince),
-                    ],
+          ? _buildErrorState(context, provider)
+          : RefreshIndicator(
+              color: Theme.of(context).colorScheme.primary,
+              onRefresh: () => provider.refreshProfile(),
+              child: ListView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                padding: const EdgeInsets.all(20),
+                children: [
+                  _buildProfileHeader(context, provider),
+                  const SizedBox(height: 24),
+                  _buildWeightProgress(context, profile),
+                  const SizedBox(height: 24),
+                  _buildInfoSection(
+                    context,
+                    profile.bio,
+                    profile.activityLevel,
+                    profile.fitnessGoal,
                   ),
-                ),
+                  const SizedBox(height: 24),
+                  _buildSettingsSection(context),
+                  const SizedBox(height: 24),
+                  Text(
+                    l10n.translate('body_metrics'),
+                    style: AppTextStyles.heading4,
+                  ),
+                  const SizedBox(height: 12),
+                  _buildMetricsCard(
+                    context,
+                    profile.weight,
+                    profile.height,
+                    profile.age,
+                  ),
+                  const SizedBox(height: 24),
+                  Text(
+                    l10n.translate('account_info'),
+                    style: AppTextStyles.heading4,
+                  ),
+                  const SizedBox(height: 12),
+                  _buildAccountCard(
+                    context,
+                    profile.email,
+                    profile.username,
+                    profile.memberSince,
+                  ),
+                ],
+              ),
+            ),
     );
   }
 
@@ -76,10 +105,7 @@ class ProfileScreen extends StatelessWidget {
               color: AppColors.textSecondary.withValues(alpha: 0.5),
             ),
             const SizedBox(height: 16),
-            Text(
-              'Could not load profile',
-              style: AppTextStyles.heading4,
-            ),
+            Text('Could not load profile', style: AppTextStyles.heading4),
             const SizedBox(height: 8),
             Text(
               provider.error ?? 'Unknown error',
@@ -105,7 +131,10 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildProfileHeader(BuildContext context, UserProfileProvider provider) {
+  Widget _buildProfileHeader(
+    BuildContext context,
+    UserProfileProvider provider,
+  ) {
     final profile = provider.profile!;
 
     return Center(
@@ -122,13 +151,20 @@ class ProfileScreen extends StatelessWidget {
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     gradient: LinearGradient(
-                      colors: [Theme.of(context).colorScheme.primary, Theme.of(context).colorScheme.primary.withValues(alpha: 0.6)],
+                      colors: [
+                        Theme.of(context).colorScheme.primary,
+                        Theme.of(
+                          context,
+                        ).colorScheme.primary.withValues(alpha: 0.6),
+                      ],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.3),
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.primary.withValues(alpha: 0.3),
                         blurRadius: 20,
                         offset: const Offset(0, 8),
                       ),
@@ -199,7 +235,7 @@ class ProfileScreen extends StatelessWidget {
   Widget _buildWeightProgress(BuildContext context, dynamic profile) {
     final diff = profile.weightDifference;
     final isLosing = diff < 0;
-    
+
     return _card(
       context: context,
       children: [
@@ -211,28 +247,39 @@ class ProfileScreen extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                   Text('Weight Progress', style: AppTextStyles.bodyLarge.copyWith(fontWeight: FontWeight.bold)),
-                   Container(
-                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                     decoration: BoxDecoration(
-                       color: (isLosing ? Colors.green : Colors.orange).withValues(alpha: 0.1),
-                       borderRadius: BorderRadius.circular(8),
-                     ),
-                     child: Text(
-                       '${diff.toStringAsFixed(1)} lbs',
-                       style: TextStyle(
-                         color: isLosing ? Colors.green : Colors.orange,
-                         fontWeight: FontWeight.bold,
-                       ),
-                     ),
-                   ),
+                  Text(
+                    'Weight Progress',
+                    style: AppTextStyles.bodyLarge.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 4,
+                    ),
+                    decoration: BoxDecoration(
+                      color: (isLosing ? Colors.green : Colors.orange)
+                          .withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Text(
+                      '${diff.toStringAsFixed(1)} lbs',
+                      style: TextStyle(
+                        color: isLosing ? Colors.green : Colors.orange,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
                 ],
               ),
               const SizedBox(height: 16),
               LinearPercentIndicator(
                 lineHeight: 12.0,
                 percent: profile.weightProgressPercent.clamp(0.0, 1.0),
-                backgroundColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
+                backgroundColor: Theme.of(
+                  context,
+                ).colorScheme.primary.withValues(alpha: 0.1),
                 progressColor: Theme.of(context).colorScheme.primary,
                 barRadius: const Radius.circular(6),
                 animation: true,
@@ -241,8 +288,14 @@ class ProfileScreen extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('Start: ${profile.initialWeight} lbs', style: AppTextStyles.bodySmall),
-                  Text('Goal: ${profile.weight} lbs', style: AppTextStyles.bodySmall),
+                  Text(
+                    'Start: ${profile.initialWeight} lbs',
+                    style: AppTextStyles.bodySmall,
+                  ),
+                  Text(
+                    'Goal: ${profile.weight} lbs',
+                    style: AppTextStyles.bodySmall,
+                  ),
                 ],
               ),
             ],
@@ -252,7 +305,12 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildInfoSection(BuildContext context, String bio, String activityLevel, String fitnessGoal) {
+  Widget _buildInfoSection(
+    BuildContext context,
+    String bio,
+    String activityLevel,
+    String fitnessGoal,
+  ) {
     if (bio.isEmpty && activityLevel.isEmpty && fitnessGoal.isEmpty) {
       return const SizedBox.shrink();
     }
@@ -262,19 +320,33 @@ class ProfileScreen extends StatelessWidget {
       children: [
         if (bio.isNotEmpty)
           _InfoRow(icon: Icons.person_outline, label: 'Bio', value: bio),
-        if (bio.isNotEmpty && (activityLevel.isNotEmpty || fitnessGoal.isNotEmpty))
+        if (bio.isNotEmpty &&
+            (activityLevel.isNotEmpty || fitnessGoal.isNotEmpty))
           const Divider(height: 1),
         if (activityLevel.isNotEmpty)
-          _InfoRow(icon: Icons.speed, label: 'Activity Level', value: activityLevel),
+          _InfoRow(
+            icon: Icons.speed,
+            label: 'Activity Level',
+            value: activityLevel,
+          ),
         if (activityLevel.isNotEmpty && fitnessGoal.isNotEmpty)
           const Divider(height: 1),
         if (fitnessGoal.isNotEmpty)
-          _InfoRow(icon: Icons.flag_outlined, label: 'Fitness Goal', value: fitnessGoal),
+          _InfoRow(
+            icon: Icons.flag_outlined,
+            label: 'Fitness Goal',
+            value: fitnessGoal,
+          ),
       ],
     );
   }
 
-  Widget _buildMetricsCard(BuildContext context, double weight, double height, int age) {
+  Widget _buildMetricsCard(
+    BuildContext context,
+    double weight,
+    double height,
+    int age,
+  ) {
     return _card(
       context: context,
       children: [
@@ -302,14 +374,23 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildAccountCard(BuildContext context, String email, String username, String memberSince) {
+  Widget _buildAccountCard(
+    BuildContext context,
+    String email,
+    String username,
+    String memberSince,
+  ) {
     return _card(
       context: context,
       children: [
         _InfoRow(icon: Icons.email_outlined, label: 'Email', value: email),
         if (username.isNotEmpty) ...[
           const Divider(height: 1),
-          _InfoRow(icon: Icons.alternate_email, label: 'Username', value: username),
+          _InfoRow(
+            icon: Icons.alternate_email,
+            label: 'Username',
+            value: username,
+          ),
         ],
       ],
     );
@@ -328,15 +409,25 @@ class ProfileScreen extends StatelessWidget {
           context: context,
           children: [
             ListTile(
-              leading: Icon(Icons.language, color: Theme.of(context).colorScheme.primary),
+              leading: Icon(
+                Icons.language,
+                color: Theme.of(context).colorScheme.primary,
+              ),
               title: Text(localeProvider.translate('language')),
-              subtitle: Text(localeProvider.locale.languageCode == 'en' ? 'English' : 'Español'),
+              subtitle: Text(
+                localeProvider.locale.languageCode == 'en'
+                    ? 'English'
+                    : 'Español',
+              ),
               trailing: const Icon(Icons.chevron_right),
               onTap: () => _showLanguageDialog(context, localeProvider),
             ),
             const Divider(height: 1),
             ListTile(
-              leading: Icon(Icons.palette_outlined, color: Theme.of(context).colorScheme.primary),
+              leading: Icon(
+                Icons.palette_outlined,
+                color: Theme.of(context).colorScheme.primary,
+              ),
               title: const Text('Theme'),
               subtitle: Text(themeProvider.themeMode.name.toUpperCase()),
               trailing: const Icon(Icons.chevron_right),
@@ -414,7 +505,10 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _card({required BuildContext context, required List<Widget> children}) => Container(
+  Widget _card({
+    required BuildContext context,
+    required List<Widget> children,
+  }) => Container(
     padding: const EdgeInsets.all(8),
     decoration: BoxDecoration(
       color: Theme.of(context).cardTheme.color ?? Colors.white,
@@ -452,17 +546,16 @@ class _InfoRow extends StatelessWidget {
           color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(10),
         ),
-        child: Icon(icon, color: Theme.of(context).colorScheme.primary, size: 20),
+        child: Icon(
+          icon,
+          color: Theme.of(context).colorScheme.primary,
+          size: 20,
+        ),
       ),
-      title: Text(
-        label,
-        style: AppTextStyles.bodySmall,
-      ),
+      title: Text(label, style: AppTextStyles.bodySmall),
       subtitle: Text(
         value,
-        style: AppTextStyles.bodyMedium.copyWith(
-          fontWeight: FontWeight.w500,
-        ),
+        style: AppTextStyles.bodyMedium.copyWith(fontWeight: FontWeight.w500),
       ),
     );
   }

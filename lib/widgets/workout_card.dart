@@ -21,7 +21,11 @@ class WorkoutCard extends StatelessWidget {
           color: Theme.of(context).cardTheme.color ?? Colors.white,
           borderRadius: BorderRadius.circular(16),
         ),
-        child: Center(child: CircularProgressIndicator(color: Theme.of(context).colorScheme.primary)),
+        child: Center(
+          child: CircularProgressIndicator(
+            color: Theme.of(context).colorScheme.primary,
+          ),
+        ),
       );
     }
 
@@ -45,11 +49,20 @@ class WorkoutCard extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.fitness_center, size: 48, color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.3)),
+              Icon(
+                Icons.fitness_center,
+                size: 48,
+                color: Theme.of(
+                  context,
+                ).colorScheme.primary.withValues(alpha: 0.3),
+              ),
               const SizedBox(height: 12),
               Text('No hay workout del día', style: AppTextStyles.bodyMedium),
               const SizedBox(height: 4),
-              Text('Agrega workouts a la base de datos', style: AppTextStyles.bodySmall),
+              Text(
+                'Agrega workouts a la base de datos',
+                style: AppTextStyles.bodySmall,
+              ),
             ],
           ),
         ),
@@ -57,7 +70,9 @@ class WorkoutCard extends StatelessWidget {
     }
 
     final name = workout['name'] as String? ?? 'Workout';
-    final description = workout['description'] as String? ?? 'Get your body moving with this workout.';
+    final description =
+        workout['description'] as String? ??
+        'Get your body moving with this workout.';
     final duration = workout['duration'] as int? ?? 0;
     final category = workout['category'] as String? ?? 'General';
 
@@ -81,7 +96,10 @@ class WorkoutCard extends StatelessWidget {
             height: 200,
             width: double.infinity,
             decoration: BoxDecoration(
-              borderRadius: const BorderRadius.only(topLeft: Radius.circular(16), topRight: Radius.circular(16)),
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(16),
+                topRight: Radius.circular(16),
+              ),
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
@@ -96,20 +114,30 @@ class WorkoutCard extends StatelessWidget {
                 Positioned(
                   right: 30,
                   bottom: 20,
-                  child: Icon(_getCategoryIcon(category), size: 80, color: Colors.white.withValues(alpha: 0.3)),
+                  child: Icon(
+                    _getCategoryIcon(category),
+                    size: 80,
+                    color: Colors.white.withValues(alpha: 0.3),
+                  ),
                 ),
                 Positioned(
                   top: 16,
                   left: 16,
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 4,
+                    ),
                     decoration: BoxDecoration(
                       color: Colors.white.withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
                       category,
-                      style: AppTextStyles.chipText.copyWith(color: Colors.white, fontWeight: FontWeight.bold),
+                      style: AppTextStyles.chipText.copyWith(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ),
@@ -122,7 +150,10 @@ class WorkoutCard extends StatelessWidget {
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
               color: Theme.of(context).cardTheme.color ?? Colors.white,
-              borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(16), bottomRight: Radius.circular(16)),
+              borderRadius: const BorderRadius.only(
+                bottomLeft: Radius.circular(16),
+                bottomRight: Radius.circular(16),
+              ),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -131,12 +162,20 @@ class WorkoutCard extends StatelessWidget {
                   children: [
                     if (duration > 0)
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 4,
+                        ),
                         decoration: BoxDecoration(
                           color: Theme.of(context).colorScheme.primary,
                           borderRadius: BorderRadius.circular(6),
                         ),
-                        child: Text('$duration min', style: AppTextStyles.chipText.copyWith(color: Colors.white)),
+                        child: Text(
+                          '$duration min',
+                          style: AppTextStyles.chipText.copyWith(
+                            color: Colors.white,
+                          ),
+                        ),
                       ),
                   ],
                 ),
@@ -161,10 +200,15 @@ class WorkoutCard extends StatelessWidget {
                       backgroundColor: Theme.of(context).colorScheme.primary,
                       foregroundColor: Colors.white,
                       padding: const EdgeInsets.symmetric(vertical: 12),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
                       elevation: 0,
                     ),
-                    child: Text('Start Workout', style: AppTextStyles.buttonText),
+                    child: Text(
+                      'Start Workout',
+                      style: AppTextStyles.buttonText,
+                    ),
                   ),
                 ),
               ],

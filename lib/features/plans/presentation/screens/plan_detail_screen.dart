@@ -37,11 +37,13 @@ class _PlanDetailScreenState extends State<PlanDetailScreen> {
   }
 
   void _scrollListener() {
-    if (_scrollController.position.userScrollDirection == ScrollDirection.reverse) {
+    if (_scrollController.position.userScrollDirection ==
+        ScrollDirection.reverse) {
       if (_isFabVisible) {
         setState(() => _isFabVisible = false);
       }
-    } else if (_scrollController.position.userScrollDirection == ScrollDirection.forward) {
+    } else if (_scrollController.position.userScrollDirection ==
+        ScrollDirection.forward) {
       if (!_isFabVisible) {
         setState(() => _isFabVisible = true);
       }
@@ -57,8 +59,13 @@ class _PlanDetailScreenState extends State<PlanDetailScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title, style: isMobile ? AppTextStyles.heading4 : AppTextStyles.heading3),
-        actions: [IconButton(onPressed: () {}, icon: const Icon(Icons.share_outlined))],
+        title: Text(
+          widget.title,
+          style: isMobile ? AppTextStyles.heading4 : AppTextStyles.heading3,
+        ),
+        actions: [
+          IconButton(onPressed: () {}, icon: const Icon(Icons.share_outlined)),
+        ],
       ),
       body: SingleChildScrollView(
         controller: _scrollController,
@@ -72,7 +79,10 @@ class _PlanDetailScreenState extends State<PlanDetailScreen> {
               SizedBox(
                 height: isMobile ? 100 : 120,
                 child: ListView.builder(
-                  padding: EdgeInsets.symmetric(horizontal: isMobile ? 16 : 20, vertical: 20),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: isMobile ? 16 : 20,
+                    vertical: 20,
+                  ),
                   scrollDirection: Axis.horizontal,
                   physics: const BouncingScrollPhysics(),
                   itemCount: days.length,
@@ -84,7 +94,9 @@ class _PlanDetailScreenState extends State<PlanDetailScreen> {
                         width: isMobile ? 60 : 80,
                         margin: const EdgeInsets.only(right: 12),
                         decoration: BoxDecoration(
-                          color: isSelected ? primaryColor : (isDark ? Colors.white10 : Colors.white),
+                          color: isSelected
+                              ? primaryColor
+                              : (isDark ? Colors.white10 : Colors.white),
                           borderRadius: BorderRadius.circular(20),
                           boxShadow: isSelected
                               ? [
@@ -102,7 +114,11 @@ class _PlanDetailScreenState extends State<PlanDetailScreen> {
                                   ),
                                 ],
                           border: Border.all(
-                            color: isSelected ? primaryColor : AppColors.border.withValues(alpha: isDark ? 0.2 : 1.0),
+                            color: isSelected
+                                ? primaryColor
+                                : AppColors.border.withValues(
+                                    alpha: isDark ? 0.2 : 1.0,
+                                  ),
                             width: 1.5,
                           ),
                         ),
@@ -112,8 +128,12 @@ class _PlanDetailScreenState extends State<PlanDetailScreen> {
                             Text(
                               days[index],
                               style: TextStyle(
-                                color: isSelected ? Colors.white : AppColors.textSecondary,
-                                fontWeight: isSelected ? FontWeight.w900 : FontWeight.bold,
+                                color: isSelected
+                                    ? Colors.white
+                                    : AppColors.textSecondary,
+                                fontWeight: isSelected
+                                    ? FontWeight.w900
+                                    : FontWeight.bold,
                                 fontSize: isMobile ? 13 : 15,
                                 letterSpacing: 0.5,
                               ),
@@ -122,7 +142,9 @@ class _PlanDetailScreenState extends State<PlanDetailScreen> {
                             Text(
                               '${index + 1}',
                               style: TextStyle(
-                                color: isSelected ? Colors.white : Theme.of(context).colorScheme.onSurface,
+                                color: isSelected
+                                    ? Colors.white
+                                    : Theme.of(context).colorScheme.onSurface,
                                 fontWeight: FontWeight.w900,
                                 fontSize: isMobile ? 20 : 26,
                               ),
@@ -139,13 +161,18 @@ class _PlanDetailScreenState extends State<PlanDetailScreen> {
               Padding(
                 padding: EdgeInsets.all(isMobile ? 20 : 0),
                 child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: isMobile ? 12 : 24, vertical: 24),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: isMobile ? 12 : 24,
+                    vertical: 24,
+                  ),
                   decoration: BoxDecoration(
                     color: Theme.of(context).cardTheme.color,
                     borderRadius: BorderRadius.circular(24),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.05),
+                        color: Colors.black.withValues(
+                          alpha: isDark ? 0.2 : 0.05,
+                        ),
                         blurRadius: 15,
                         offset: const Offset(0, 8),
                       ),
@@ -188,15 +215,20 @@ class _PlanDetailScreenState extends State<PlanDetailScreen> {
 
               // Meals
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: isMobile ? 20 : 0, vertical: 32),
+                padding: EdgeInsets.symmetric(
+                  horizontal: isMobile ? 20 : 0,
+                  vertical: 32,
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       l10n.translate('meal_plans'),
-                      style: (isMobile ? AppTextStyles.heading4 : AppTextStyles.heading3).copyWith(
-                        fontWeight: FontWeight.w800,
-                      ),
+                      style:
+                          (isMobile
+                                  ? AppTextStyles.heading4
+                                  : AppTextStyles.heading3)
+                              .copyWith(fontWeight: FontWeight.w800),
                     ),
                     const SizedBox(height: 16),
                     if (isMobile) ...[
@@ -286,10 +318,16 @@ class _PlanDetailScreenState extends State<PlanDetailScreen> {
           child: FloatingActionButton.extended(
             onPressed: () {},
             backgroundColor: primaryColor,
-            icon: const Icon(Icons.shopping_basket_outlined, color: Colors.white),
+            icon: const Icon(
+              Icons.shopping_basket_outlined,
+              color: Colors.white,
+            ),
             label: Text(
               l10n.translate('shopping_list'),
-              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+              style: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
         ),
@@ -344,17 +382,24 @@ class _PlanDetailScreenState extends State<PlanDetailScreen> {
         const SizedBox(height: 12),
         Text(
           label,
-          style: (isMobile ? AppTextStyles.bodySmall : AppTextStyles.bodyMedium).copyWith(
-            color: color,
-            fontWeight: FontWeight.w800,
-            letterSpacing: 0.5,
-          ),
+          style: (isMobile ? AppTextStyles.bodySmall : AppTextStyles.bodyMedium)
+              .copyWith(
+                color: color,
+                fontWeight: FontWeight.w800,
+                letterSpacing: 0.5,
+              ),
         ),
       ],
     );
   }
 
-  Widget _buildMealCard(String title, String description, String calories, IconData icon, Color primary) {
+  Widget _buildMealCard(
+    String title,
+    String description,
+    String calories,
+    IconData icon,
+    Color primary,
+  ) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
@@ -418,7 +463,11 @@ class _PlanDetailScreenState extends State<PlanDetailScreen> {
                     ],
                   ),
                 ),
-                Icon(Icons.arrow_forward_ios, size: 14, color: AppColors.textSecondary.withValues(alpha: 0.5)),
+                Icon(
+                  Icons.arrow_forward_ios,
+                  size: 14,
+                  color: AppColors.textSecondary.withValues(alpha: 0.5),
+                ),
               ],
             ),
           ),

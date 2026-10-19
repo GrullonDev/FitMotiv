@@ -9,26 +9,28 @@ class FAQScreen extends StatelessWidget {
     final faqs = [
       {
         'question': '¿Cómo puedo cambiar mi plan de entrenamiento?',
-        'answer': 'Puedes cambiar tu plan de entrenamiento navegando a la sección "Mis Planes" y seleccionando un nuevo plan que se adapte a tus necesidades.'
+        'answer':
+            'Puedes cambiar tu plan de entrenamiento navegando a la sección "Mis Planes" y seleccionando un nuevo plan que se adapte a tus necesidades.',
       },
       {
         'question': '¿Cómo registro mi progreso diario?',
-        'answer': 'En el Dashboard principal, encontrarás una sección para registrar tu peso, consumo de agua y calorías diarias.'
+        'answer':
+            'En el Dashboard principal, encontrarás una sección para registrar tu peso, consumo de agua y calorías diarias.',
       },
       {
         'question': '¿La aplicación funciona sin conexión?',
-        'answer': 'Algunas funciones como ver tus rutinas descargadas funcionan sin conexión, pero para sincronizar tu progreso y chatear con la comunidad necesitas internet.'
+        'answer':
+            'Algunas funciones como ver tus rutinas descargadas funcionan sin conexión, pero para sincronizar tu progreso y chatear con la comunidad necesitas internet.',
       },
       {
         'question': '¿Cómo puedo contactar con soporte técnico?',
-        'answer': 'Puedes ir a Configuración > Soporte > Enviar Comentarios para enviarnos un correo electrónico directamente.'
+        'answer':
+            'Puedes ir a Configuración > Soporte > Enviar Comentarios para enviarnos un correo electrónico directamente.',
       },
     ];
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Preguntas Frecuentes'),
-      ),
+      appBar: AppBar(title: const Text('Preguntas Frecuentes')),
       body: ListView.builder(
         padding: const EdgeInsets.all(16),
         itemCount: faqs.length,
@@ -47,11 +49,15 @@ class FAQScreen extends StatelessWidget {
               ],
             ),
             child: Theme(
-              data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+              data: Theme.of(
+                context,
+              ).copyWith(dividerColor: Colors.transparent),
               child: ExpansionTile(
                 title: Text(
                   faqs[index]['question']!,
-                  style: AppTextStyles.bodyLarge.copyWith(fontWeight: FontWeight.bold),
+                  style: AppTextStyles.bodyLarge.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 children: [
                   Padding(

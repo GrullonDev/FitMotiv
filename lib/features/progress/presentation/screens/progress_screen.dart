@@ -14,13 +14,17 @@ class ProgressScreen extends StatefulWidget {
   State<ProgressScreen> createState() => _ProgressScreenState();
 }
 
-class _ProgressScreenState extends State<ProgressScreen> with SingleTickerProviderStateMixin {
+class _ProgressScreenState extends State<ProgressScreen>
+    with SingleTickerProviderStateMixin {
   late AnimationController _rotationController;
 
   @override
   void initState() {
     super.initState();
-    _rotationController = AnimationController(duration: const Duration(seconds: 1), vsync: this);
+    _rotationController = AnimationController(
+      duration: const Duration(seconds: 1),
+      vsync: this,
+    );
   }
 
   @override
@@ -44,20 +48,28 @@ class _ProgressScreenState extends State<ProgressScreen> with SingleTickerProvid
       length: 3,
       child: Scaffold(
         appBar: AppBar(
-          title: Text(context.watch<LocaleProvider>().translate('progress'), style: AppTextStyles.heading3),
+          title: Text(
+            context.watch<LocaleProvider>().translate('progress'),
+            style: AppTextStyles.heading3,
+          ),
           centerTitle: true,
           actions: [
             RotationTransition(
               turns: _rotationController,
               child: IconButton(
-                icon: Icon(Icons.refresh, color: Theme.of(context).colorScheme.primary),
+                icon: Icon(
+                  Icons.refresh,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
                 onPressed: () => _handleRefresh(provider),
               ),
             ),
           ],
           bottom: TabBar(
             labelColor: Theme.of(context).colorScheme.primary,
-            unselectedLabelColor: Theme.of(context).colorScheme.onSurfaceVariant,
+            unselectedLabelColor: Theme.of(
+              context,
+            ).colorScheme.onSurfaceVariant,
             indicatorColor: Theme.of(context).colorScheme.primary,
             tabs: [
               Tab(text: context.watch<LocaleProvider>().translate('summary')),
@@ -67,7 +79,11 @@ class _ProgressScreenState extends State<ProgressScreen> with SingleTickerProvid
           ),
         ),
         body: provider.isLoading
-            ? Center(child: CircularProgressIndicator(color: Theme.of(context).colorScheme.primary))
+            ? Center(
+                child: CircularProgressIndicator(
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+              )
             : TabBarView(
                 children: [
                   _OverviewTab(provider: provider),
@@ -92,17 +108,27 @@ class _ProgressScreenState extends State<ProgressScreen> with SingleTickerProvid
   void _showActionSheet(BuildContext context, ProgressProvider provider) {
     showModalBottomSheet(
       context: context,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
       builder: (ctx) => Container(
         padding: const EdgeInsets.all(24),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(context.read<LocaleProvider>().translate('what_to_register'), style: AppTextStyles.heading4),
+            Text(
+              context.read<LocaleProvider>().translate('what_to_register'),
+              style: AppTextStyles.heading4,
+            ),
             const SizedBox(height: 20),
             ListTile(
-              leading: const Icon(Icons.monitor_weight_outlined, color: Color(0xFF4ECDC4)),
-              title: Text(context.read<LocaleProvider>().translate('register_weight')),
+              leading: const Icon(
+                Icons.monitor_weight_outlined,
+                color: Color(0xFF4ECDC4),
+              ),
+              title: Text(
+                context.read<LocaleProvider>().translate('register_weight'),
+              ),
               onTap: () {
                 Navigator.pop(ctx);
                 _showWeightDialog(context, provider);
@@ -118,7 +144,9 @@ class _ProgressScreenState extends State<ProgressScreen> with SingleTickerProvid
             ),
             ListTile(
               leading: const Icon(Icons.fitness_center, color: Colors.blue),
-              title: Text(context.read<LocaleProvider>().translate('go_to_routines')),
+              title: Text(
+                context.read<LocaleProvider>().translate('go_to_routines'),
+              ),
               onTap: () {
                 Navigator.pop(ctx);
                 // Navigate to routines tab using bottom navigation
@@ -136,12 +164,15 @@ class _ProgressScreenState extends State<ProgressScreen> with SingleTickerProvid
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: Text(context.read<LocaleProvider>().translate('register_weight')),
+        title: Text(
+          context.read<LocaleProvider>().translate('register_weight'),
+        ),
         content: TextField(
           controller: controller,
           keyboardType: const TextInputType.numberWithOptions(decimal: true),
           decoration: InputDecoration(
-            hintText: '${context.read<LocaleProvider>().translate('weight')} in lbs',
+            hintText:
+                '${context.read<LocaleProvider>().translate('weight')} in lbs',
             suffixText: 'lbs',
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
           ),
@@ -182,9 +213,13 @@ class _ProgressScreenState extends State<ProgressScreen> with SingleTickerProvid
             TextField(
               controller: titleController,
               decoration: InputDecoration(
-                hintText: l10n.translate('full_name'), // Simple re-use of key or add new
+                hintText: l10n.translate(
+                  'full_name',
+                ), // Simple re-use of key or add new
                 labelText: l10n.translate('username'),
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
               ),
               autofocus: true,
             ),
@@ -195,7 +230,9 @@ class _ProgressScreenState extends State<ProgressScreen> with SingleTickerProvid
               decoration: InputDecoration(
                 hintText: 'Target value',
                 labelText: 'Target',
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
               ),
             ),
           ],
@@ -222,7 +259,9 @@ class _ProgressScreenState extends State<ProgressScreen> with SingleTickerProvid
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: Theme.of(context).colorScheme.primary,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
             ),
             child: Text(
               l10n.translate('save'),
@@ -279,10 +318,13 @@ class _OverviewTab extends StatelessWidget {
                 Expanded(
                   child: _StatBox(
                     icon: Icons.monitor_weight_outlined,
-                    label: '${context.read<LocaleProvider>().translate('weight')} actual',
+                    label:
+                        '${context.read<LocaleProvider>().translate('weight')} actual',
                     value: provider.latestWeight != null
                         ? '${provider.latestWeight!.toStringAsFixed(1)} lbs'
-                        : context.read<LocaleProvider>().translate('pending_registration'),
+                        : context.read<LocaleProvider>().translate(
+                            'pending_registration',
+                          ),
                     color: const Color(0xFF4ECDC4),
                   ),
                 ),
@@ -294,7 +336,9 @@ class _OverviewTab extends StatelessWidget {
                     value: provider.weightChange != null
                         ? '${provider.weightChange! >= 0 ? "+" : ""}${provider.weightChange!.toStringAsFixed(1)} lbs'
                         : '-- lbs',
-                    color: provider.weightChange != null && provider.weightChange! < 0
+                    color:
+                        provider.weightChange != null &&
+                            provider.weightChange! < 0
                         ? AppColors.success
                         : const Color(0xFFFF6B6B),
                   ),
@@ -304,13 +348,19 @@ class _OverviewTab extends StatelessWidget {
             const SizedBox(height: 24),
 
             // Weekly Activity Chart
-            Text(context.read<LocaleProvider>().translate('weekly_activity'), style: AppTextStyles.heading4),
+            Text(
+              context.read<LocaleProvider>().translate('weekly_activity'),
+              style: AppTextStyles.heading4,
+            ),
             const SizedBox(height: 12),
             _WeeklyActivityChart(sessions: provider.sessions),
             const SizedBox(height: 24),
 
             // Recent workout sessions
-            Text(context.read<LocaleProvider>().translate('completed'), style: AppTextStyles.heading4),
+            Text(
+              context.read<LocaleProvider>().translate('completed'),
+              style: AppTextStyles.heading4,
+            ),
             const SizedBox(height: 12),
             if (provider.sessions.isEmpty)
               _buildEmptyCard(
@@ -320,12 +370,22 @@ class _OverviewTab extends StatelessWidget {
                 Icons.history,
               )
             else
-              ...provider.sessions.take(3).map((session) => _SessionCard(session: session, l10n: context.read<LocaleProvider>())),
+              ...provider.sessions
+                  .take(3)
+                  .map(
+                    (session) => _SessionCard(
+                      session: session,
+                      l10n: context.read<LocaleProvider>(),
+                    ),
+                  ),
 
             const SizedBox(height: 24),
 
             // Weight log
-            Text('${context.read<LocaleProvider>().translate('weight')} log', style: AppTextStyles.heading4),
+            Text(
+              '${context.read<LocaleProvider>().translate('weight')} log',
+              style: AppTextStyles.heading4,
+            ),
             const SizedBox(height: 12),
             if (provider.weightLog.isEmpty)
               _buildEmptyCard(
@@ -335,29 +395,55 @@ class _OverviewTab extends StatelessWidget {
                 Icons.monitor_weight_outlined,
               )
             else
-              ...provider.weightLog.take(3).map((entry) => _WeightEntry(entry: entry, showDiff: false)),
+              ...provider.weightLog
+                  .take(3)
+                  .map((entry) => _WeightEntry(entry: entry, showDiff: false)),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildEmptyCard(BuildContext context, String title, String subtitle, IconData icon) {
+  Widget _buildEmptyCard(
+    BuildContext context,
+    String title,
+    String subtitle,
+    IconData icon,
+  ) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
         color: Theme.of(context).cardTheme.color ?? Colors.white,
         borderRadius: BorderRadius.circular(16),
-        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 8, offset: const Offset(0, 2))],
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: Column(
         children: [
-          Icon(icon, size: 40, color: AppColors.textSecondary.withValues(alpha: 0.4)),
+          Icon(
+            icon,
+            size: 40,
+            color: AppColors.textSecondary.withValues(alpha: 0.4),
+          ),
           const SizedBox(height: 12),
-          Text(title, style: AppTextStyles.bodyMedium.copyWith(fontWeight: FontWeight.w600)),
+          Text(
+            title,
+            style: AppTextStyles.bodyMedium.copyWith(
+              fontWeight: FontWeight.w600,
+            ),
+          ),
           const SizedBox(height: 4),
-          Text(subtitle, style: AppTextStyles.bodySmall, textAlign: TextAlign.center),
+          Text(
+            subtitle,
+            style: AppTextStyles.bodySmall,
+            textAlign: TextAlign.center,
+          ),
         ],
       ),
     );
@@ -378,13 +464,19 @@ class _WeightTab extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         children: [
           // Weight Trend Chart
-          Text(context.read<LocaleProvider>().translate('weight_trend'), style: AppTextStyles.heading4),
+          Text(
+            context.read<LocaleProvider>().translate('weight_trend'),
+            style: AppTextStyles.heading4,
+          ),
           const SizedBox(height: 12),
           _WeightTrendChart(weightLog: provider.weightLog),
           const SizedBox(height: 24),
 
           // Weight History List
-          Text(context.read<LocaleProvider>().translate('summary'), style: AppTextStyles.heading4),
+          Text(
+            context.read<LocaleProvider>().translate('summary'),
+            style: AppTextStyles.heading4,
+          ),
           const SizedBox(height: 12),
           if (provider.weightLog.isEmpty)
             _buildEmptyState(
@@ -396,7 +488,9 @@ class _WeightTab extends StatelessWidget {
           else
             ...List.generate(provider.weightLog.length, (index) {
               final entry = provider.weightLog[index];
-              final previousEntry = index < provider.weightLog.length - 1 ? provider.weightLog[index + 1] : null;
+              final previousEntry = index < provider.weightLog.length - 1
+                  ? provider.weightLog[index + 1]
+                  : null;
               return _WeightEntry(entry: entry, previousEntry: previousEntry);
             }),
           const SizedBox(height: 80), // Space for FAB
@@ -405,7 +499,12 @@ class _WeightTab extends StatelessWidget {
     );
   }
 
-  Widget _buildEmptyState(BuildContext context, String title, String subtitle, IconData icon) {
+  Widget _buildEmptyState(
+    BuildContext context,
+    String title,
+    String subtitle,
+    IconData icon,
+  ) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -413,13 +512,24 @@ class _WeightTab extends StatelessWidget {
           const SizedBox(height: 40),
           Container(
             padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(color: AppColors.textSecondary.withValues(alpha: 0.05), shape: BoxShape.circle),
-            child: Icon(icon, size: 64, color: AppColors.textSecondary.withValues(alpha: 0.2)),
+            decoration: BoxDecoration(
+              color: AppColors.textSecondary.withValues(alpha: 0.05),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              icon,
+              size: 64,
+              color: AppColors.textSecondary.withValues(alpha: 0.2),
+            ),
           ),
           const SizedBox(height: 16),
           Text(title, style: AppTextStyles.heading4),
           const SizedBox(height: 8),
-          Text(subtitle, style: AppTextStyles.bodySmall, textAlign: TextAlign.center),
+          Text(
+            subtitle,
+            style: AppTextStyles.bodySmall,
+            textAlign: TextAlign.center,
+          ),
         ],
       ),
     );
@@ -448,20 +558,28 @@ class _GoalsTab extends StatelessWidget {
               scrollDirection: Axis.horizontal,
               children: [
                 _SuggestedGoalCard(
-                  title: context.read<LocaleProvider>().translate('weight_loss_plan'),
+                  title: context.read<LocaleProvider>().translate(
+                    'weight_loss_plan',
+                  ),
                   icon: Icons.trending_down,
                   color: Colors.blue,
                   onTap: () => provider.createGoal(
-                    title: context.read<LocaleProvider>().translate('weight_trend'),
+                    title: context.read<LocaleProvider>().translate(
+                      'weight_trend',
+                    ),
                     description: '',
                   ),
                 ),
                 _SuggestedGoalCard(
-                  title: context.read<LocaleProvider>().translate('muscle_building'),
+                  title: context.read<LocaleProvider>().translate(
+                    'muscle_building',
+                  ),
                   icon: Icons.fitness_center,
                   color: Colors.orange,
                   onTap: () => provider.createGoal(
-                    title: context.read<LocaleProvider>().translate('muscle_building'),
+                    title: context.read<LocaleProvider>().translate(
+                      'muscle_building',
+                    ),
                     description: '',
                   ),
                 ),
@@ -479,13 +597,25 @@ class _GoalsTab extends StatelessWidget {
           ),
           const SizedBox(height: 24),
 
-          Text(context.read<LocaleProvider>().translate('goals'), style: AppTextStyles.heading4),
+          Text(
+            context.read<LocaleProvider>().translate('goals'),
+            style: AppTextStyles.heading4,
+          ),
           const SizedBox(height: 12),
           if (provider.goals.isEmpty)
-            _buildEmptyState(context, 'Sin metas', 'Establece objetivos para medir tu progreso.', Icons.flag_outlined)
+            _buildEmptyState(
+              context,
+              'Sin metas',
+              'Establece objetivos para medir tu progreso.',
+              Icons.flag_outlined,
+            )
           else
             ...provider.goals.map((goal) {
-              return _GoalCard(goal: goal, provider: provider, l10n: context.read<LocaleProvider>());
+              return _GoalCard(
+                goal: goal,
+                provider: provider,
+                l10n: context.read<LocaleProvider>(),
+              );
             }),
           const SizedBox(height: 80),
         ],
@@ -493,17 +623,30 @@ class _GoalsTab extends StatelessWidget {
     );
   }
 
-  Widget _buildEmptyState(BuildContext context, String title, String subtitle, IconData icon) {
+  Widget _buildEmptyState(
+    BuildContext context,
+    String title,
+    String subtitle,
+    IconData icon,
+  ) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const SizedBox(height: 40),
-          Icon(icon, size: 64, color: AppColors.textSecondary.withValues(alpha: 0.2)),
+          Icon(
+            icon,
+            size: 64,
+            color: AppColors.textSecondary.withValues(alpha: 0.2),
+          ),
           const SizedBox(height: 16),
           Text(title, style: AppTextStyles.heading4),
           const SizedBox(height: 8),
-          Text(subtitle, style: AppTextStyles.bodySmall, textAlign: TextAlign.center),
+          Text(
+            subtitle,
+            style: AppTextStyles.bodySmall,
+            textAlign: TextAlign.center,
+          ),
         ],
       ),
     );
@@ -515,7 +658,12 @@ class _GoalsTab extends StatelessWidget {
 // ─────────────────────────────────────────
 
 class _StatBox extends StatelessWidget {
-  const _StatBox({required this.icon, required this.label, required this.value, required this.color});
+  const _StatBox({
+    required this.icon,
+    required this.label,
+    required this.value,
+    required this.color,
+  });
   final IconData icon;
   final String label;
   final String value;
@@ -528,20 +676,38 @@ class _StatBox extends StatelessWidget {
       decoration: BoxDecoration(
         color: Theme.of(context).cardTheme.color ?? Colors.white,
         borderRadius: BorderRadius.circular(16),
-        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10, offset: const Offset(0, 4))],
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
             padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(color: color.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(8)),
+            decoration: BoxDecoration(
+              color: color.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(8),
+            ),
             child: Icon(icon, color: color, size: 20),
           ),
           const SizedBox(height: 12),
-          Text(value, style: AppTextStyles.heading3.copyWith(color: color, fontSize: 18)),
+          Text(
+            value,
+            style: AppTextStyles.heading3.copyWith(color: color, fontSize: 18),
+          ),
           const SizedBox(height: 4),
-          Text(label, style: AppTextStyles.bodySmall.copyWith(color: AppColors.textSecondary, fontSize: 11)),
+          Text(
+            label,
+            style: AppTextStyles.bodySmall.copyWith(
+              color: AppColors.textSecondary,
+              fontSize: 11,
+            ),
+          ),
         ],
       ),
     );
@@ -560,13 +726,18 @@ class _WeeklyActivityChart extends StatelessWidget {
       final day = now.subtract(Duration(days: 6 - index));
       return sessions.where((s) {
         final date = DateTime.parse(s['completed_at'] as String);
-        return date.year == day.year && date.month == day.month && date.day == day.day;
+        return date.year == day.year &&
+            date.month == day.month &&
+            date.day == day.day;
       }).length;
     });
 
     final days = ['L', 'M', 'M', 'J', 'V', 'S', 'D'];
     final todayIndex = now.weekday - 1;
-    final last7Days = List.generate(7, (i) => days[(todayIndex - 6 + i + 7) % 7]);
+    final last7Days = List.generate(
+      7,
+      (i) => days[(todayIndex - 6 + i + 7) % 7],
+    );
 
     return Container(
       height: 180,
@@ -574,7 +745,13 @@ class _WeeklyActivityChart extends StatelessWidget {
       decoration: BoxDecoration(
         color: Theme.of(context).cardTheme.color ?? Colors.white,
         borderRadius: BorderRadius.circular(16),
-        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10, offset: const Offset(0, 4))],
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: BarChart(
         BarChartData(
@@ -589,15 +766,24 @@ class _WeeklyActivityChart extends StatelessWidget {
                 getTitlesWidget: (value, meta) {
                   return Padding(
                     padding: const EdgeInsets.only(top: 8.0),
-                    child: Text(last7Days[value.toInt()], style: AppTextStyles.bodySmall.copyWith(fontSize: 10)),
+                    child: Text(
+                      last7Days[value.toInt()],
+                      style: AppTextStyles.bodySmall.copyWith(fontSize: 10),
+                    ),
                   );
                 },
                 reservedSize: 28,
               ),
             ),
-            leftTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-            rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-            topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+            leftTitles: const AxisTitles(
+              sideTitles: SideTitles(showTitles: false),
+            ),
+            rightTitles: const AxisTitles(
+              sideTitles: SideTitles(showTitles: false),
+            ),
+            topTitles: const AxisTitles(
+              sideTitles: SideTitles(showTitles: false),
+            ),
           ),
           gridData: const FlGridData(show: false),
           borderData: FlBorderData(show: false),
@@ -611,7 +797,9 @@ class _WeeklyActivityChart extends StatelessWidget {
                       ? Theme.of(context).colorScheme.primary
                       : AppColors.textSecondary.withValues(alpha: 0.1),
                   width: 14,
-                  borderRadius: const BorderRadius.vertical(top: Radius.circular(4)),
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(4),
+                  ),
                 ),
               ],
             );
@@ -637,7 +825,13 @@ class _WeightTrendChart extends StatelessWidget {
       decoration: BoxDecoration(
         color: Theme.of(context).cardTheme.color ?? Colors.white,
         borderRadius: BorderRadius.circular(16),
-        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10, offset: const Offset(0, 4))],
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Opacity(
         opacity: hasData ? 1.0 : 0.3,
@@ -646,15 +840,24 @@ class _WeightTrendChart extends StatelessWidget {
             gridData: const FlGridData(show: false),
             titlesData: FlTitlesData(
               show: true,
-              bottomTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-              topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-              rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+              bottomTitles: const AxisTitles(
+                sideTitles: SideTitles(showTitles: false),
+              ),
+              topTitles: const AxisTitles(
+                sideTitles: SideTitles(showTitles: false),
+              ),
+              rightTitles: const AxisTitles(
+                sideTitles: SideTitles(showTitles: false),
+              ),
               leftTitles: AxisTitles(
                 sideTitles: SideTitles(
                   showTitles: true,
                   reservedSize: 40,
                   getTitlesWidget: (value, meta) {
-                    return Text('${value.toInt()}', style: AppTextStyles.bodySmall.copyWith(fontSize: 10));
+                    return Text(
+                      '${value.toInt()}',
+                      style: AppTextStyles.bodySmall.copyWith(fontSize: 10),
+                    );
                   },
                 ),
               ),
@@ -673,7 +876,9 @@ class _WeightTrendChart extends StatelessWidget {
                 dotData: const FlDotData(show: true),
                 belowBarData: BarAreaData(
                   show: true,
-                  color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.primary.withValues(alpha: 0.1),
                 ),
               ),
             ],
@@ -696,7 +901,12 @@ class _WeightTrendChart extends StatelessWidget {
 }
 
 class _SuggestedGoalCard extends StatelessWidget {
-  const _SuggestedGoalCard({required this.title, required this.icon, required this.color, this.onTap});
+  const _SuggestedGoalCard({
+    required this.title,
+    required this.icon,
+    required this.color,
+    this.onTap,
+  });
   final String title;
   final IconData icon;
   final Color color;
@@ -722,7 +932,10 @@ class _SuggestedGoalCard extends StatelessWidget {
             const SizedBox(height: 8),
             Text(
               title,
-              style: AppTextStyles.bodySmall.copyWith(fontWeight: FontWeight.bold, color: color),
+              style: AppTextStyles.bodySmall.copyWith(
+                fontWeight: FontWeight.bold,
+                color: color,
+              ),
               textAlign: TextAlign.center,
             ),
           ],
@@ -733,7 +946,11 @@ class _SuggestedGoalCard extends StatelessWidget {
 }
 
 class _GoalCard extends StatelessWidget {
-  const _GoalCard({required this.goal, required this.provider, required this.l10n});
+  const _GoalCard({
+    required this.goal,
+    required this.provider,
+    required this.l10n,
+  });
   final Map<String, dynamic> goal;
   final ProgressProvider provider;
   final LocaleProvider l10n;
@@ -746,7 +963,9 @@ class _GoalCard extends StatelessWidget {
 
     // Simular progreso para demostración (Task 8)
     double progress = isCompleted ? 1.0 : 0.45;
-    String progressText = isCompleted ? l10n.translate('water_reached') : "Llevas 5 lbs de 20 lbs";
+    String progressText = isCompleted
+        ? l10n.translate('water_reached')
+        : "Llevas 5 lbs de 20 lbs";
 
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
@@ -754,7 +973,13 @@ class _GoalCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: Theme.of(context).cardTheme.color ?? Colors.white,
         borderRadius: BorderRadius.circular(16),
-        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10, offset: const Offset(0, 4))],
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -764,14 +989,18 @@ class _GoalCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: (isCompleted ? AppColors.success : Theme.of(context).colorScheme.primary).withValues(
-                    alpha: 0.1,
-                  ),
+                  color:
+                      (isCompleted
+                              ? AppColors.success
+                              : Theme.of(context).colorScheme.primary)
+                          .withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Icon(
                   isCompleted ? Icons.check_circle : Icons.flag_outlined,
-                  color: isCompleted ? AppColors.success : Theme.of(context).colorScheme.primary,
+                  color: isCompleted
+                      ? AppColors.success
+                      : Theme.of(context).colorScheme.primary,
                   size: 22,
                 ),
               ),
@@ -785,21 +1014,31 @@ class _GoalCard extends StatelessWidget {
                       style: AppTextStyles.bodyMedium.copyWith(
                         fontWeight: FontWeight.bold,
                         fontSize: 16,
-                        decoration: isCompleted ? TextDecoration.lineThrough : null,
+                        decoration: isCompleted
+                            ? TextDecoration.lineThrough
+                            : null,
                       ),
                     ),
                     if (description.isNotEmpty)
-                      Text(description, style: AppTextStyles.bodySmall.copyWith(fontSize: 12)),
+                      Text(
+                        description,
+                        style: AppTextStyles.bodySmall.copyWith(fontSize: 12),
+                      ),
                   ],
                 ),
               ),
               IconButton(
                 icon: Icon(
-                  isCompleted ? Icons.check_circle : Icons.radio_button_unchecked,
-                  color: isCompleted ? AppColors.success : AppColors.textSecondary.withValues(alpha: 0.3),
+                  isCompleted
+                      ? Icons.check_circle
+                      : Icons.radio_button_unchecked,
+                  color: isCompleted
+                      ? AppColors.success
+                      : AppColors.textSecondary.withValues(alpha: 0.3),
                   size: 28,
                 ),
-                onPressed: () => provider.toggleGoal(goal['id'] as String, !isCompleted),
+                onPressed: () =>
+                    provider.toggleGoal(goal['id'] as String, !isCompleted),
               ),
             ],
           ),
@@ -810,13 +1049,21 @@ class _GoalCard extends StatelessWidget {
               value: progress,
               backgroundColor: AppColors.textSecondary.withValues(alpha: 0.1),
               valueColor: AlwaysStoppedAnimation<Color>(
-                isCompleted ? AppColors.success : Theme.of(context).colorScheme.primary,
+                isCompleted
+                    ? AppColors.success
+                    : Theme.of(context).colorScheme.primary,
               ),
               minHeight: 8,
             ),
           ),
           const SizedBox(height: 8),
-          Text(progressText, style: AppTextStyles.bodySmall.copyWith(fontSize: 11, fontWeight: FontWeight.w500)),
+          Text(
+            progressText,
+            style: AppTextStyles.bodySmall.copyWith(
+              fontSize: 11,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
         ],
       ),
     );
@@ -856,24 +1103,41 @@ class _SessionCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: Theme.of(context).cardTheme.color ?? Colors.white,
         borderRadius: BorderRadius.circular(16),
-        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 8, offset: const Offset(0, 2))],
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: Row(
         children: [
           Container(
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
+              color: Theme.of(
+                context,
+              ).colorScheme.primary.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: Icon(Icons.fitness_center_outlined, color: Theme.of(context).colorScheme.primary, size: 20),
+            child: Icon(
+              Icons.fitness_center_outlined,
+              color: Theme.of(context).colorScheme.primary,
+              size: 20,
+            ),
           ),
           const SizedBox(width: 14),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(name, style: AppTextStyles.bodyMedium.copyWith(fontWeight: FontWeight.bold)),
+                Text(
+                  name,
+                  style: AppTextStyles.bodyMedium.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
                 const SizedBox(height: 4),
                 Text(
                   '$duration min • $calories cal ${timeAgo.isNotEmpty ? "• $timeAgo" : ""}',
@@ -889,7 +1153,11 @@ class _SessionCard extends StatelessWidget {
 }
 
 class _WeightEntry extends StatelessWidget {
-  const _WeightEntry({required this.entry, this.previousEntry, this.showDiff = true});
+  const _WeightEntry({
+    required this.entry,
+    this.previousEntry,
+    this.showDiff = true,
+  });
   final Map<String, dynamic> entry;
   final Map<String, dynamic>? previousEntry;
   final bool showDiff;
@@ -919,7 +1187,13 @@ class _WeightEntry extends StatelessWidget {
       decoration: BoxDecoration(
         color: Theme.of(context).cardTheme.color ?? Colors.white,
         borderRadius: BorderRadius.circular(16),
-        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 8, offset: const Offset(0, 2))],
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: Row(
         children: [
@@ -929,7 +1203,11 @@ class _WeightEntry extends StatelessWidget {
               color: const Color(0xFF4ECDC4).withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: const Icon(Icons.monitor_weight_outlined, color: Color(0xFF4ECDC4), size: 20),
+            child: const Icon(
+              Icons.monitor_weight_outlined,
+              color: Color(0xFF4ECDC4),
+              size: 20,
+            ),
           ),
           const SizedBox(width: 14),
           Expanded(
@@ -938,7 +1216,9 @@ class _WeightEntry extends StatelessWidget {
               children: [
                 Text(
                   '${weight.toStringAsFixed(1)} lbs',
-                  style: AppTextStyles.bodyMedium.copyWith(fontWeight: FontWeight.bold),
+                  style: AppTextStyles.bodyMedium.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 Text(dateStr, style: AppTextStyles.bodySmall),
               ],
@@ -948,7 +1228,9 @@ class _WeightEntry extends StatelessWidget {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
               decoration: BoxDecoration(
-                color: (diff <= 0 ? Colors.green : Colors.red).withValues(alpha: 0.1),
+                color: (diff <= 0 ? Colors.green : Colors.red).withValues(
+                  alpha: 0.1,
+                ),
                 borderRadius: BorderRadius.circular(20),
               ),
               child: Text(

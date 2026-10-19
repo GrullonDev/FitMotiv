@@ -14,7 +14,8 @@ class _AssistantChatScreenState extends State<AssistantChatScreen> {
   final TextEditingController _controller = TextEditingController();
   final List<Map<String, dynamic>> _messages = [
     {
-      'text': "Hola! Soy tu asistente de FitMotiv. ¿En qué puedo ayudarte a entrenar hoy?",
+      'text':
+          "Hola! Soy tu asistente de FitMotiv. ¿En qué puedo ayudarte a entrenar hoy?",
       'isUser': false,
     },
   ];
@@ -122,7 +123,9 @@ class _AssistantChatScreenState extends State<AssistantChatScreen> {
               style: AppTextStyles.bodyMedium,
               decoration: InputDecoration(
                 hintText: "Escribe tu mensaje...",
-                hintStyle: AppTextStyles.bodyMedium.copyWith(color: AppColors.textSecondary),
+                hintStyle: AppTextStyles.bodyMedium.copyWith(
+                  color: AppColors.textSecondary,
+                ),
                 border: InputBorder.none,
               ),
               onSubmitted: (_) => _sendMessage(),

@@ -4,7 +4,8 @@ import 'package:flutter/foundation.dart';
 class AnalyticsService {
   final FirebaseAnalytics _analytics = FirebaseAnalytics.instance;
 
-  FirebaseAnalyticsObserver get analyticsObserver => FirebaseAnalyticsObserver(analytics: _analytics);
+  FirebaseAnalyticsObserver get analyticsObserver =>
+      FirebaseAnalyticsObserver(analytics: _analytics);
 
   Future<void> _safeLog(Future<void> Function() logAction) async {
     try {
@@ -31,19 +32,38 @@ class AnalyticsService {
   }
 
   Future<void> logWorkoutStarted(String workoutName) async {
-    await _safeLog(() => _analytics.logEvent(name: 'workout_started', parameters: {'workout_name': workoutName}));
+    await _safeLog(
+      () => _analytics.logEvent(
+        name: 'workout_started',
+        parameters: {'workout_name': workoutName},
+      ),
+    );
   }
 
   Future<void> logRecipeViewed(String recipeTitle) async {
-    await _safeLog(() => _analytics.logEvent(name: 'recipe_viewed', parameters: {'recipe_title': recipeTitle}));
+    await _safeLog(
+      () => _analytics.logEvent(
+        name: 'recipe_viewed',
+        parameters: {'recipe_title': recipeTitle},
+      ),
+    );
   }
 
   Future<void> logWeightRegistered(double weight) async {
-    await _safeLog(() => _analytics.logEvent(name: 'weight_registered', parameters: {'weight': weight}));
+    await _safeLog(
+      () => _analytics.logEvent(
+        name: 'weight_registered',
+        parameters: {'weight': weight},
+      ),
+    );
   }
 
   Future<void> logGoalCreated(String goalTitle) async {
-    await _safeLog(() => _analytics.logEvent(name: 'goal_created', parameters: {'goal_title': goalTitle}));
+    await _safeLog(
+      () => _analytics.logEvent(
+        name: 'goal_created',
+        parameters: {'goal_title': goalTitle},
+      ),
+    );
   }
 }
-

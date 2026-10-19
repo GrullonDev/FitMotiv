@@ -5,9 +5,11 @@ import 'package:fit_motiv/features/auth/domain/repositories/auth_repository.dart
 import 'package:flutter/material.dart';
 
 class RegisterBloc extends ChangeNotifier {
-  RegisterBloc({required AuthRepository authRepository, required AnalyticsService analyticsService})
-    : _authRepository = authRepository,
-      _analyticsService = analyticsService;
+  RegisterBloc({
+    required AuthRepository authRepository,
+    required AnalyticsService analyticsService,
+  }) : _authRepository = authRepository,
+       _analyticsService = analyticsService;
 
   final AuthRepository _authRepository;
   final AnalyticsService _analyticsService;
@@ -15,7 +17,8 @@ class RegisterBloc extends ChangeNotifier {
   // Controllers para los campos del formulario
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  final TextEditingController confirmPasswordController = TextEditingController();
+  final TextEditingController confirmPasswordController =
+      TextEditingController();
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController fullNameController = TextEditingController();
   final TextEditingController bioController = TextEditingController();
@@ -105,7 +108,9 @@ class RegisterBloc extends ChangeNotifier {
           _analyticsService.logSignUp('email');
 
           // Mostrar SnackBar de éxito
-          SnackBarService.showSuccess('Account created successfully! Welcome to FitMotiv, ${fullNameController.text}!');
+          SnackBarService.showSuccess(
+            'Account created successfully! Welcome to FitMotiv, ${fullNameController.text}!',
+          );
 
           // Aquí podrías hacer acciones adicionales como:
           // - Guardar token de autenticación
@@ -138,7 +143,8 @@ class RegisterBloc extends ChangeNotifier {
       return false;
     }
 
-    if (passwordController.text.trim() != confirmPasswordController.text.trim()) {
+    if (passwordController.text.trim() !=
+        confirmPasswordController.text.trim()) {
       _errorMessage = 'Las contraseñas no coinciden';
       notifyListeners();
       return false;

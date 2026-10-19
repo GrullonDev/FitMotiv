@@ -43,8 +43,12 @@ class RecipeCard extends StatelessWidget {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) =>
-                    RecipeDetailScreen(title: title, imageUrl: imageUrl, calories: calories, time: time),
+                builder: (context) => RecipeDetailScreen(
+                  title: title,
+                  imageUrl: imageUrl,
+                  calories: calories,
+                  time: time,
+                ),
               ),
             );
           },
@@ -60,20 +64,23 @@ class RecipeCard extends StatelessWidget {
                       height: double.infinity,
                       width: double.infinity,
                       fit: BoxFit.cover,
-                      frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
-                        if (wasSynchronouslyLoaded) return child;
-                        return AnimatedOpacity(
-                          opacity: frame == null ? 0 : 1,
-                          duration: const Duration(milliseconds: 500),
-                          curve: Curves.easeOut,
-                          child: child,
-                        );
-                      },
+                      frameBuilder:
+                          (context, child, frame, wasSynchronouslyLoaded) {
+                            if (wasSynchronouslyLoaded) return child;
+                            return AnimatedOpacity(
+                              opacity: frame == null ? 0 : 1,
+                              duration: const Duration(milliseconds: 500),
+                              curve: Curves.easeOut,
+                              child: child,
+                            );
+                          },
                       loadingBuilder: (context, child, loadingProgress) {
                         if (loadingProgress == null) return child;
                         return Container(
                           decoration: BoxDecoration(
-                            color: isDark ? Colors.white.withValues(alpha: 0.05) : Colors.grey[200],
+                            color: isDark
+                                ? Colors.white.withValues(alpha: 0.05)
+                                : Colors.grey[200],
                           ),
                           child: Center(
                             child: Icon(
@@ -85,16 +92,25 @@ class RecipeCard extends StatelessWidget {
                         );
                       },
                       errorBuilder: (context, error, stackTrace) => Container(
-                        color: isDark ? Colors.white.withValues(alpha: 0.05) : Colors.grey[200],
+                        color: isDark
+                            ? Colors.white.withValues(alpha: 0.05)
+                            : Colors.grey[200],
                         alignment: Alignment.center,
-                        child: Icon(Icons.receipt_long_outlined, color: primaryColor.withValues(alpha: 0.3), size: 32),
+                        child: Icon(
+                          Icons.receipt_long_outlined,
+                          color: primaryColor.withValues(alpha: 0.3),
+                          size: 32,
+                        ),
                       ),
                     ),
                     Positioned(
                       top: 12,
                       right: 12,
                       child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 6,
+                        ),
                         decoration: BoxDecoration(
                           color: Colors.black.withValues(alpha: 0.5),
                           borderRadius: BorderRadius.circular(12),
@@ -102,11 +118,20 @@ class RecipeCard extends StatelessWidget {
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            const Icon(Icons.access_time, color: Colors.white, size: 14),
+                            const Icon(
+                              Icons.access_time,
+                              color: Colors.white,
+                              size: 14,
+                            ),
                             const SizedBox(width: 4),
                             Text(
                               time,
-                              style: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.w900, letterSpacing: 0.5),
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 11,
+                                fontWeight: FontWeight.w900,
+                                letterSpacing: 0.5,
+                              ),
                             ),
                           ],
                         ),

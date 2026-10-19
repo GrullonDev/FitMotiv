@@ -1,5 +1,4 @@
 class WorkoutData {
-
   WorkoutData({
     required this.name,
     required this.description,
@@ -17,7 +16,6 @@ class WorkoutData {
 }
 
 class RecipeData {
-
   RecipeData({
     required this.name,
     required this.description,

@@ -5,9 +5,11 @@ class Responsive extends StatelessWidget {
   final Widget mobile;
   final Widget? tablet;
 
-  static bool isMobile(BuildContext context) => MediaQuery.of(context).size.width < 600;
+  static bool isMobile(BuildContext context) =>
+      MediaQuery.of(context).size.width < 600;
 
-  static bool isTablet(BuildContext context) => MediaQuery.of(context).size.width >= 600;
+  static bool isTablet(BuildContext context) =>
+      MediaQuery.of(context).size.width >= 600;
 
   @override
   Widget build(BuildContext context) {
@@ -42,8 +44,10 @@ class ScreenSize {
     horizontalBlock = screenWidth / 100;
     verticalBlock = screenHeight / 100;
 
-    _safeAreaHorizontal = _mediaQueryData.padding.left + _mediaQueryData.padding.right;
-    _safeAreaVertical = _mediaQueryData.padding.top + _mediaQueryData.padding.bottom;
+    _safeAreaHorizontal =
+        _mediaQueryData.padding.left + _mediaQueryData.padding.right;
+    _safeAreaVertical =
+        _mediaQueryData.padding.top + _mediaQueryData.padding.bottom;
     safeBlockHorizontal = (screenWidth - _safeAreaHorizontal) / 100;
     safeBlockVertical = (screenHeight - _safeAreaVertical) / 100;
   }

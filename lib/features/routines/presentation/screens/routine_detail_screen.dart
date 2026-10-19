@@ -103,11 +103,16 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
   Widget build(BuildContext context) {
     final lp = context.read<LocaleProvider>();
     final isTablet = Responsive.isTablet(context);
-    final exerciseCount = _dbExercises.isNotEmpty ? _dbExercises.length : widget.exerciseCount;
+    final exerciseCount = _dbExercises.isNotEmpty
+        ? _dbExercises.length
+        : widget.exerciseCount;
 
     if (isTablet) {
       return Scaffold(
-        appBar: AppBar(title: Text(widget.title, style: AppTextStyles.heading4), centerTitle: true),
+        appBar: AppBar(
+          title: Text(widget.title, style: AppTextStyles.heading4),
+          centerTitle: true,
+        ),
         body: Row(
           children: [
             // Left Column: Details & Settings
@@ -131,7 +136,10 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
                 ),
               ),
             ),
-            VerticalDivider(width: 1, color: AppColors.border.withValues(alpha: 0.5)),
+            VerticalDivider(
+              width: 1,
+              color: AppColors.border.withValues(alpha: 0.5),
+            ),
             // Right Column: Exercises
             Expanded(
               flex: 5,
@@ -151,14 +159,19 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
                   ),
                   Expanded(
                     child: _loadingExercises
-                        ? Center(child: CircularProgressIndicator(color: Theme.of(context).colorScheme.primary))
+                        ? Center(
+                            child: CircularProgressIndicator(
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
+                          )
                         : ListView.builder(
                             padding: const EdgeInsets.symmetric(horizontal: 12),
                             itemCount: exerciseCount,
                             itemBuilder: (context, index) => _ExerciseTile(
                               index: index,
                               name: _dbExercises.isNotEmpty
-                                  ? _dbExercises[index]['name'] as String? ?? 'Exercise'
+                                  ? _dbExercises[index]['name'] as String? ??
+                                        'Exercise'
                                   : null,
                             ),
                           ),
@@ -177,7 +190,9 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
           SliverAppBar(
             expandedHeight: 250,
             pinned: true,
-            flexibleSpace: FlexibleSpaceBar(background: _buildHeroHeader(context)),
+            flexibleSpace: FlexibleSpaceBar(
+              background: _buildHeroHeader(context),
+            ),
           ),
           SliverToBoxAdapter(
             child: Padding(
@@ -209,7 +224,9 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
               child: Center(
                 child: Padding(
                   padding: const EdgeInsets.all(32),
-                  child: CircularProgressIndicator(color: Theme.of(context).colorScheme.primary),
+                  child: CircularProgressIndicator(
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
                 ),
               ),
             )
@@ -218,7 +235,9 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
               delegate: SliverChildBuilderDelegate(
                 (context, index) => _ExerciseTile(
                   index: index,
-                  name: _dbExercises.isNotEmpty ? _dbExercises[index]['name'] as String? ?? 'Exercise' : null,
+                  name: _dbExercises.isNotEmpty
+                      ? _dbExercises[index]['name'] as String? ?? 'Exercise'
+                      : null,
                 ),
                 childCount: exerciseCount,
               ),
@@ -231,7 +250,11 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
         decoration: BoxDecoration(
           color: Theme.of(context).scaffoldBackgroundColor,
           boxShadow: [
-            BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10, offset: const Offset(0, -5)),
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.05),
+              blurRadius: 10,
+              offset: const Offset(0, -5),
+            ),
           ],
         ),
         child: _buildStartButton(context, lp),
@@ -245,18 +268,26 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1)),
+        border: Border.all(
+          color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              Icon(Icons.timer_outlined, color: Theme.of(context).colorScheme.primary, size: 20),
+              Icon(
+                Icons.timer_outlined,
+                color: Theme.of(context).colorScheme.primary,
+                size: 20,
+              ),
               const SizedBox(width: 8),
               Text(
                 lp.translate('workout_settings'),
-                style: AppTextStyles.bodyMedium.copyWith(fontWeight: FontWeight.bold),
+                style: AppTextStyles.bodyMedium.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ],
           ),
@@ -264,12 +295,17 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(lp.translate('exercise_duration'), style: AppTextStyles.bodySmall),
+              Text(
+                lp.translate('exercise_duration'),
+                style: AppTextStyles.bodySmall,
+              ),
               Row(
                 children: [
                   _IconButton(
                     icon: Icons.remove,
-                    onPressed: _selectedDuration > 10 ? () => setState(() => _selectedDuration -= 5) : null,
+                    onPressed: _selectedDuration > 10
+                        ? () => setState(() => _selectedDuration -= 5)
+                        : null,
                   ),
                   const SizedBox(width: 12),
                   SizedBox(
@@ -284,7 +320,10 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
                     ),
                   ),
                   const SizedBox(width: 12),
-                  _IconButton(icon: Icons.add, onPressed: () => setState(() => _selectedDuration += 5)),
+                  _IconButton(
+                    icon: Icons.add,
+                    onPressed: () => setState(() => _selectedDuration += 5),
+                  ),
                 ],
               ),
             ],
@@ -314,7 +353,11 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
         child: Stack(
           children: [
             Center(
-              child: Icon(_getCategoryIcon(widget.category), size: 100, color: Colors.white.withValues(alpha: 0.3)),
+              child: Icon(
+                _getCategoryIcon(widget.category),
+                size: 100,
+                color: Colors.white.withValues(alpha: 0.3),
+              ),
             ),
             Positioned(
               top: 20,
@@ -322,7 +365,9 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
               child: IconButton(
                 onPressed: () {},
                 icon: const Icon(Icons.share, color: Colors.white),
-                style: IconButton.styleFrom(backgroundColor: Colors.black.withValues(alpha: 0.3)),
+                style: IconButton.styleFrom(
+                  backgroundColor: Colors.black.withValues(alpha: 0.3),
+                ),
               ),
             ),
           ],
@@ -343,7 +388,9 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
               const SizedBox(height: 4),
               Text(
                 '${lp.translate(widget.category.toLowerCase())} • ${widget.duration} min',
-                style: AppTextStyles.bodyMedium.copyWith(color: AppColors.textSecondary),
+                style: AppTextStyles.bodyMedium.copyWith(
+                  color: AppColors.textSecondary,
+                ),
               ),
             ],
           ),
@@ -358,7 +405,9 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          lp.translate('description') == 'description' ? 'Description' : lp.translate('description'),
+          lp.translate('description') == 'description'
+              ? 'Description'
+              : lp.translate('description'),
           style: AppTextStyles.bodyLarge.copyWith(fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 8),
@@ -366,7 +415,9 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
           widget.description.isNotEmpty
               ? widget.description
               : 'This routine is designed to help you reach your goals with a mix of targeted exercises.',
-          style: AppTextStyles.bodyMedium.copyWith(color: AppColors.textSecondary),
+          style: AppTextStyles.bodyMedium.copyWith(
+            color: AppColors.textSecondary,
+          ),
         ),
       ],
     );
@@ -380,7 +431,10 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => WorkoutPlayerScreen(exercises: exercises, routineTitle: widget.title),
+            builder: (context) => WorkoutPlayerScreen(
+              exercises: exercises,
+              routineTitle: widget.title,
+            ),
           ),
         );
       },
@@ -390,7 +444,9 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
         minimumSize: const Size(double.infinity, 56),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         elevation: 4,
-        shadowColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.4),
+        shadowColor: Theme.of(
+          context,
+        ).colorScheme.primary.withValues(alpha: 0.4),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -431,10 +487,16 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-      decoration: BoxDecoration(color: color.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(10)),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(10),
+      ),
       child: Text(
         lp.translate(widget.difficulty.toLowerCase()),
-        style: AppTextStyles.bodySmall.copyWith(color: color, fontWeight: FontWeight.bold),
+        style: AppTextStyles.bodySmall.copyWith(
+          color: color,
+          fontWeight: FontWeight.bold,
+        ),
       ),
     );
   }
@@ -464,13 +526,17 @@ class _IconButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.primary.withValues(alpha: onPressed == null ? 0.05 : 0.1),
+        color: Theme.of(
+          context,
+        ).colorScheme.primary.withValues(alpha: onPressed == null ? 0.05 : 0.1),
         borderRadius: BorderRadius.circular(10),
       ),
       child: IconButton(
         icon: Icon(
           icon,
-          color: Theme.of(context).colorScheme.primary.withValues(alpha: onPressed == null ? 0.3 : 1.0),
+          color: Theme.of(context).colorScheme.primary.withValues(
+            alpha: onPressed == null ? 0.3 : 1.0,
+          ),
           size: 18,
         ),
         onPressed: onPressed,
@@ -516,19 +582,29 @@ class _ExerciseTile extends StatelessWidget {
             width: 44,
             height: 44,
             decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
+              color: Theme.of(
+                context,
+              ).colorScheme.primary.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(10),
             ),
             child: Center(
               child: Text(
                 '${index + 1}',
-                style: TextStyle(color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.primary,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
           ),
           const SizedBox(width: 16),
           Expanded(
-            child: Text(displayName, style: AppTextStyles.bodyMedium.copyWith(fontWeight: FontWeight.w600)),
+            child: Text(
+              displayName,
+              style: AppTextStyles.bodyMedium.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
           ),
           Icon(Icons.timer_outlined, color: AppColors.textSecondary, size: 20),
         ],

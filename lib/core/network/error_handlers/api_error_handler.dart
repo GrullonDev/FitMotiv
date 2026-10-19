@@ -4,7 +4,6 @@ import 'package:dio/dio.dart';
 /// Custom exception classes for API errors
 /// These exceptions can be used across all modules in the application
 abstract class ApiException implements Exception {
-
   const ApiException(this.message, {this.statusCode, this.endpoint});
   final String message;
   final int? statusCode;
@@ -40,7 +39,6 @@ class NotFoundException extends ApiException {
 }
 
 class ValidationException extends ApiException {
-
   const ValidationException(
     super.message, {
     super.statusCode,
@@ -330,7 +328,7 @@ class ApiErrorHandler {
     }
 
     final errorString = error.toString();
-    
+
     // Handle Supabase/GoTrue specific errors without depending on the library
     if (errorString.contains('email_address_invalid')) {
       return ValidationException(
@@ -339,7 +337,7 @@ class ApiErrorHandler {
         endpoint: endpoint,
       );
     }
-    
+
     if (errorString.contains('user_already_exists')) {
       return ConflictException(
         'An account with this email already exists.',
@@ -364,7 +362,8 @@ class ApiErrorHandler {
       );
     }
 
-    if (errorString.contains('invalid_credentials') || errorString.contains('Invalid login credentials')) {
+    if (errorString.contains('invalid_credentials') ||
+        errorString.contains('Invalid login credentials')) {
       return UnauthorizedException(
         'Invalid email or password. Please try again.',
         statusCode: 401,
@@ -373,7 +372,7 @@ class ApiErrorHandler {
     }
 
     return ServerException(
-      errorString.contains('Exception:') 
+      errorString.contains('Exception:')
           ? errorString.replaceFirst('Exception:', '').trim()
           : 'An unexpected error occurred: $errorString',
       endpoint: endpoint,

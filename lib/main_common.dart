@@ -46,13 +46,18 @@ Future<void> initializeApp() async {
 
   // Initialize Firebase (Only if configured)
   try {
-    await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
   } catch (e) {
     debugPrint('Firebase initialization skipped: $e');
   }
 
   // Initialize Supabase
-  await Supabase.initialize(url: AppConfig.instance.supabaseUrl, anonKey: AppConfig.instance.supabaseAnonKey);
+  await Supabase.initialize(
+    url: AppConfig.instance.supabaseUrl,
+    anonKey: AppConfig.instance.supabaseAnonKey,
+  );
 
   // Initialize dependency injection
   await di.init();

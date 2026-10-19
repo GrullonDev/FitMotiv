@@ -6,8 +6,10 @@ import 'package:fit_motiv/features/auth/data/model/request/register_request.dart
 import 'package:fit_motiv/features/auth/data/model/response/login_response.dart';
 import 'package:fit_motiv/features/auth/data/model/response/register_response.dart';
 
-class AuthRemoteDataSource extends BaseRemoteDataSource implements AuthDataSource {
-  AuthRemoteDataSource({required ApiService apiService}) : _apiService = apiService;
+class AuthRemoteDataSource extends BaseRemoteDataSource
+    implements AuthDataSource {
+  AuthRemoteDataSource({required ApiService apiService})
+    : _apiService = apiService;
   final ApiService _apiService;
 
   @override
@@ -31,7 +33,9 @@ class AuthRemoteDataSource extends BaseRemoteDataSource implements AuthDataSourc
   }
 
   @override
-  Future<Map<String, dynamic>> changePassword(Map<String, dynamic> passwordData) async {
+  Future<Map<String, dynamic>> changePassword(
+    Map<String, dynamic> passwordData,
+  ) async {
     final response = await _apiService.changePassword(passwordData);
     return extractDataFromResponse(response.data);
   }
@@ -49,25 +53,33 @@ class AuthRemoteDataSource extends BaseRemoteDataSource implements AuthDataSourc
   }
 
   @override
-  Future<Map<String, dynamic>> forgotPassword(Map<String, dynamic> emailData) async {
+  Future<Map<String, dynamic>> forgotPassword(
+    Map<String, dynamic> emailData,
+  ) async {
     final response = await _apiService.forgotPassword(emailData);
     return extractDataFromResponse(response.data);
   }
 
   @override
-  Future<Map<String, dynamic>> resetPassword(Map<String, dynamic> resetData) async {
+  Future<Map<String, dynamic>> resetPassword(
+    Map<String, dynamic> resetData,
+  ) async {
     final response = await _apiService.resetPassword(resetData);
     return extractDataFromResponse(response.data);
   }
 
   @override
-  Future<Map<String, dynamic>> verifyEmail(Map<String, dynamic> verificationData) async {
+  Future<Map<String, dynamic>> verifyEmail(
+    Map<String, dynamic> verificationData,
+  ) async {
     final response = await _apiService.verifyEmail(verificationData);
     return extractDataFromResponse(response.data);
   }
 
   @override
-  Future<Map<String, dynamic>> resendVerification(Map<String, dynamic> emailData) async {
+  Future<Map<String, dynamic>> resendVerification(
+    Map<String, dynamic> emailData,
+  ) async {
     final response = await _apiService.resendVerification(emailData);
     return extractDataFromResponse(response.data);
   }
@@ -79,7 +91,9 @@ class AuthRemoteDataSource extends BaseRemoteDataSource implements AuthDataSourc
   }
 
   @override
-  Future<Map<String, dynamic>> updateCurrentUserProfile(Map<String, dynamic> profileData) async {
+  Future<Map<String, dynamic>> updateCurrentUserProfile(
+    Map<String, dynamic> profileData,
+  ) async {
     final response = await _apiService.updateCurrentUserProfile(profileData);
     return extractDataFromResponse(response.data);
   }

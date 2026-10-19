@@ -2,7 +2,12 @@ import 'package:fit_motiv/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class AuthLink extends StatelessWidget {
-  const AuthLink({super.key, required this.text, required this.linkText, required this.onTap});
+  const AuthLink({
+    super.key,
+    required this.text,
+    required this.linkText,
+    required this.onTap,
+  });
 
   final String text;
   final String linkText;
@@ -18,7 +23,11 @@ class AuthLink extends StatelessWidget {
           onTap: onTap,
           child: Text(
             linkText,
-            style: TextStyle(fontSize: 14, color: AppColors.primary, fontWeight: FontWeight.w600),
+            style: TextStyle(
+              fontSize: 14,
+              color: AppColors.primary,
+              fontWeight: FontWeight.w600,
+            ),
           ),
         ),
       ],

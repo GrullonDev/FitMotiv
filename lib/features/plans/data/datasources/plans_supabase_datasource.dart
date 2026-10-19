@@ -51,12 +51,18 @@ class PlansSupabaseDatasource {
   /// Obtiene una receta aleatoria para mostrar en el dashboard
   Future<Map<String, dynamic>?> getRandomRecipe() async {
     try {
-      final response = await _client.from('recipes').select().eq('is_public', true).limit(10);
+      final response = await _client
+          .from('recipes')
+          .select()
+          .eq('is_public', true)
+          .limit(10);
 
       final recipes = List<Map<String, dynamic>>.from(response);
       if (recipes.isEmpty) return null;
 
-      final dayOfYear = DateTime.now().difference(DateTime(DateTime.now().year)).inDays;
+      final dayOfYear = DateTime.now()
+          .difference(DateTime(DateTime.now().year))
+          .inDays;
       final index = dayOfYear % recipes.length;
       return recipes[index];
     } catch (e) {
@@ -72,7 +78,11 @@ class PlansSupabaseDatasource {
   /// Obtiene los tips/mitos nutricionales
   Future<List<Map<String, dynamic>>> getTips() async {
     try {
-      final response = await _client.from('tips').select().eq('is_public', true).order('created_at', ascending: false);
+      final response = await _client
+          .from('tips')
+          .select()
+          .eq('is_public', true)
+          .order('created_at', ascending: false);
 
       return List<Map<String, dynamic>>.from(response);
     } catch (e) {

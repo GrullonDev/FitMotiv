@@ -41,7 +41,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const AssistantChatScreen()),
+            MaterialPageRoute(
+              builder: (context) => const AssistantChatScreen(),
+            ),
           );
         },
         backgroundColor: AppColors.primary,
@@ -187,6 +189,4 @@ class _DashboardScreenState extends State<DashboardScreen> {
       ),
     );
   }
-
-
 }

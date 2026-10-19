@@ -9,7 +9,13 @@ class LoginHeader extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Welcome Back!', style: AppTextStyles.heading1.copyWith(fontSize: 32, fontWeight: FontWeight.bold)),
+        Text(
+          'Welcome Back!',
+          style: AppTextStyles.heading1.copyWith(
+            fontSize: 32,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         const SizedBox(height: 8),
         Text(
           'Sign in to continue your fitness journey',

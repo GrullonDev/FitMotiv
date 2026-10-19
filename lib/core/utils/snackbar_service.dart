@@ -5,7 +5,8 @@ import 'package:flutter/material.dart';
 /// Centraliza la lógica de presentación de mensajes al usuario
 class SnackBarService {
   /// Clave global para el ScaffoldMessenger
-  static final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
+  static final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
+      GlobalKey<ScaffoldMessengerState>();
 
   /// Muestra un SnackBar de error
   static void showError(String message, {Duration? duration}) {
@@ -53,12 +54,18 @@ class SnackBarService {
 
   /// Muestra un SnackBar para errores de red específicamente
   static void showNetworkError({Duration? duration}) {
-    showError('Network error. Please check your internet connection', duration: duration ?? const Duration(seconds: 5));
+    showError(
+      'Network error. Please check your internet connection',
+      duration: duration ?? const Duration(seconds: 5),
+    );
   }
 
   /// Muestra un SnackBar para errores de sesión expirada
   static void showSessionExpired({Duration? duration}) {
-    showError('Your session has expired. Please login again', duration: duration ?? const Duration(seconds: 5));
+    showError(
+      'Your session has expired. Please login again',
+      duration: duration ?? const Duration(seconds: 5),
+    );
   }
 
   /// Método privado para mostrar SnackBars customizados
@@ -83,7 +90,11 @@ class SnackBarService {
           Expanded(
             child: Text(
               message,
-              style: TextStyle(color: textColor, fontSize: 14, fontWeight: FontWeight.w500),
+              style: TextStyle(
+                color: textColor,
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+              ),
             ),
           ),
         ],

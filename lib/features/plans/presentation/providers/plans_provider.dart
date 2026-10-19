@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 
 /// Provider que gestiona los datos de nutrición y planes desde Supabase
 class PlansProvider extends ChangeNotifier {
-  PlansProvider({required PlansSupabaseDatasource datasource}) : _datasource = datasource {
+  PlansProvider({required PlansSupabaseDatasource datasource})
+    : _datasource = datasource {
     loadAll();
   }
 
@@ -37,7 +38,11 @@ class PlansProvider extends ChangeNotifier {
 
   /// Categorías disponibles de las recetas
   List<String> get availableCategories {
-    final cats = _recipes.map((r) => r['category'] as String? ?? '').where((c) => c.isNotEmpty).toSet().toList();
+    final cats = _recipes
+        .map((r) => r['category'] as String? ?? '')
+        .where((c) => c.isNotEmpty)
+        .toSet()
+        .toList();
     cats.sort();
     return cats;
   }

@@ -7,7 +7,9 @@ class LoginUser {
   final AuthRepository repository;
 
   Future<UserEntity> call(String email, String password) async {
-    final result = await repository.login(LoginRequest(username: email, password: password));
+    final result = await repository.login(
+      LoginRequest(username: email, password: password),
+    );
 
     return result.fold(
       (failure) => throw Exception(failure.message),

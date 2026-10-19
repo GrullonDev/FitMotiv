@@ -26,10 +26,12 @@ class RegisterLayout extends StatelessWidget {
               const SizedBox(height: 24),
 
               // Mensaje de éxito si existe
-              if (model.successMessage != null) MessageCard(message: model.successMessage!, isError: false),
+              if (model.successMessage != null)
+                MessageCard(message: model.successMessage!, isError: false),
 
               // Mensaje de error si existe
-              if (model.errorMessage != null) MessageCard(message: model.errorMessage!, isError: true),
+              if (model.errorMessage != null)
+                MessageCard(message: model.errorMessage!, isError: true),
 
               // Botón de envío
               RegisterSubmitButton(bloc: model),
@@ -37,7 +39,11 @@ class RegisterLayout extends StatelessWidget {
               const SizedBox(height: 16),
 
               // Link para ir al login
-              AuthLink(text: 'Already have an account? ', linkText: 'Sign In', onTap: () => Navigator.pop(context)),
+              AuthLink(
+                text: 'Already have an account? ',
+                linkText: 'Sign In',
+                onTap: () => Navigator.pop(context),
+              ),
 
               const SizedBox(height: 40),
             ],

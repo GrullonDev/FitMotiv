@@ -27,10 +27,17 @@ class MessageCard extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Icon(isError ? Icons.error_outline : Icons.check_circle_outline, color: color.shade700, size: 20),
+          Icon(
+            isError ? Icons.error_outline : Icons.check_circle_outline,
+            color: color.shade700,
+            size: 20,
+          ),
           const SizedBox(width: 8),
           Expanded(
-            child: Text(message, style: TextStyle(color: color.shade700, fontSize: 14)),
+            child: Text(
+              message,
+              style: TextStyle(color: color.shade700, fontSize: 14),
+            ),
           ),
         ],
       ),

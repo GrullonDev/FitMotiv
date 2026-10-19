@@ -17,15 +17,26 @@ class RegisterSuccessDialog extends StatelessWidget {
             Container(
               width: 80,
               height: 80,
-              decoration: BoxDecoration(color: Colors.green.shade100, shape: BoxShape.circle),
-              child: Icon(Icons.check_circle, size: 50, color: Colors.green.shade600),
+              decoration: BoxDecoration(
+                color: Colors.green.shade100,
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                Icons.check_circle,
+                size: 50,
+                color: Colors.green.shade600,
+              ),
             ),
             const SizedBox(height: 24),
 
             // Título
             Text(
               'Account Created!',
-              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black87),
+              style: const TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: Colors.black87,
+              ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 12),
@@ -33,7 +44,11 @@ class RegisterSuccessDialog extends StatelessWidget {
             // Descripción
             Text(
               'Welcome to FitMotiv! Your account has been successfully created. You can now start your fitness journey.',
-              style: TextStyle(fontSize: 16, color: Colors.grey.shade600, height: 1.5),
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.grey.shade600,
+                height: 1.5,
+              ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 24),
@@ -49,11 +64,17 @@ class RegisterSuccessDialog extends StatelessWidget {
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   backgroundColor: AppColors.primary,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                 ),
                 child: const Text(
                   'Get Started',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white),
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
+                  ),
                 ),
               ),
             ),

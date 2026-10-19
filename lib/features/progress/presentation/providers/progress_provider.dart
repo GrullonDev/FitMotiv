@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 
 /// Provider que gestiona el progreso del usuario
 class ProgressProvider extends ChangeNotifier {
-  ProgressProvider({required ProgressSupabaseDatasource datasource, required AnalyticsService analyticsService})
-    : _datasource = datasource,
-      _analyticsService = analyticsService {
+  ProgressProvider({
+    required ProgressSupabaseDatasource datasource,
+    required AnalyticsService analyticsService,
+  }) : _datasource = datasource,
+       _analyticsService = analyticsService {
     loadAll();
   }
 
@@ -44,7 +46,10 @@ class ProgressProvider extends ChangeNotifier {
 
   /// Total de calorías quemadas
   int get totalCalories {
-    return _sessions.fold(0, (sum, s) => sum + ((s['calories_burned'] as int?) ?? 0));
+    return _sessions.fold(
+      0,
+      (sum, s) => sum + ((s['calories_burned'] as int?) ?? 0),
+    );
   }
 
   /// Carga todo el progreso
@@ -130,7 +135,12 @@ class ProgressProvider extends ChangeNotifier {
     String unit = '',
   }) async {
     try {
-      await _datasource.createGoal(title: title, description: description, targetValue: targetValue, unit: unit);
+      await _datasource.createGoal(
+        title: title,
+        description: description,
+        targetValue: targetValue,
+        unit: unit,
+      );
       _analyticsService.logGoalCreated(title);
       await loadAll();
       return true;

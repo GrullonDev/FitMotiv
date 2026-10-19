@@ -12,11 +12,18 @@ class LoginForm extends StatelessWidget {
     return Column(
       children: [
         // Username
-        UserInput(hint: 'Enter your username', controller: bloc.usernameController),
+        UserInput(
+          hint: 'Enter your username',
+          controller: bloc.usernameController,
+        ),
         const SizedBox(height: 16),
 
         // Password
-        UserInput(hint: 'Enter your password', controller: bloc.passwordController, obscureText: true),
+        UserInput(
+          hint: 'Enter your password',
+          controller: bloc.passwordController,
+          obscureText: true,
+        ),
       ],
     );
   }

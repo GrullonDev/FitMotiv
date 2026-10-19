@@ -4,7 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class CustomBottomNavigationBar extends StatelessWidget {
-  const CustomBottomNavigationBar({super.key, required this.selectedIndex, required this.onItemSelected});
+  const CustomBottomNavigationBar({
+    super.key,
+    required this.selectedIndex,
+    required this.onItemSelected,
+  });
   final int selectedIndex;
   final Function(int) onItemSelected;
 
@@ -96,7 +100,13 @@ class CustomBottomNavigationBar extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(icon, size: 22, color: isSelected ? Theme.of(context).colorScheme.primary : const Color(0xFF9CA3AF)),
+              Icon(
+                icon,
+                size: 22,
+                color: isSelected
+                    ? Theme.of(context).colorScheme.primary
+                    : const Color(0xFF9CA3AF),
+              ),
               const SizedBox(height: 2),
               FittedBox(
                 child: Text(
@@ -104,7 +114,9 @@ class CustomBottomNavigationBar extends StatelessWidget {
                   style: AppTextStyles.bodySmall.copyWith(
                     fontSize: 11,
                     fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-                    color: isSelected ? Theme.of(context).colorScheme.primary : const Color(0xFF9CA3AF),
+                    color: isSelected
+                        ? Theme.of(context).colorScheme.primary
+                        : const Color(0xFF9CA3AF),
                   ),
                 ),
               ),

@@ -8,9 +8,7 @@ import 'package:fit_motiv/features/auth/domain/repositories/auth_repository.dart
 class AuthDI {
   static void init(GetIt sl) {
     // Register AuthDataSource (Supabase implementation)
-    sl.registerLazySingleton<AuthDataSource>(
-      () => AuthSupabaseDataSource(),
-    );
+    sl.registerLazySingleton<AuthDataSource>(() => AuthSupabaseDataSource());
 
     // Register AuthRepository
     sl.registerLazySingleton<AuthRepository>(

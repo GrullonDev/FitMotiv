@@ -8,7 +8,7 @@ import 'package:fit_motiv/features/profile_settings/data/models/user_profile_mod
 /// Carga los datos desde Supabase Auth metadata y los expone a la UI.
 class UserProfileProvider extends ChangeNotifier {
   UserProfileProvider({required ProfileSupabaseDatasource datasource})
-      : _datasource = datasource {
+    : _datasource = datasource {
     loadProfile();
   }
 
@@ -83,7 +83,7 @@ class UserProfileProvider extends ChangeNotifier {
 
       final url = await _datasource.uploadAvatar(File(image.path));
       await updateProfile({'avatar_url': url});
-      
+
       return true;
     } catch (e) {
       _error = e.toString();
@@ -97,7 +97,7 @@ class UserProfileProvider extends ChangeNotifier {
 
   /// Diferencia de peso
   double get weightDifference => _profile?.weightDifference ?? 0.0;
-  
+
   /// Porcentaje de progreso
   double get weightProgressPercent => _profile?.weightProgressPercent ?? 0.0;
 
