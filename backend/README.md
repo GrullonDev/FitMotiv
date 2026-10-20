@@ -5,14 +5,14 @@ REST API for the FitMotiv fitness app, built with [Dart Frog](https://dart-frog.
 ## Prerequisites
 
 - Dart SDK >= 3.8.1
-- Docker & Docker Compose (for PostgreSQL)
+- [Podman](https://podman.io) & `podman compose` (for PostgreSQL). Docker/Docker Compose also works.
 - [Dart Frog CLI](https://dart-frog.dev): `dart pub global activate dart_frog_cli`
 
 ## Quick Start
 
 ```bash
-# 1. Start PostgreSQL
-docker compose up -d
+# 1. Start PostgreSQL (use podman compose or docker compose)
+podman compose up -d
 
 # 2. Copy and configure environment variables
 cp .env.example .env
@@ -110,14 +110,14 @@ backend/
 │       └── json_response.dart    # Standardized JSON responses
 ├── routes/
 │   └── api/v1/                   # File-system based routing
-├── docker-compose.yml            # PostgreSQL container
+├── docker-compose.yml            # PostgreSQL container (works with podman compose)
 ├── .env.example                  # Environment template
 └── pubspec.yaml
 ```
 
 ## Database
 
-PostgreSQL 16 via Docker. Migrations run automatically on server start
+PostgreSQL 16 via Podman (or Docker). Migrations run automatically on server start
 and are defined in `lib/core/migrator.dart`.
 
 ### Tables
