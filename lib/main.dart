@@ -1,24 +1,15 @@
 import 'package:flutter/material.dart';
-
-import 'package:provider/provider.dart';
-
-import 'package:fit_motiv/app.dart';
-
-import 'core/di/injection_container.dart' as di;
-import 'features/dashboard/presentation/providers/dashboard_provider.dart';
+import 'package:fit_motiv/core/config/app_config.dart';
+import 'package:fit_motiv/main_common.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Initialize dependency injection
-  await di.init();
+  // Inicializar configuración para desarrollo por defecto
+  await AppConfig.instance.initialize(flavor: AppFlavor.dev);
 
-  runApp(
-    MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => di.sl<DashboardProvider>()),
-      ],
-      child: const FitMotivApp(),
-    ),
-  );
+  // Inicializar dependencias comunes
+  await initializeApp();
+
+  runApp(const MyApp());
 }

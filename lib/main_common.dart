@@ -1,0 +1,56 @@
+import 'package:fit_motiv/core/config/app_config.dart';
+import 'package:fit_motiv/core/di/injection_container.dart' as di;
+import 'package:fit_motiv/core/localization/locale_provider.dart';
+import 'package:fit_motiv/core/services/analytics_service.dart';
+import 'package:fit_motiv/core/services/notification_service.dart';
+import 'package:fit_motiv/core/theme/theme_provider.dart';
+import 'package:fit_motiv/features/community/presentation/providers/community_provider.dart';
+import 'package:fit_motiv/features/dashboard/presentation/providers/dashboard_provider.dart';
+import 'package:fit_motiv/features/plans/presentation/providers/plans_provider.dart';
+import 'package:fit_motiv/features/profile_settings/presentation/providers/user_profile_provider.dart';
+import 'package:fit_motiv/features/progress/presentation/providers/progress_provider.dart';
+import 'package:fit_motiv/features/routines/presentation/providers/workout_provider.dart';
+import 'package:fit_motiv/features/routines/presentation/providers/workout_session_provider.dart';
+import 'package:fit_motiv/utils/app.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => di.sl<DashboardProvider>()),
+        ChangeNotifierProvider(create: (_) => di.sl<UserProfileProvider>()),
+        ChangeNotifierProvider(create: (_) => di.sl<WorkoutProvider>()),
+        ChangeNotifierProvider(create: (_) => di.sl<WorkoutSessionProvider>()),
+        ChangeNotifierProvider(create: (_) => di.sl<ProgressProvider>()),
+        ChangeNotifierProvider(create: (_) => di.sl<CommunityProvider>()),
+        ChangeNotifierProvider(create: (_) => di.sl<PlansProvider>()),
+        ChangeNotifierProvider(create: (_) => LocaleProvider()),
+        ChangeNotifierProvider(create: (_) => ThemeProvider()),
+      ],
+      child: const FitMotivApp(),
+    );
+  }
+}
+
+Future<void> initializeApp() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await di.init();
+
+  try {
+    await di.sl<NotificationService>().init();
+  } catch (e) {
+    debugPrint('Notification initialization skipped: $e');
+  }
+
+  try {
+    await di.sl<AnalyticsService>().logAppOpen();
+  } catch (e) {
+    debugPrint('Analytics log skipped: $e');
+  }
+}

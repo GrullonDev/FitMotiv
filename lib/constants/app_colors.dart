@@ -8,8 +8,28 @@ class AppColors {
   static const Color textPrimary = Color(0xFF1A1A1A);
   static const Color textSecondary = Color(0xFF6B7280);
   static const Color progressBackground = Color(0xFFF3F4F6);
+  static const Color surface = Color(0xFFFFFFFF);
+  static const Color success = Color(0xFF10B981);
+  static const Color error = Color(0xFFEF4444);
+  static const Color border = Color(0xFFE5E7EB);
 
-  // Gradientes
+  // Gradientes dinámicos
+  static LinearGradient getQuoteGradient(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    if (isDark) {
+      return LinearGradient(
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+        colors: [const Color(0xFF1E1E1E), const Color(0xFF2A2A2A)],
+      );
+    }
+    return const LinearGradient(
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+      colors: [Color(0xFFE8F5F1), Color(0xFFD4F1E8)],
+    );
+  }
+
   static const LinearGradient quoteGradient = LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,

@@ -1,0 +1,15 @@
+include: package:dart_frog_lint/recommended.yaml
+
+linter:
+  rules:
+    public_member_api_docs: false
+    lines_longer_than_80_chars: false
+    always_use_package_imports: false
+    cast_nullable_to_non_nullable: false
+    avoid_relative_lib_imports: false
+    prefer_constructors_over_static_methods: false
+    prefer_const_constructors: false
+    unnecessary_raw_strings: false
+    no_default_cases: false
+    sort_pub_dependencies: false
+    prefer_single_quotes: false

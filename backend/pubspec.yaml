@@ -1,0 +1,23 @@
+name: backend
+description: FitMotiv Dart Frog Backend API
+version: 1.0.0+1
+publish_to: none
+
+environment:
+  sdk: ^3.11.0
+
+dependencies:
+  dart_frog: ^1.1.0
+  dart_jsonwebtoken: ^2.14.1
+  dotenv: ^4.2.0
+  postgres: ^3.5.5
+  uuid: ^4.5.1
+  crypto: ^3.0.6
+  dbcrypt: ^2.0.0
+  json_annotation: ^4.9.0
+  meta: ^1.15.0
+
+dev_dependencies:
+  dart_frog_lint: ^0.1.0
+  mocktail: ^1.0.0
+  test: ^1.0.0

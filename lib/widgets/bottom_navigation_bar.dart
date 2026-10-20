@@ -1,25 +1,23 @@
+import 'package:fit_motiv/constants/app_text_styles.dart';
+import 'package:fit_motiv/core/localization/locale_provider.dart';
 import 'package:flutter/material.dart';
-import '../constants/app_colors.dart';
-import '../constants/app_text_styles.dart';
+import 'package:provider/provider.dart';
 
 class CustomBottomNavigationBar extends StatelessWidget {
+  const CustomBottomNavigationBar({super.key, required this.selectedIndex, required this.onItemSelected});
   final int selectedIndex;
   final Function(int) onItemSelected;
 
-  const CustomBottomNavigationBar({
-    super.key,
-    required this.selectedIndex,
-    required this.onItemSelected,
-  });
-
   @override
   Widget build(BuildContext context) {
+    final localeProvider = context.watch<LocaleProvider>();
+
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
+            color: Colors.black.withValues(alpha: 0.05),
             spreadRadius: 1,
             blurRadius: 10,
             offset: const Offset(0, -2),
@@ -28,39 +26,51 @@ class CustomBottomNavigationBar extends StatelessWidget {
       ),
       child: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               _buildNavItem(
+                context,
                 icon: Icons.home,
-                label: 'Home',
+                label: localeProvider.translate('home'),
                 index: 0,
                 isSelected: selectedIndex == 0,
               ),
               _buildNavItem(
+                context,
                 icon: Icons.calendar_today,
-                label: 'Plans',
+                label: localeProvider.translate('plans'),
                 index: 1,
                 isSelected: selectedIndex == 1,
               ),
               _buildNavItem(
+                context,
                 icon: Icons.directions_run,
-                label: 'Routines',
+                label: localeProvider.translate('routines'),
                 index: 2,
                 isSelected: selectedIndex == 2,
               ),
               _buildNavItem(
+                context,
                 icon: Icons.trending_up,
-                label: 'Progress',
+                label: localeProvider.translate('progress'),
                 index: 3,
                 isSelected: selectedIndex == 3,
               ),
               _buildNavItem(
+                context,
                 icon: Icons.group,
-                label: 'Community',
+                label: localeProvider.translate('community'),
                 index: 4,
                 isSelected: selectedIndex == 4,
+              ),
+              _buildNavItem(
+                context,
+                icon: Icons.person,
+                label: localeProvider.translate('profile'),
+                index: 5,
+                isSelected: selectedIndex == 5,
               ),
             ],
           ),
@@ -69,34 +79,37 @@ class CustomBottomNavigationBar extends StatelessWidget {
     );
   }
 
-  Widget _buildNavItem({
+  Widget _buildNavItem(
+    BuildContext context, {
     required IconData icon,
     required String label,
     required int index,
     required bool isSelected,
   }) {
-    return GestureDetector(
-      onTap: () => onItemSelected(index),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              icon,
-              size: 24,
-              color: isSelected ? AppColors.primary : const Color(0xFF9CA3AF),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              label,
-              style: AppTextStyles.bodySmall.copyWith(
-                fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-                color: isSelected ? AppColors.primary : const Color(0xFF9CA3AF),
+    return Expanded(
+      child: InkWell(
+        borderRadius: BorderRadius.circular(12),
+        onTap: () => onItemSelected(index),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 180),
+          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(icon, size: 22, color: isSelected ? Theme.of(context).colorScheme.primary : const Color(0xFF9CA3AF)),
+              const SizedBox(height: 2),
+              FittedBox(
+                child: Text(
+                  label,
+                  style: AppTextStyles.bodySmall.copyWith(
+                    fontSize: 11,
+                    fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+                    color: isSelected ? Theme.of(context).colorScheme.primary : const Color(0xFF9CA3AF),
+                  ),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
