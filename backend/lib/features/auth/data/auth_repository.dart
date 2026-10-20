@@ -24,46 +24,45 @@ class AuthRepository {
     double height = 0.0,
     double weight = 0.0,
   }) async {
-    // Check if email already exists
-    final existing = await _db.query(
-      'SELECT id FROM users WHERE email = @email',
-      parameters: {'email': email.toLowerCase()},
-    );
-    if (existing.isNotEmpty) {
-      throw AuthException('An account with this email already exists');
-    }
-
-    // Check username uniqueness if provided
-    if (username.isNotEmpty) {
-      final existingUsername = await _db.query(
-        'SELECT id FROM profiles WHERE username = @username',
-        parameters: {'username': username},
-      );
-      if (existingUsername.isNotEmpty) {
-        throw AuthException('Username is already taken');
-      }
-    }
-
+    final normalizedEmail = email.toLowerCase();
     final passwordHash = PasswordHasher.hash(password);
 
+    // Use INSERT ... ON CONFLICT to avoid revealing whether email exists
     return _db.transaction((tx) async {
-      // Create user
       final userResult = await tx.execute(
         Sql.named('''
           INSERT INTO users (email, password_hash)
           VALUES (@email, @password_hash)
+          ON CONFLICT (email) DO NOTHING
           RETURNING id, email, is_active, is_verified, created_at
         '''),
         parameters: {
-          'email': email.toLowerCase(),
+          'email': normalizedEmail,
           'password_hash': passwordHash,
         },
       );
 
+      if (userResult.isEmpty) {
+        // Email already exists — return a generic success to prevent enumeration
+        return {
+          'message': 'If this email is available, your account has been created. Check your email to continue.',
+        };
+      }
+
       final user = userResult.first;
       final userId = user[0] as String;
 
-      // Create profile
+      // Check username uniqueness (this is safe to reveal — usernames are public)
+      if (username.isNotEmpty) {
+        final existingUsername = await tx.execute(
+          Sql.named('SELECT user_id FROM profiles WHERE username = @username'),
+          parameters: {'username': username},
+        );
+        if (existingUsername.isNotEmpty) {
+          throw AuthException('Username is already taken');
+        }
+      }
+
       await tx.execute(
         Sql.named('''
           INSERT INTO profiles (user_id, full_name, username, bio, fitness_goal, activity_level, age, height, weight)
@@ -83,12 +82,7 @@ class AuthRepository {
       );
 
       return {
-        'id': userId,
-        'email': user[1],
-        'is_active': user[2],
-        'is_verified': user[3],
-        'created_at': (user[4] as DateTime).toIso8601String(),
-        'message': 'Registration successful',
+        'message': 'If this email is available, your account has been created. Check your email to continue.',
       };
     });
   }

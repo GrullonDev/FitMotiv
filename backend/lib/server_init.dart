@@ -14,6 +14,13 @@ Future<void> ensureInitialized() async {
   stdout.writeln('[Server] Loading environment...');
   Env.load();
 
+  if (Env.jwtSecret == 'change-me-in-production') {
+    stderr.writeln(
+      '[WARNING] JWT_SECRET is set to the default value. '
+      'Generate a strong secret: openssl rand -base64 64',
+    );
+  }
+
   stdout.writeln('[Server] Connecting to database...');
   await Database.instance.initialize();
 

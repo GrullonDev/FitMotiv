@@ -39,8 +39,10 @@ Future<Response> onRequest(RequestContext context) async {
       height: (body['height'] as num?)?.toDouble() ?? 0.0,
       weight: (body['weight'] as num?)?.toDouble() ?? 0.0,
     );
+    // Always return 201 to prevent email enumeration
     return jsonCreated(result);
   } on AuthException catch (e) {
+    // Username conflicts are safe to reveal (usernames are public)
     return jsonError(e.message, statusCode: 409);
   } catch (e) {
     return jsonError('Registration failed', statusCode: 500);

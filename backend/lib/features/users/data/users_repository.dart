@@ -37,30 +37,29 @@ class UsersRepository {
     };
   }
 
+  static const _allowedFields = {
+    'full_name', 'username', 'bio', 'fitness_goal',
+    'activity_level', 'age', 'height', 'weight', 'avatar_url',
+  };
+
   Future<Map<String, dynamic>?> updateProfile(
     String userId,
     Map<String, dynamic> data,
   ) async {
-    final allowedFields = {
-      'full_name', 'username', 'bio', 'fitness_goal',
-      'activity_level', 'age', 'height', 'weight', 'avatar_url',
-    };
-
     final updates = <String>[];
     final parameters = <String, dynamic>{'user_id': userId};
 
-    for (final entry in data.entries) {
-      if (allowedFields.contains(entry.key) && entry.value != null) {
-        updates.add('${entry.key} = @${entry.key}');
-        parameters[entry.key] = entry.value;
+    for (final field in _allowedFields) {
+      if (data.containsKey(field) && data[field] != null) {
+        updates.add('$field = @$field');
+        parameters[field] = data[field];
       }
     }
 
     if (updates.isEmpty) return getProfile(userId);
 
-    updates.add("updated_at = now()");
+    updates.add('updated_at = now()');
 
-    // Check username uniqueness
     if (data.containsKey('username') && data['username'] != null) {
       final existing = await _db.query(
         'SELECT user_id FROM profiles WHERE username = @username AND user_id != @user_id',
