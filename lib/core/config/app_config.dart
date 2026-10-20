@@ -8,11 +8,11 @@ enum AppFlavor { dev, prod }
 /// según el flavor/entorno actual.
 ///
 /// Cada flavor carga su propio archivo .env:
-///   - dev  → .env.dev  (conecta al proyecto Supabase de desarrollo)
-///   - prod → .env.prod (conecta al proyecto Supabase de producción)
+///   - dev  → .env.dev  (conecta al backend de desarrollo)
+///   - prod → .env.prod (conecta al backend de producción)
 ///
 /// Esto permite que la rama develop y main del proyecto se conecten
-/// a proyectos Supabase diferentes automáticamente.
+/// a entornos diferentes automáticamente.
 class AppConfig {
   AppConfig._internal();
   static AppConfig? _instance;

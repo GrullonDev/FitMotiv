@@ -103,7 +103,7 @@ class LoginBloc extends ChangeNotifier {
       _isLoading = false;
       final errorStr = error.toString();
 
-      // Detectar error de email no confirmado desde excepción cruda de Supabase
+      // Detectar error de email no confirmado
       if (errorStr.contains('email_not_confirmed')) {
         _isEmailNotConfirmed = true;
         _errorMessage = 'Please verify your email before signing in. Check your inbox for a confirmation link.';

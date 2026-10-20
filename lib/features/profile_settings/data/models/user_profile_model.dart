@@ -1,4 +1,4 @@
-/// Modelo del perfil del usuario que se mapea desde Supabase Auth metadata.
+/// Modelo del perfil del usuario que se mapea desde la API.
 class UserProfileModel {
   const UserProfileModel({
     required this.id,

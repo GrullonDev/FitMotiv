@@ -1,4 +1,3 @@
-import 'package:firebase_core/firebase_core.dart';
 import 'package:fit_motiv/core/config/app_config.dart';
 import 'package:fit_motiv/core/di/injection_container.dart' as di;
 import 'package:fit_motiv/core/localization/locale_provider.dart';
@@ -12,7 +11,6 @@ import 'package:fit_motiv/features/profile_settings/presentation/providers/user_
 import 'package:fit_motiv/features/progress/presentation/providers/progress_provider.dart';
 import 'package:fit_motiv/features/routines/presentation/providers/workout_provider.dart';
 import 'package:fit_motiv/features/routines/presentation/providers/workout_session_provider.dart';
-import 'package:fit_motiv/firebase_options.dart';
 import 'package:fit_motiv/utils/app.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -41,12 +39,6 @@ class MyApp extends StatelessWidget {
 
 Future<void> initializeApp() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  try {
-    await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  } catch (e) {
-    debugPrint('Firebase initialization skipped: $e');
-  }
 
   await di.init();
 

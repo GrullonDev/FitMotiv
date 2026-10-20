@@ -41,11 +41,11 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _loadExercisesFromSupabase();
+      _loadExercises();
     });
   }
 
-  Future<void> _loadExercisesFromSupabase() async {
+  Future<void> _loadExercises() async {
     final provider = context.read<WorkoutProvider>();
     final exercises = await provider.loadExercises(widget.id);
     if (mounted) {

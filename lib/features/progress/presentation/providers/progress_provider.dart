@@ -121,7 +121,7 @@ class ProgressProvider extends ChangeNotifier {
     }
   }
 
-  /// Crea una meta nueva en Supabase
+  /// Crea una meta nueva
   Future<bool> createGoal({
     required String title,
     String description = '',

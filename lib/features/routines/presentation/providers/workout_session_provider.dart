@@ -119,7 +119,7 @@ class WorkoutSessionProvider extends ChangeNotifier {
     } else {
       _state = WorkoutState.completed;
       _stopTimer();
-      // Persistir la sesión completa en Supabase
+      // Persist the completed session to the backend
       _logCompletedSession();
     }
     notifyListeners();
@@ -144,7 +144,7 @@ class WorkoutSessionProvider extends ChangeNotifier {
         durationMinutes: _totalDurationMinutes > 0 ? _totalDurationMinutes : 1,
         caloriesBurned: _totalCaloriesBurned > 0 ? _totalCaloriesBurned : 10,
       );
-      debugPrint('✅ Workout session logged to Supabase');
+      debugPrint('Workout session logged');
     } catch (e) {
       debugPrint('❌ Error logging workout session: $e');
     }

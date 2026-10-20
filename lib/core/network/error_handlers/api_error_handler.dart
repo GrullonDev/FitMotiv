@@ -331,7 +331,7 @@ class ApiErrorHandler {
 
     final errorString = error.toString();
     
-    // Handle Supabase/GoTrue specific errors without depending on the library
+    // Handle common auth error strings from the backend
     if (errorString.contains('email_address_invalid')) {
       return ValidationException(
         'The email address provided is invalid or not allowed.',

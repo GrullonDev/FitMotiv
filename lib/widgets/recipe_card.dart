@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 /// Card de "Healthy Recipe" en el Dashboard.
-/// Ahora lee los datos desde PlansProvider (Supabase).
+/// Ahora lee los datos desde PlansProvider (API).
 class RecipeCard extends StatelessWidget {
   const RecipeCard({super.key});
 

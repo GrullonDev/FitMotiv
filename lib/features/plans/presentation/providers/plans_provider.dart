@@ -79,7 +79,7 @@ class PlansProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Agrega un vaso de agua y persiste en Supabase
+  /// Agrega un vaso de agua y persiste en la API
   Future<void> addWaterGlass() async {
     if (_todayWaterGlasses < 20) {
       _todayWaterGlasses++;
