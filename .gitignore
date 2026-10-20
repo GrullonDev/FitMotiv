@@ -45,6 +45,7 @@
 /ios/firebase_app_id_file.json
 firebase_options.dart
 /lib/firebase_options.dart
+firebase.json
 
 # ===============================================
 # 🔑 Claves y Certificados (iOS)

@@ -59,9 +59,9 @@ The server starts at `http://localhost:8080`.
 
 | Method | Path                        | Auth | Description              |
 |--------|-----------------------------|------|--------------------------|
-| GET    | `/api/v1/workouts`          | Yes  | List workouts            |
-| GET    | `/api/v1/workouts/random`   | Yes  | Random workout           |
-| GET    | `/api/v1/workouts/:id`      | Yes  | Workout by ID            |
+| GET    | `/api/v1/workouts`          | No   | List workouts            |
+| GET    | `/api/v1/workouts/random`   | No   | Random workout           |
+| GET    | `/api/v1/workouts/:id`      | No   | Workout by ID            |
 
 ### Progress
 
@@ -79,10 +79,10 @@ The server starts at `http://localhost:8080`.
 
 | Method | Path                            | Auth | Description          |
 |--------|---------------------------------|------|----------------------|
-| GET    | `/api/v1/nutrition/meals`       | Yes  | Meal plans           |
-| GET    | `/api/v1/nutrition/recipes`     | Yes  | List recipes         |
-| GET    | `/api/v1/nutrition/recipes/random` | Yes | Random recipe       |
-| GET    | `/api/v1/nutrition/recipes/:id` | Yes  | Recipe by ID         |
+| GET    | `/api/v1/nutrition/meals`       | No   | Meal plans           |
+| GET    | `/api/v1/nutrition/recipes`     | No   | List recipes         |
+| GET    | `/api/v1/nutrition/recipes/random` | No | Random recipe       |
+| GET    | `/api/v1/nutrition/recipes/:id` | No   | Recipe by ID         |
 | GET    | `/api/v1/nutrition/water`       | Yes  | Today's water intake |
 | PUT    | `/api/v1/nutrition/water`       | Yes  | Update water intake  |
 
@@ -90,8 +90,8 @@ The server starts at `http://localhost:8080`.
 
 | Method | Path                      | Auth | Description     |
 |--------|---------------------------|------|-----------------|
-| GET    | `/api/v1/quotes`          | Yes  | List quotes     |
-| GET    | `/api/v1/quotes/random`   | Yes  | Random quote    |
+| GET    | `/api/v1/quotes`          | No   | List quotes     |
+| GET    | `/api/v1/quotes/random`   | No   | Random quote    |
 
 ## Project Structure
 
