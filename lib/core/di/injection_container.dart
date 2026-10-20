@@ -5,6 +5,7 @@ import 'package:fit_motiv/core/services/analytics_service.dart';
 import 'package:fit_motiv/core/services/notification_service.dart';
 import 'package:fit_motiv/features/community/data/datasources/community_stub_datasource.dart';
 import 'package:fit_motiv/features/community/presentation/providers/community_provider.dart';
+import 'package:fit_motiv/features/dashboard/data/datasources/quote_api_datasource.dart';
 import 'package:fit_motiv/features/dashboard/data/datasources/quote_local_datasource.dart';
 import 'package:fit_motiv/features/dashboard/data/repositories/quote_repository_impl.dart';
 import 'package:fit_motiv/features/dashboard/domain/repositories/quote_repository.dart';
@@ -35,8 +36,16 @@ Future<void> init() async {
   // ─────────────────────────────────────────
   // Dashboard feature
   // ─────────────────────────────────────────
+  sl.registerLazySingleton<QuoteApiDatasource>(
+    () => QuoteApiDatasource(dio: dio, baseUrl: baseUrl),
+  );
   sl.registerLazySingleton<QuoteLocalDatasource>(() => QuoteLocalDatasource());
-  sl.registerLazySingleton<QuoteRepository>(() => QuoteRepositoryImpl(localDatasource: sl<QuoteLocalDatasource>()));
+  sl.registerLazySingleton<QuoteRepository>(
+    () => QuoteRepositoryImpl(
+      apiDatasource: sl<QuoteApiDatasource>(),
+      localDatasource: sl<QuoteLocalDatasource>(),
+    ),
+  );
   sl.registerLazySingleton<GetDailyQuote>(() => GetDailyQuote(sl<QuoteRepository>()));
   sl.registerFactory<DashboardProvider>(() => DashboardProvider(getDailyQuote: sl<GetDailyQuote>()));
 

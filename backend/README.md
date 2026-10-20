@@ -53,6 +53,7 @@ The server starts at `http://localhost:8080`.
 | Method | Path               | Auth | Description          |
 |--------|--------------------|------|----------------------|
 | GET    | `/api/v1/users/me` | Yes  | Current user profile |
+| PATCH  | `/api/v1/users/me` | Yes  | Update profile       |
 
 ### Workouts
 
@@ -83,7 +84,7 @@ The server starts at `http://localhost:8080`.
 | GET    | `/api/v1/nutrition/recipes/random` | Yes | Random recipe       |
 | GET    | `/api/v1/nutrition/recipes/:id` | Yes  | Recipe by ID         |
 | GET    | `/api/v1/nutrition/water`       | Yes  | Today's water intake |
-| POST   | `/api/v1/nutrition/water`       | Yes  | Log water glass      |
+| PUT    | `/api/v1/nutrition/water`       | Yes  | Update water intake  |
 
 ### Quotes
 
