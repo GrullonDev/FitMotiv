@@ -1,11 +1,9 @@
 import 'package:fit_motiv/constants/app_colors.dart';
 import 'package:fit_motiv/core/config/app_config.dart';
+import 'package:fit_motiv/core/di/injection_container.dart' as di;
+import 'package:fit_motiv/core/services/token_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
-/// Splash screen que verifica la sesión del usuario al abrir la app.
-/// Si hay una sesión válida (token), navega directamente al Home.
-/// Si no hay sesión, navega al Onboarding/Login.
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
 
@@ -36,42 +34,27 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     );
 
     _animationController.forward();
-
-    // Verificar sesión después de la animación
     _checkSession();
   }
 
   Future<void> _checkSession() async {
-    // Esperar un mínimo para la animación del splash
     await Future.delayed(const Duration(milliseconds: 2000));
 
     if (!mounted) return;
 
     try {
-      final session = Supabase.instance.client.auth.currentSession;
+      final tokenStorage = di.sl<TokenStorage>();
+      final hasTokens = await tokenStorage.hasTokens();
 
-      if (session != null && !session.isExpired) {
-        // Sesión válida - intentar refrescar el token para mantenerlo actualizado
-        try {
-          await Supabase.instance.client.auth.refreshSession();
-        } catch (_) {
-          // Si no se puede refrescar, aún puede ser válida temporalmente
-        }
-
-        // Verificar de nuevo después del refresh
-        final refreshedSession = Supabase.instance.client.auth.currentSession;
-        if (refreshedSession != null && !refreshedSession.isExpired && mounted) {
-          Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
-          return;
-        }
+      if (hasTokens && mounted) {
+        Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
+        return;
       }
 
-      // No hay sesión válida, ir al onboarding
       if (mounted) {
         Navigator.pushReplacementNamed(context, '/onboarding');
       }
     } catch (e) {
-      // En caso de error, ir al onboarding
       if (mounted) {
         Navigator.pushReplacementNamed(context, '/onboarding');
       }
@@ -98,7 +81,6 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    // Logo / Ícono de la app
                     Container(
                       width: 120,
                       height: 120,
@@ -124,7 +106,6 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
                       ),
                     ),
                     const SizedBox(height: 32),
-                    // Nombre de la app
                     Text(
                       'FitMotiv',
                       style: TextStyle(
@@ -144,7 +125,6 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
                       ),
                     ),
                     const SizedBox(height: 48),
-                    // Loading indicator
                     SizedBox(
                       width: 28,
                       height: 28,
@@ -158,7 +138,6 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
               ),
             ),
           ),
-          // Badge de entorno (solo visible en dev)
           if (AppConfig.instance.isDevelopment)
             Positioned(
               bottom: 32,

@@ -1,18 +1,16 @@
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
-import 'package:fit_motiv/features/profile_settings/data/datasources/profile_supabase_datasource.dart';
+import 'package:fit_motiv/features/profile_settings/data/datasources/profile_api_datasource.dart';
 import 'package:fit_motiv/features/profile_settings/data/models/user_profile_model.dart';
 
-/// Provider que gestiona el estado del perfil del usuario.
-/// Carga los datos desde Supabase Auth metadata y los expone a la UI.
 class UserProfileProvider extends ChangeNotifier {
-  UserProfileProvider({required ProfileSupabaseDatasource datasource})
+  UserProfileProvider({required ProfileApiDatasource datasource})
       : _datasource = datasource {
     loadProfile();
   }
 
-  final ProfileSupabaseDatasource _datasource;
+  final ProfileApiDatasource _datasource;
 
   UserProfileModel? _profile;
   bool _isLoading = false;

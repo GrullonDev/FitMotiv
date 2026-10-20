@@ -34,7 +34,7 @@ class AppConfig {
       debugPrint('✅ AppConfig initialized: $environmentName environment');
       debugPrint('📁 Loaded env file: $envFileName');
       if (isDevelopment) {
-        debugPrint('🔗 Supabase URL: $supabaseUrl');
+        debugPrint('🔗 API URL: $apiBaseUrl');
       }
     } catch (e) {
       debugPrint('⚠️ Error loading $envFileName: $e');
@@ -110,22 +110,6 @@ class AppConfig {
     final cleanBaseUrl = baseUrl.endsWith('/') ? baseUrl.substring(0, baseUrl.length - 1) : baseUrl;
 
     return '$cleanBaseUrl/$cleanEndpoint';
-  }
-
-  // ─────────────────────────────────────────────
-  // Supabase Configuration
-  // ─────────────────────────────────────────────
-
-  /// URL del proyecto Supabase (dev o prod según el flavor)
-  String get supabaseUrl {
-    _ensureInitialized();
-    return dotenv.env['SUPABASE_URL'] ?? '';
-  }
-
-  /// Anon Key del proyecto Supabase (dev o prod según el flavor)
-  String get supabaseAnonKey {
-    _ensureInitialized();
-    return dotenv.env['SUPABASE_ANON_KEY'] ?? '';
   }
 
   /// Helper para verificar que la configuración fue inicializada

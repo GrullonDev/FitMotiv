@@ -2,16 +2,15 @@ import 'dart:math';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:fit_motiv/features/community/data/datasources/community_supabase_datasource.dart';
+import 'package:fit_motiv/features/community/data/datasources/community_stub_datasource.dart';
 
-/// Provider que gestiona los datos de la comunidad
 class CommunityProvider extends ChangeNotifier {
-  CommunityProvider({required CommunitySupabaseDatasource datasource})
+  CommunityProvider({required CommunityStubDatasource datasource})
       : _datasource = datasource {
     loadAll();
   }
 
-  final CommunitySupabaseDatasource _datasource;
+  final CommunityStubDatasource _datasource;
 
   List<Map<String, dynamic>> _profiles = [];
   List<Map<String, dynamic>> _posts = [];

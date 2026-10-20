@@ -1,13 +1,12 @@
-import 'package:fit_motiv/features/routines/data/datasources/workout_supabase_datasource.dart';
+import 'package:fit_motiv/features/routines/data/datasources/workout_api_datasource.dart';
 import 'package:flutter/material.dart';
 
-/// Provider que gestiona los workouts desde Supabase
 class WorkoutProvider extends ChangeNotifier {
-  WorkoutProvider({required WorkoutSupabaseDatasource datasource}) : _datasource = datasource {
+  WorkoutProvider({required WorkoutApiDatasource datasource}) : _datasource = datasource {
     loadWorkouts();
   }
 
-  final WorkoutSupabaseDatasource _datasource;
+  final WorkoutApiDatasource _datasource;
 
   List<Map<String, dynamic>> _workouts = [];
   Map<String, dynamic>? _dailyWorkout;

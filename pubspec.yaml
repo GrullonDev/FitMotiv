@@ -33,6 +33,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   shared_preferences: ^2.5.2
+  flutter_secure_storage: ^9.2.4
   image_picker: ^1.1.2
   url_launcher: ^6.3.0
   fl_chart: ^0.70.2

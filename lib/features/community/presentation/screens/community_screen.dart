@@ -7,7 +7,6 @@ import 'package:fit_motiv/features/community/presentation/screens/post_details_s
 import 'package:fit_motiv/features/community/presentation/screens/user_selection_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:shimmer/shimmer.dart';
 
 class CommunityScreen extends StatelessWidget {
@@ -570,7 +569,7 @@ class _MessagesTab extends StatelessWidget {
       separatorBuilder: (_, __) => Divider(height: 1, color: Theme.of(context).dividerColor, indent: 70),
       itemBuilder: (context, index) {
         final conv = provider.conversations[index];
-        final currentUserId = provider.isLoading ? '' : Supabase.instance.client.auth.currentUser?.id;
+        const currentUserId = '';
 
         // Identificar al otro participante
         final isP1Other = conv['participant_1_id'] != currentUserId;

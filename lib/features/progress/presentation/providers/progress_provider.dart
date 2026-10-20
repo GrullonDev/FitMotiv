@@ -1,16 +1,15 @@
 import 'package:fit_motiv/core/services/analytics_service.dart';
-import 'package:fit_motiv/features/progress/data/datasources/progress_supabase_datasource.dart';
+import 'package:fit_motiv/features/progress/data/datasources/progress_api_datasource.dart';
 import 'package:flutter/material.dart';
 
-/// Provider que gestiona el progreso del usuario
 class ProgressProvider extends ChangeNotifier {
-  ProgressProvider({required ProgressSupabaseDatasource datasource, required AnalyticsService analyticsService})
+  ProgressProvider({required ProgressApiDatasource datasource, required AnalyticsService analyticsService})
     : _datasource = datasource,
       _analyticsService = analyticsService {
     loadAll();
   }
 
-  final ProgressSupabaseDatasource _datasource;
+  final ProgressApiDatasource _datasource;
   final AnalyticsService _analyticsService;
 
   List<Map<String, dynamic>> _weightLog = [];
