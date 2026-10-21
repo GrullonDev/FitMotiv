@@ -1,5 +1,6 @@
 import 'package:fit_motiv/constants/app_text_styles.dart';
 import 'package:fit_motiv/features/routines/presentation/providers/workout_provider.dart';
+import 'package:fit_motiv/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -11,6 +12,7 @@ class WorkoutCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<WorkoutProvider>();
+    final l10n = AppLocalizations.of(context)!;
     final workout = provider.dailyWorkout;
 
     // Si está cargando, mostrar shimmer
@@ -57,10 +59,10 @@ class WorkoutCard extends StatelessWidget {
                 ).colorScheme.primary.withValues(alpha: 0.3),
               ),
               const SizedBox(height: 12),
-              Text('No hay workout del día', style: AppTextStyles.bodyMedium),
+              Text(l10n.noWorkoutOfDay, style: AppTextStyles.bodyMedium),
               const SizedBox(height: 4),
               Text(
-                'Agrega workouts a la base de datos',
+                l10n.addWorkoutsToDatabase,
                 style: AppTextStyles.bodySmall,
               ),
             ],
@@ -72,7 +74,7 @@ class WorkoutCard extends StatelessWidget {
     final name = workout['name'] as String? ?? 'Workout';
     final description =
         workout['description'] as String? ??
-        'Get your body moving with this workout.';
+        l10n.defaultWorkoutDescription;
     final duration = workout['duration'] as int? ?? 0;
     final category = workout['category'] as String? ?? 'General';
 
@@ -206,7 +208,7 @@ class WorkoutCard extends StatelessWidget {
                       elevation: 0,
                     ),
                     child: Text(
-                      'Start Workout',
+                      l10n.startWorkout,
                       style: AppTextStyles.buttonText,
                     ),
                   ),

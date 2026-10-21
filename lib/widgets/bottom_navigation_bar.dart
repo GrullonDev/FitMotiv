@@ -1,7 +1,6 @@
 import 'package:fit_motiv/constants/app_text_styles.dart';
-import 'package:fit_motiv/core/localization/locale_provider.dart';
+import 'package:fit_motiv/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class CustomBottomNavigationBar extends StatelessWidget {
   const CustomBottomNavigationBar({
@@ -14,7 +13,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final localeProvider = context.watch<LocaleProvider>();
+    final l10n = AppLocalizations.of(context)!;
 
     return Container(
       decoration: BoxDecoration(
@@ -37,42 +36,42 @@ class CustomBottomNavigationBar extends StatelessWidget {
               _buildNavItem(
                 context,
                 icon: Icons.home,
-                label: localeProvider.translate('home'),
+                label: l10n.home,
                 index: 0,
                 isSelected: selectedIndex == 0,
               ),
               _buildNavItem(
                 context,
                 icon: Icons.calendar_today,
-                label: localeProvider.translate('plans'),
+                label: l10n.plans,
                 index: 1,
                 isSelected: selectedIndex == 1,
               ),
               _buildNavItem(
                 context,
                 icon: Icons.directions_run,
-                label: localeProvider.translate('routines'),
+                label: l10n.routines,
                 index: 2,
                 isSelected: selectedIndex == 2,
               ),
               _buildNavItem(
                 context,
                 icon: Icons.trending_up,
-                label: localeProvider.translate('progress'),
+                label: l10n.progress,
                 index: 3,
                 isSelected: selectedIndex == 3,
               ),
               _buildNavItem(
                 context,
                 icon: Icons.group,
-                label: localeProvider.translate('community'),
+                label: l10n.community,
                 index: 4,
                 isSelected: selectedIndex == 4,
               ),
               _buildNavItem(
                 context,
                 icon: Icons.person,
-                label: localeProvider.translate('profile'),
+                label: l10n.profile,
                 index: 5,
                 isSelected: selectedIndex == 5,
               ),

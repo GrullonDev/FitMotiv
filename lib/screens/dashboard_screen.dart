@@ -13,6 +13,7 @@ import 'package:fit_motiv/widgets/progress_card.dart';
 import 'package:fit_motiv/widgets/recipe_card.dart';
 import 'package:fit_motiv/widgets/workout_card.dart';
 import 'package:fit_motiv/features/assistant/presentation/screens/assistant_chat_screen.dart';
+import 'package:fit_motiv/l10n/app_localizations.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -80,7 +81,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Welcome back,', style: AppTextStyles.welcome),
+              Text(AppLocalizations.of(context)!.welcomeBack, style: AppTextStyles.welcome),
               const SizedBox(height: 4),
               Text('Amelia', style: AppTextStyles.heading1),
             ],
@@ -167,7 +168,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Workout of the Day', style: AppTextStyles.heading3),
+          Text(AppLocalizations.of(context)!.workoutOfTheDay, style: AppTextStyles.heading3),
           const SizedBox(height: 16),
           const WorkoutCard(),
         ],
@@ -182,7 +183,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Healthy Recipe', style: AppTextStyles.heading3),
+          Text(AppLocalizations.of(context)!.healthyRecipe, style: AppTextStyles.heading3),
           const SizedBox(height: 16),
           const RecipeCard(),
         ],

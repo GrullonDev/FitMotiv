@@ -1,5 +1,6 @@
 import 'package:fit_motiv/constants/app_text_styles.dart';
 import 'package:fit_motiv/features/profile_settings/presentation/providers/user_profile_provider.dart';
+import 'package:fit_motiv/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:provider/provider.dart';
@@ -9,6 +10,7 @@ class ProgressCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final profileProvider = context.watch<UserProfileProvider>();
     final profile = profileProvider.profile;
 
@@ -40,9 +42,9 @@ class ProgressCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('Weight Progress', style: AppTextStyles.heading4),
+              Text(l10n.weightProgress, style: AppTextStyles.heading4),
               Text(
-                '${absDiff.toStringAsFixed(1)} lbs ${isLosing ? 'lost' : 'gained'}',
+                '${absDiff.toStringAsFixed(1)} lbs ${isLosing ? l10n.lost : l10n.gained}',
                 style: AppTextStyles.heading4.copyWith(
                   color: isLosing ? Colors.green : Colors.orange,
                 ),
@@ -65,8 +67,8 @@ class ProgressCard extends StatelessWidget {
           const SizedBox(height: 12),
           Text(
             isLosing
-                ? 'Great job! You\'ve lost ${absDiff.toStringAsFixed(1)} lbs since you started.'
-                : 'Keep pushing! You\'ve gained ${absDiff.toStringAsFixed(1)} lbs since you started.',
+                ? l10n.greatJobLost(absDiff.toStringAsFixed(1))
+                : l10n.keepPushingGained(absDiff.toStringAsFixed(1)),
             style: AppTextStyles.bodyMedium,
           ),
         ],

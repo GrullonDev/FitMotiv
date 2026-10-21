@@ -1,5 +1,6 @@
 import 'package:fit_motiv/constants/app_text_styles.dart';
 import 'package:fit_motiv/features/plans/presentation/providers/plans_provider.dart';
+import 'package:fit_motiv/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -57,10 +58,10 @@ class RecipeCard extends StatelessWidget {
                 ).colorScheme.primary.withValues(alpha: 0.3),
               ),
               const SizedBox(height: 12),
-              Text('No hay recetas aún', style: AppTextStyles.bodyMedium),
+              Text(AppLocalizations.of(context)!.noRecipesYet, style: AppTextStyles.bodyMedium),
               const SizedBox(height: 4),
               Text(
-                'Agrega recetas a la base de datos',
+                AppLocalizations.of(context)!.addRecipesToDatabase,
                 style: AppTextStyles.bodySmall,
               ),
             ],
@@ -72,7 +73,7 @@ class RecipeCard extends StatelessWidget {
     final title = recipe['title'] as String? ?? 'Recipe';
     final description =
         recipe['description'] as String? ??
-        'A nutritious and delicious recipe.';
+        AppLocalizations.of(context)!.defaultRecipeDescription;
     final time = recipe['time'] as String? ?? '';
     final calories = recipe['calories'] as String? ?? '';
     final rating = (recipe['rating'] as num?)?.toDouble() ?? 0;
@@ -168,7 +169,7 @@ class RecipeCard extends StatelessWidget {
                       ),
                     ),
                     child: Text(
-                      'View Recipe',
+                      AppLocalizations.of(context)!.viewRecipe,
                       style: AppTextStyles.buttonText.copyWith(
                         color: Theme.of(context).colorScheme.primary,
                       ),
