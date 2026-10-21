@@ -1,7 +1,7 @@
 import 'package:fit_motiv/constants/app_colors.dart';
 import 'package:fit_motiv/constants/app_text_styles.dart';
-import 'package:fit_motiv/core/localization/locale_provider.dart';
 import 'package:fit_motiv/features/community/presentation/providers/community_provider.dart';
+import 'package:fit_motiv/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -61,7 +61,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     final provider = context.watch<CommunityProvider>();
     const currentUserId = '';
 
-    final l10n = context.read<LocaleProvider>();
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -98,7 +98,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
         children: [
           Expanded(
             child: provider.currentMessages.isEmpty
-                ? Center(child: Text(l10n.translate('no_conversations')))
+                ? Center(child: Text(l10n.noConversations))
                 : ListView.builder(
                     controller: _scrollController,
                     reverse: true,
@@ -144,7 +144,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     );
   }
 
-  Widget _buildInputArea(LocaleProvider l10n) {
+  Widget _buildInputArea(AppLocalizations l10n) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -165,7 +165,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                 controller: _controller,
                 style: AppTextStyles.bodyMedium,
                 decoration: InputDecoration(
-                  hintText: l10n.translate('start_new_chat'),
+                  hintText: l10n.startNewChat,
                   hintStyle: AppTextStyles.bodyMedium.copyWith(
                     color: AppColors.textSecondary,
                   ),

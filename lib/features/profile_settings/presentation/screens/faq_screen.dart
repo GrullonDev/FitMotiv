@@ -1,36 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:fit_motiv/constants/app_text_styles.dart';
+import 'package:fit_motiv/l10n/app_localizations.dart';
 
 class FAQScreen extends StatelessWidget {
   const FAQScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final faqs = [
       {
-        'question': '¿Cómo puedo cambiar mi plan de entrenamiento?',
-        'answer':
-            'Puedes cambiar tu plan de entrenamiento navegando a la sección "Mis Planes" y seleccionando un nuevo plan que se adapte a tus necesidades.',
+        'question': l10n.faqChangeTrainingPlan,
+        'answer': l10n.faqChangeTrainingPlanAnswer,
       },
       {
-        'question': '¿Cómo registro mi progreso diario?',
-        'answer':
-            'En el Dashboard principal, encontrarás una sección para registrar tu peso, consumo de agua y calorías diarias.',
+        'question': l10n.faqRegisterProgress,
+        'answer': l10n.faqRegisterProgressAnswer,
       },
       {
-        'question': '¿La aplicación funciona sin conexión?',
-        'answer':
-            'Algunas funciones como ver tus rutinas descargadas funcionan sin conexión, pero para sincronizar tu progreso y chatear con la comunidad necesitas internet.',
+        'question': l10n.faqOffline,
+        'answer': l10n.faqOfflineAnswer,
       },
       {
-        'question': '¿Cómo puedo contactar con soporte técnico?',
-        'answer':
-            'Puedes ir a Configuración > Soporte > Enviar Comentarios para enviarnos un correo electrónico directamente.',
+        'question': l10n.faqContactSupport,
+        'answer': l10n.faqContactSupportAnswer,
       },
     ];
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Preguntas Frecuentes')),
+      appBar: AppBar(title: Text(l10n.faq)),
       body: ListView.builder(
         padding: const EdgeInsets.all(16),
         itemCount: faqs.length,

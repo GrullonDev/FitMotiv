@@ -1,7 +1,7 @@
 import 'package:fit_motiv/constants/app_colors.dart';
 import 'package:fit_motiv/constants/app_text_styles.dart';
-import 'package:fit_motiv/core/localization/locale_provider.dart';
 import 'package:fit_motiv/features/community/presentation/providers/community_provider.dart';
+import 'package:fit_motiv/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -44,11 +44,11 @@ class _PostDetailsScreenState extends State<PostDetailsScreen> {
     final provider = context.watch<CommunityProvider>();
     final post = widget.post;
     final profiles = post['profiles'] as Map<String, dynamic>?;
-    final l10n = context.read<LocaleProvider>();
+    final l10n = AppLocalizations.of(context)!;
     final authorName =
         profiles?['full_name'] as String? ??
         profiles?['username'] as String? ??
-        l10n.translate('anonymous');
+        l10n.anonymous;
     final content = post['content'] as String? ?? '';
 
     final avatarUrl =
@@ -57,7 +57,7 @@ class _PostDetailsScreenState extends State<PostDetailsScreen> {
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
-        title: Text(l10n.translate('post_view')),
+        title: Text(l10n.postView),
         backgroundColor: AppColors.background,
         elevation: 0,
         leading: IconButton(
@@ -93,7 +93,7 @@ class _PostDetailsScreenState extends State<PostDetailsScreen> {
                   Text(content, style: AppTextStyles.bodyLarge),
                   const Divider(height: 32),
                   Text(
-                    l10n.translate('comments'),
+                    l10n.comments,
                     style: AppTextStyles.heading4,
                   ),
                   const SizedBox(height: 16),
@@ -103,7 +103,7 @@ class _PostDetailsScreenState extends State<PostDetailsScreen> {
                     Center(
                       child: Padding(
                         padding: const EdgeInsets.all(32.0),
-                        child: Text(l10n.translate('no_comments_yet')),
+                        child: Text(l10n.noCommentsYet),
                       ),
                     )
                   else
@@ -119,7 +119,7 @@ class _PostDetailsScreenState extends State<PostDetailsScreen> {
                         final cAuthor =
                             cProfiles?['full_name'] as String? ??
                             cProfiles?['username'] as String? ??
-                            l10n.translate('user');
+                            l10n.user;
                         final cAvatarUrl =
                             'https://api.dicebear.com/8.x/initials/png?seed=${Uri.encodeComponent(cAuthor)}';
 
@@ -199,7 +199,7 @@ class _PostDetailsScreenState extends State<PostDetailsScreen> {
                   child: TextField(
                     controller: _commentController,
                     decoration: InputDecoration(
-                      hintText: l10n.translate('write_comment'),
+                      hintText: l10n.writeComment,
                       hintStyle: AppTextStyles.bodySmall,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(24),

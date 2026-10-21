@@ -1,5 +1,6 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:fit_motiv/constants/app_text_styles.dart';
+import 'package:fit_motiv/l10n/app_localizations.dart';
 import 'package:fit_motiv/core/localization/locale_provider.dart';
 import 'package:fit_motiv/core/theme/theme_provider.dart';
 import 'package:flutter/material.dart';
@@ -9,11 +10,11 @@ import 'package:url_launcher/url_launcher.dart';
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
 
-  Future<void> _sendEmail() async {
+  Future<void> _sendEmail(AppLocalizations l10n) async {
     final Uri params = Uri(
       scheme: 'mailto',
       path: 'prosystem155@gmail.com',
-      query: 'subject=Soporte FitMotiv&body=Hola, necesito ayuda con...',
+      query: 'subject=${l10n.supportEmailSubject}&body=${l10n.supportEmailBody}',
     );
     if (await canLaunchUrl(params)) {
       await launchUrl(params);
@@ -27,11 +28,12 @@ class SettingsScreen extends StatelessWidget {
     final themeProvider = context.watch<ThemeProvider>();
     final localeProvider = context.watch<LocaleProvider>();
     final primaryColor = Theme.of(context).colorScheme.primary;
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          localeProvider.translate('settings'),
+          l10n.settings,
           style: AppTextStyles.heading3,
         ),
       ),
@@ -40,7 +42,7 @@ class SettingsScreen extends StatelessWidget {
         children: [
           FadeInDown(
             duration: const Duration(milliseconds: 400),
-            child: _buildSectionTitle(localeProvider.translate('profile')),
+            child: _buildSectionTitle(l10n.profile),
           ),
           FadeInDown(
             duration: const Duration(milliseconds: 500),
@@ -48,16 +50,16 @@ class SettingsScreen extends StatelessWidget {
               _buildSettingItem(
                 context,
                 icon: Icons.person_outline,
-                title: localeProvider.translate('edit_profile'),
-                subtitle: localeProvider.translate('update_profile_info'),
+                title: l10n.editProfile,
+                subtitle: l10n.updateProfileInfo,
                 onTap: () => Navigator.pushNamed(context, '/profile'),
               ),
               _buildDivider(),
               _buildSettingItem(
                 context,
                 icon: Icons.fitness_center_outlined,
-                title: localeProvider.translate('fitness_goals_settings'),
-                subtitle: localeProvider.translate('fitness_goals_subtitle'),
+                title: l10n.fitnessGoalsSettings,
+                subtitle: l10n.fitnessGoalsSubtitle,
                 onTap: () {},
               ),
             ]),
@@ -65,7 +67,7 @@ class SettingsScreen extends StatelessWidget {
           const SizedBox(height: 24),
           FadeInDown(
             duration: const Duration(milliseconds: 600),
-            child: _buildSectionTitle(localeProvider.translate('preferences')),
+            child: _buildSectionTitle(l10n.preferences),
           ),
           FadeInDown(
             duration: const Duration(milliseconds: 700),
@@ -73,16 +75,16 @@ class SettingsScreen extends StatelessWidget {
               _buildSettingItem(
                 context,
                 icon: Icons.notifications_none,
-                title: localeProvider.translate('notifications'),
-                subtitle: 'Manage your notification preferences',
+                title: l10n.notifications,
+                subtitle: l10n.manageNotificationPrefs,
                 onTap: () => Navigator.pushNamed(context, '/notifications'),
               ),
               _buildDivider(),
               _buildSettingItem(
                 context,
                 icon: Icons.dark_mode_outlined,
-                title: localeProvider.translate('dark_mode'),
-                subtitle: 'Toggle dark mode on/off',
+                title: l10n.darkMode,
+                subtitle: l10n.toggleDarkMode,
                 trailing: Switch(
                   value: themeProvider.themeMode == ThemeMode.dark,
                   onChanged: (v) {
@@ -97,10 +99,10 @@ class SettingsScreen extends StatelessWidget {
               _buildSettingItem(
                 context,
                 icon: Icons.language_outlined,
-                title: localeProvider.translate('language'),
+                title: l10n.language,
                 subtitle: localeProvider.locale.languageCode == 'en'
-                    ? localeProvider.translate('english')
-                    : localeProvider.translate('spanish'),
+                    ? l10n.english
+                    : l10n.spanish,
                 onTap: () {
                   final newLocale = localeProvider.locale.languageCode == 'en'
                       ? const Locale('es')
@@ -109,13 +111,13 @@ class SettingsScreen extends StatelessWidget {
                 },
               ),
               _buildDivider(),
-              _buildColorPicker(context, themeProvider, localeProvider),
+              _buildColorPicker(context, themeProvider, l10n),
             ]),
           ),
           const SizedBox(height: 24),
           FadeInDown(
             duration: const Duration(milliseconds: 800),
-            child: _buildSectionTitle(localeProvider.translate('support')),
+            child: _buildSectionTitle(l10n.support),
           ),
           FadeInDown(
             duration: const Duration(milliseconds: 900),
@@ -123,17 +125,17 @@ class SettingsScreen extends StatelessWidget {
               _buildSettingItem(
                 context,
                 icon: Icons.help_outline,
-                title: localeProvider.translate('help_faq'),
-                subtitle: 'Get help and find answers',
+                title: l10n.helpFaq,
+                subtitle: l10n.getHelpAndAnswers,
                 onTap: () => Navigator.pushNamed(context, '/faq'),
               ),
               _buildDivider(),
               _buildSettingItem(
                 context,
                 icon: Icons.mail_outline,
-                title: localeProvider.translate('send_feedback'),
-                subtitle: 'Communicate with support',
-                onTap: _sendEmail,
+                title: l10n.sendFeedback,
+                subtitle: l10n.communicateWithSupport,
+                onTap: () => _sendEmail(l10n),
               ),
             ]),
           ),
@@ -222,7 +224,7 @@ class SettingsScreen extends StatelessWidget {
   Widget _buildColorPicker(
     BuildContext context,
     ThemeProvider themeProvider,
-    LocaleProvider localeProvider,
+    AppLocalizations l10n,
   ) {
     final colors = [
       const Color(0xFF00D4A3), // Green
@@ -253,7 +255,7 @@ class SettingsScreen extends StatelessWidget {
               ),
               const SizedBox(width: 16),
               Text(
-                localeProvider.translate('app_color'),
+                l10n.appColor,
                 style: const TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 16,

@@ -2,6 +2,7 @@ import 'package:fit_motiv/constants/app_colors.dart';
 import 'package:fit_motiv/constants/app_text_styles.dart';
 import 'package:fit_motiv/features/community/presentation/providers/community_provider.dart';
 import 'package:fit_motiv/features/community/presentation/screens/chat_room_screen.dart';
+import 'package:fit_motiv/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -18,6 +19,7 @@ class _UserSelectionScreenState extends State<UserSelectionScreen> {
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<CommunityProvider>();
+    final l10n = AppLocalizations.of(context)!;
     final allProfiles = provider.profiles;
 
     // Filtrar por búsqueda
@@ -35,7 +37,7 @@ class _UserSelectionScreenState extends State<UserSelectionScreen> {
       appBar: AppBar(
         backgroundColor: AppColors.background,
         elevation: 0,
-        title: Text('Start Conversation', style: AppTextStyles.heading3),
+        title: Text(l10n.startConversation, style: AppTextStyles.heading3),
         centerTitle: true,
         leading: IconButton(
           icon: const Icon(Icons.close, color: AppColors.textPrimary),
@@ -50,7 +52,7 @@ class _UserSelectionScreenState extends State<UserSelectionScreen> {
               onChanged: (value) =>
                   setState(() => _searchQuery = value.toLowerCase()),
               decoration: InputDecoration(
-                hintText: "Search users...",
+                hintText: l10n.searchUsers,
                 prefixIcon: const Icon(Icons.search),
                 filled: true,
                 fillColor: AppColors.surface,
@@ -83,8 +85,8 @@ class _UserSelectionScreenState extends State<UserSelectionScreen> {
                     const SizedBox(height: 12),
                     Text(
                       _searchQuery.isEmpty
-                          ? 'No users found'
-                          : 'No results for "$_searchQuery"',
+                          ? l10n.noUsersFound
+                          : l10n.noResultsFor(_searchQuery),
                       style: AppTextStyles.bodyMedium,
                     ),
                   ],
@@ -101,7 +103,7 @@ class _UserSelectionScreenState extends State<UserSelectionScreen> {
                   final user = filtered[index];
                   final name = (user['full_name'] as String? ?? '').isNotEmpty
                       ? user['full_name'] as String
-                      : user['username'] as String? ?? 'User';
+                      : user['username'] as String? ?? l10n.user;
                   final activityLevel = user['activity_level'] as String? ?? '';
                   final isOnline = user['is_online'] as bool? ?? false;
 
@@ -154,10 +156,10 @@ class _UserSelectionScreenState extends State<UserSelectionScreen> {
                     ),
                     subtitle: Text(
                       isOnline
-                          ? 'Online'
+                          ? l10n.online
                           : activityLevel.isNotEmpty
                           ? activityLevel
-                          : 'Offline',
+                          : l10n.offline,
                       style: AppTextStyles.bodySmall,
                     ),
                     onTap: () async {
@@ -180,7 +182,7 @@ class _UserSelectionScreenState extends State<UserSelectionScreen> {
                       } catch (e) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
-                            content: Text('Error starting conversation: $e'),
+                            content: Text(l10n.errorStartingConversation(e.toString())),
                           ),
                         );
                       }

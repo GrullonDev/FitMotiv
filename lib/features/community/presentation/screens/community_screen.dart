@@ -1,10 +1,10 @@
 import 'package:fit_motiv/constants/app_colors.dart';
 import 'package:fit_motiv/constants/app_text_styles.dart';
-import 'package:fit_motiv/core/localization/locale_provider.dart';
 import 'package:fit_motiv/features/community/presentation/providers/community_provider.dart';
 import 'package:fit_motiv/features/community/presentation/screens/chat_room_screen.dart';
 import 'package:fit_motiv/features/community/presentation/screens/post_details_screen.dart';
 import 'package:fit_motiv/features/community/presentation/screens/user_selection_screen.dart';
+import 'package:fit_motiv/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
@@ -15,14 +15,14 @@ class CommunityScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<CommunityProvider>();
-    final l10n = context.watch<LocaleProvider>();
+    final l10n = AppLocalizations.of(context)!;
 
     return DefaultTabController(
       length: 3,
       child: Scaffold(
         appBar: AppBar(
           title: Text(
-            l10n.translate('community'),
+            l10n.community,
             style: AppTextStyles.heading3,
           ),
           centerTitle: true,
@@ -42,9 +42,9 @@ class CommunityScreen extends StatelessWidget {
             ).colorScheme.onSurfaceVariant,
             indicatorColor: Theme.of(context).colorScheme.primary,
             tabs: [
-              Tab(text: l10n.translate('feed')),
-              Tab(text: l10n.translate('members')),
-              Tab(text: l10n.translate('messages')),
+              Tab(text: l10n.feed),
+              Tab(text: l10n.members),
+              Tab(text: l10n.messages),
             ],
           ),
         ),
@@ -61,6 +61,7 @@ class CommunityScreen extends StatelessWidget {
             return AnimatedBuilder(
               animation: tabController,
               builder: (context, child) {
+                final l10n = AppLocalizations.of(context)!;
                 // Mostrar en la pestaña de Feed (index 0) para nuevo post
                 if (tabController.index == 0) {
                   return FloatingActionButton.extended(
@@ -68,7 +69,7 @@ class CommunityScreen extends StatelessWidget {
                     backgroundColor: Theme.of(context).colorScheme.primary,
                     icon: const Icon(Icons.add, color: Colors.white),
                     label: Text(
-                      l10n.translate('new_post'),
+                      l10n.newPost,
                       style: const TextStyle(color: Colors.white),
                     ),
                   );
@@ -87,7 +88,7 @@ class CommunityScreen extends StatelessWidget {
                     backgroundColor: Theme.of(context).colorScheme.primary,
                     icon: const Icon(Icons.add_comment, color: Colors.white),
                     label: Text(
-                      l10n.translate('new_chat'),
+                      l10n.newChat,
                       style: const TextStyle(color: Colors.white),
                     ),
                   );
@@ -103,23 +104,23 @@ class CommunityScreen extends StatelessWidget {
 
   void _showCreatePostDialog(BuildContext context, CommunityProvider provider) {
     final controller = TextEditingController();
-    final l10n = context.read<LocaleProvider>();
+    final l10n = AppLocalizations.of(context)!;
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(l10n.translate('create_post')),
+        title: Text(l10n.createPost),
         content: TextField(
           controller: controller,
           maxLines: 4,
           decoration: InputDecoration(
-            hintText: l10n.translate('whats_on_your_mind'),
+            hintText: l10n.whatsOnYourMind,
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
           ),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text(l10n.translate('cancel')),
+            child: Text(l10n.cancel),
           ),
           ElevatedButton(
             onPressed: () async {
@@ -139,7 +140,7 @@ class CommunityScreen extends StatelessWidget {
               ),
             ),
             child: Text(
-              l10n.translate('publish'),
+              l10n.publish,
               style: const TextStyle(color: Colors.white),
             ),
           ),
@@ -156,6 +157,8 @@ class _FeedTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     if (provider.isLoading) {
       return ListView.separated(
         padding: const EdgeInsets.all(16),
@@ -183,10 +186,10 @@ class _FeedTab extends StatelessWidget {
                     color: AppColors.textSecondary.withValues(alpha: 0.4),
                   ),
                   const SizedBox(height: 16),
-                  Text('No hay publicaciones', style: AppTextStyles.heading4),
+                  Text(l10n.noPosts, style: AppTextStyles.heading4),
                   const SizedBox(height: 8),
                   Text(
-                    '¡Sé el primero en compartir algo con la comunidad!',
+                    l10n.noPostsDescription,
                     style: AppTextStyles.bodySmall,
                     textAlign: TextAlign.center,
                   ),
@@ -211,7 +214,7 @@ class _FeedTab extends StatelessWidget {
           final authorName =
               profiles?['full_name'] as String? ??
               profiles?['username'] as String? ??
-              'Usuario';
+              l10n.user;
           final content = post['content'] as String? ?? '';
           final likes = post['likes_count'] as int? ?? 0;
           final comments = post['comments_count'] as int? ?? 0;
@@ -441,14 +444,15 @@ class _FeedTab extends StatelessWidget {
     String postId,
   ) {
     final controller = TextEditingController();
+    final l10n = AppLocalizations.of(context)!;
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Añadir Comentario'),
+        title: Text(l10n.addComment),
         content: TextField(
           controller: controller,
           decoration: InputDecoration(
-            hintText: 'Escribe un comentario...',
+            hintText: l10n.writeComment,
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
           ),
           maxLines: 3,
@@ -456,7 +460,7 @@ class _FeedTab extends StatelessWidget {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Cancelar'),
+            child: Text(l10n.cancel),
           ),
           ElevatedButton(
             onPressed: () {
@@ -471,9 +475,9 @@ class _FeedTab extends StatelessWidget {
                 borderRadius: BorderRadius.circular(12),
               ),
             ),
-            child: const Text(
-              'Publicar',
-              style: TextStyle(color: Colors.white),
+            child: Text(
+              l10n.publish,
+              style: const TextStyle(color: Colors.white),
             ),
           ),
         ],
@@ -489,6 +493,8 @@ class _MembersTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     if (provider.isLoading) {
       return ListView.separated(
         padding: const EdgeInsets.all(16),
@@ -517,10 +523,10 @@ class _MembersTab extends StatelessWidget {
                     color: AppColors.textSecondary.withValues(alpha: 0.4),
                   ),
                   const SizedBox(height: 16),
-                  Text('Aún no hay miembros', style: AppTextStyles.heading4),
+                  Text(l10n.noMembersYet, style: AppTextStyles.heading4),
                   const SizedBox(height: 8),
                   Text(
-                    'Los miembros aparecerán aquí cuando se unan.',
+                    l10n.membersWillAppear,
                     style: AppTextStyles.bodySmall,
                     textAlign: TextAlign.center,
                   ),
@@ -544,7 +550,7 @@ class _MembersTab extends StatelessWidget {
           final profile = provider.profiles[index];
           final name = (profile['full_name'] as String? ?? '').isNotEmpty
               ? profile['full_name'] as String
-              : profile['username'] as String? ?? 'Usuario';
+              : profile['username'] as String? ?? l10n.user;
           final fitnessGoal = profile['fitness_goal'] as String? ?? '';
           final activityLevel = profile['activity_level'] as String? ?? '';
           final isOnline = profile['is_online'] as bool? ?? false;
@@ -623,7 +629,7 @@ class _MembersTab extends StatelessWidget {
                   );
                 } catch (e) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Error al iniciar chat: $e')),
+                    SnackBar(content: Text(l10n.errorStartingChat(e.toString()))),
                   );
                 }
               },
@@ -677,6 +683,8 @@ class _MessagesTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     if (provider.isLoading) {
       return ListView.separated(
         padding: const EdgeInsets.all(16),
@@ -701,10 +709,10 @@ class _MessagesTab extends StatelessWidget {
               color: AppColors.textSecondary.withValues(alpha: 0.4),
             ),
             const SizedBox(height: 16),
-            Text('No tienes mensajes aún', style: AppTextStyles.heading4),
+            Text(l10n.noMessagesYet, style: AppTextStyles.heading4),
             const SizedBox(height: 8),
             Text(
-              'Inicia una conversación con algún miembro de la comunidad.',
+              l10n.startConversationPrompt,
               style: AppTextStyles.bodySmall,
               textAlign: TextAlign.center,
             ),
@@ -729,9 +737,9 @@ class _MessagesTab extends StatelessWidget {
         final name =
             otherProfile['full_name'] as String? ??
             otherProfile['username'] as String? ??
-            'Usuario';
+            l10n.user;
         final lastMsgText =
-            conv['last_message_text'] as String? ?? 'Sin mensajes';
+            conv['last_message_text'] as String? ?? l10n.noMessages;
         final lastAt = conv['last_message_at'] as String? ?? '';
         final isOnline = otherProfile['is_online'] as bool? ?? false;
 
@@ -743,7 +751,7 @@ class _MessagesTab extends StatelessWidget {
         // Para distinguir el preview del mensaje:
         final lastMessageSenderId = conv['last_message_sender_id'] as String?;
         final isMe = lastMessageSenderId == currentUserId;
-        final previewStr = isMe ? 'Tú: $lastMsgText' : '$name: $lastMsgText';
+        final previewStr = isMe ? l10n.youPrefix(lastMsgText) : '$name: $lastMsgText';
 
         return ListTile(
           contentPadding: const EdgeInsets.symmetric(
@@ -796,7 +804,7 @@ class _MessagesTab extends StatelessWidget {
               ),
               if (lastAt.isNotEmpty)
                 Text(
-                  _formatTime(lastAt),
+                  _formatTime(context, lastAt),
                   style: AppTextStyles.bodySmall.copyWith(
                     fontSize: 12,
                     color: hasUnread
@@ -867,14 +875,15 @@ class _MessagesTab extends StatelessWidget {
     );
   }
 
-  String _formatTime(String dateStr) {
+  String _formatTime(BuildContext context, String dateStr) {
+    final l10n = AppLocalizations.of(context)!;
     try {
       final date = DateTime.parse(dateStr).toLocal();
       final diff = DateTime.now().difference(date);
       if (diff.inDays > 0) return '${diff.inDays}d';
       if (diff.inHours > 0) return '${diff.inHours}h';
       if (diff.inMinutes > 0) return '${diff.inMinutes}m';
-      return 'ahora';
+      return l10n.now;
     } catch (_) {
       return '';
     }

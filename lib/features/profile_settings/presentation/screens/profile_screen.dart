@@ -3,8 +3,9 @@ import 'package:provider/provider.dart';
 import 'package:fit_motiv/constants/app_colors.dart';
 import 'package:fit_motiv/constants/app_text_styles.dart';
 import 'package:fit_motiv/features/profile_settings/presentation/providers/user_profile_provider.dart';
-import 'package:fit_motiv/core/localization/locale_provider.dart';
+import 'package:fit_motiv/l10n/app_localizations.dart';
 import 'package:fit_motiv/core/theme/theme_provider.dart';
+import 'package:fit_motiv/core/localization/locale_provider.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -16,12 +17,12 @@ class ProfileScreen extends StatelessWidget {
     final provider = context.watch<UserProfileProvider>();
     final profile = provider.profile;
     final isLoading = provider.isLoading;
-    final l10n = context.watch<LocaleProvider>();
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          context.watch<LocaleProvider>().translate('profile'),
+          l10n.profile,
           style: AppTextStyles.heading3,
         ),
         centerTitle: true,
@@ -64,7 +65,7 @@ class ProfileScreen extends StatelessWidget {
                   _buildSettingsSection(context),
                   const SizedBox(height: 24),
                   Text(
-                    l10n.translate('body_metrics'),
+                    l10n.weight,
                     style: AppTextStyles.heading4,
                   ),
                   const SizedBox(height: 12),
@@ -76,7 +77,7 @@ class ProfileScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 24),
                   Text(
-                    l10n.translate('account_info'),
+                    l10n.profile,
                     style: AppTextStyles.heading4,
                   ),
                   const SizedBox(height: 12),
@@ -93,6 +94,7 @@ class ProfileScreen extends StatelessWidget {
   }
 
   Widget _buildErrorState(BuildContext context, UserProfileProvider provider) {
+    final l10n = AppLocalizations.of(context)!;
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(32),
@@ -105,10 +107,10 @@ class ProfileScreen extends StatelessWidget {
               color: AppColors.textSecondary.withValues(alpha: 0.5),
             ),
             const SizedBox(height: 16),
-            Text('Could not load profile', style: AppTextStyles.heading4),
+            Text(l10n.couldNotLoadProfile, style: AppTextStyles.heading4),
             const SizedBox(height: 8),
             Text(
-              provider.error ?? 'Unknown error',
+              provider.error ?? l10n.unknownError,
               style: AppTextStyles.bodySmall,
               textAlign: TextAlign.center,
             ),
@@ -116,7 +118,7 @@ class ProfileScreen extends StatelessWidget {
             ElevatedButton.icon(
               onPressed: () => provider.refreshProfile(),
               icon: const Icon(Icons.refresh),
-              label: const Text('Retry'),
+              label: Text(l10n.retry),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Theme.of(context).colorScheme.primary,
                 foregroundColor: Colors.white,
@@ -233,6 +235,7 @@ class ProfileScreen extends StatelessWidget {
   }
 
   Widget _buildWeightProgress(BuildContext context, dynamic profile) {
+    final l10n = AppLocalizations.of(context)!;
     final diff = profile.weightDifference;
     final isLosing = diff < 0;
 
@@ -248,7 +251,7 @@ class ProfileScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Weight Progress',
+                    l10n.weightProgress,
                     style: AppTextStyles.bodyLarge.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
@@ -289,11 +292,11 @@ class ProfileScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Start: ${profile.initialWeight} lbs',
+                    l10n.startWeightLabel(profile.initialWeight.toString()),
                     style: AppTextStyles.bodySmall,
                   ),
                   Text(
-                    'Goal: ${profile.weight} lbs',
+                    l10n.goalWeightLabel(profile.weight.toString()),
                     style: AppTextStyles.bodySmall,
                   ),
                 ],
@@ -311,6 +314,7 @@ class ProfileScreen extends StatelessWidget {
     String activityLevel,
     String fitnessGoal,
   ) {
+    final l10n = AppLocalizations.of(context)!;
     if (bio.isEmpty && activityLevel.isEmpty && fitnessGoal.isEmpty) {
       return const SizedBox.shrink();
     }
@@ -319,14 +323,14 @@ class ProfileScreen extends StatelessWidget {
       context: context,
       children: [
         if (bio.isNotEmpty)
-          _InfoRow(icon: Icons.person_outline, label: 'Bio', value: bio),
+          _InfoRow(icon: Icons.person_outline, label: l10n.bio, value: bio),
         if (bio.isNotEmpty &&
             (activityLevel.isNotEmpty || fitnessGoal.isNotEmpty))
           const Divider(height: 1),
         if (activityLevel.isNotEmpty)
           _InfoRow(
             icon: Icons.speed,
-            label: 'Activity Level',
+            label: l10n.activityLevel,
             value: activityLevel,
           ),
         if (activityLevel.isNotEmpty && fitnessGoal.isNotEmpty)
@@ -334,7 +338,7 @@ class ProfileScreen extends StatelessWidget {
         if (fitnessGoal.isNotEmpty)
           _InfoRow(
             icon: Icons.flag_outlined,
-            label: 'Fitness Goal',
+            label: l10n.fitnessGoal,
             value: fitnessGoal,
           ),
       ],
@@ -347,28 +351,29 @@ class ProfileScreen extends StatelessWidget {
     double height,
     int age,
   ) {
+    final l10n = AppLocalizations.of(context)!;
     return _card(
       context: context,
       children: [
         if (weight > 0)
           _InfoRow(
             icon: Icons.monitor_weight_outlined,
-            label: 'Weight',
-            value: '${weight.toStringAsFixed(1)} lbs',
+            label: l10n.weight,
+            value: l10n.weightWithUnit(weight.toStringAsFixed(1)),
           ),
         if (weight > 0 && height > 0) const Divider(height: 1),
         if (height > 0)
           _InfoRow(
             icon: Icons.height,
-            label: 'Height',
-            value: '${height.toStringAsFixed(2)} m',
+            label: l10n.height,
+            value: l10n.heightWithUnit(height.toStringAsFixed(2)),
           ),
         if ((weight > 0 || height > 0) && age > 0) const Divider(height: 1),
         if (age > 0)
           _InfoRow(
             icon: Icons.cake_outlined,
-            label: 'Age',
-            value: '$age years',
+            label: l10n.age,
+            value: l10n.ageWithUnit(age.toString()),
           ),
       ],
     );
@@ -380,15 +385,16 @@ class ProfileScreen extends StatelessWidget {
     String username,
     String memberSince,
   ) {
+    final l10n = AppLocalizations.of(context)!;
     return _card(
       context: context,
       children: [
-        _InfoRow(icon: Icons.email_outlined, label: 'Email', value: email),
+        _InfoRow(icon: Icons.email_outlined, label: l10n.email, value: email),
         if (username.isNotEmpty) ...[
           const Divider(height: 1),
           _InfoRow(
             icon: Icons.alternate_email,
-            label: 'Username',
+            label: l10n.username,
             value: username,
           ),
         ],
@@ -397,13 +403,14 @@ class ProfileScreen extends StatelessWidget {
   }
 
   Widget _buildSettingsSection(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final localeProvider = context.watch<LocaleProvider>();
     final themeProvider = context.watch<ThemeProvider>();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('App Settings', style: AppTextStyles.heading4),
+        Text(l10n.appSettings, style: AppTextStyles.heading4),
         const SizedBox(height: 12),
         _card(
           context: context,
@@ -413,11 +420,11 @@ class ProfileScreen extends StatelessWidget {
                 Icons.language,
                 color: Theme.of(context).colorScheme.primary,
               ),
-              title: Text(localeProvider.translate('language')),
+              title: Text(l10n.language),
               subtitle: Text(
                 localeProvider.locale.languageCode == 'en'
-                    ? 'English'
-                    : 'Español',
+                    ? l10n.english
+                    : l10n.spanish,
               ),
               trailing: const Icon(Icons.chevron_right),
               onTap: () => _showLanguageDialog(context, localeProvider),
@@ -428,7 +435,7 @@ class ProfileScreen extends StatelessWidget {
                 Icons.palette_outlined,
                 color: Theme.of(context).colorScheme.primary,
               ),
-              title: const Text('Theme'),
+              title: Text(l10n.theme),
               subtitle: Text(themeProvider.themeMode.name.toUpperCase()),
               trailing: const Icon(Icons.chevron_right),
               onTap: () => _showThemeDialog(context, themeProvider),
@@ -440,22 +447,23 @@ class ProfileScreen extends StatelessWidget {
   }
 
   void _showLanguageDialog(BuildContext context, LocaleProvider provider) {
+    final l10n = AppLocalizations.of(context)!;
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(provider.translate('language')),
+        title: Text(l10n.language),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             ListTile(
-              title: const Text('English'),
+              title: Text(l10n.english),
               onTap: () {
                 provider.setLocale(const Locale('en'));
                 Navigator.pop(context);
               },
             ),
             ListTile(
-              title: const Text('Español'),
+              title: Text(l10n.spanish),
               onTap: () {
                 provider.setLocale(const Locale('es'));
                 Navigator.pop(context);
@@ -468,15 +476,16 @@ class ProfileScreen extends StatelessWidget {
   }
 
   void _showThemeDialog(BuildContext context, ThemeProvider provider) {
+    final l10n = AppLocalizations.of(context)!;
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Choose Theme'),
+        title: Text(l10n.chooseTheme),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             ListTile(
-              title: const Text('System'),
+              title: Text(l10n.system),
               leading: const Icon(Icons.brightness_auto),
               onTap: () {
                 provider.setThemeMode(ThemeMode.system);
@@ -484,7 +493,7 @@ class ProfileScreen extends StatelessWidget {
               },
             ),
             ListTile(
-              title: const Text('Light'),
+              title: Text(l10n.light),
               leading: const Icon(Icons.light_mode),
               onTap: () {
                 provider.setThemeMode(ThemeMode.light);
@@ -492,7 +501,7 @@ class ProfileScreen extends StatelessWidget {
               },
             ),
             ListTile(
-              title: const Text('Dark'),
+              title: Text(l10n.dark),
               leading: const Icon(Icons.dark_mode),
               onTap: () {
                 provider.setThemeMode(ThemeMode.dark);
