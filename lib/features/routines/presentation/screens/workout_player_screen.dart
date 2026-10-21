@@ -1,7 +1,7 @@
 import 'package:fit_motiv/constants/app_colors.dart';
 import 'package:fit_motiv/constants/app_text_styles.dart';
-import 'package:fit_motiv/core/localization/locale_provider.dart';
 import 'package:fit_motiv/core/utils/responsive_utils.dart';
+import 'package:fit_motiv/l10n/app_localizations.dart';
 import 'package:fit_motiv/features/routines/domain/entities/exercise.dart';
 import 'package:fit_motiv/features/routines/presentation/providers/workout_session_provider.dart';
 import 'package:flutter/material.dart';
@@ -36,10 +36,10 @@ class _WorkoutPlayerScreenState extends State<WorkoutPlayerScreen> {
   @override
   Widget build(BuildContext context) {
     final session = context.watch<WorkoutSessionProvider>();
-    final lp = context.read<LocaleProvider>();
+    final l10n = AppLocalizations.of(context)!;
 
     if (session.state == WorkoutState.completed) {
-      return _buildCompletionScreen(context, lp);
+      return _buildCompletionScreen(context, l10n);
     }
 
     if (session.exercises.isEmpty) {
@@ -55,13 +55,13 @@ class _WorkoutPlayerScreenState extends State<WorkoutPlayerScreen> {
       appBar: AppBar(
         backgroundColor: isRest ? const Color(0xFFE8F5E9) : null,
         title: Text(
-          isRest ? lp.translate('rest') : widget.routineTitle,
+          isRest ? l10n.rest : widget.routineTitle,
           style: AppTextStyles.heading4,
         ),
         centerTitle: true,
         leading: IconButton(
           icon: const Icon(Icons.close),
-          onPressed: () => _confirmExit(context, lp),
+          onPressed: () => _confirmExit(context, l10n),
         ),
       ),
       body: Column(
@@ -80,14 +80,14 @@ class _WorkoutPlayerScreenState extends State<WorkoutPlayerScreen> {
                     session,
                     currentExercise,
                     isRest,
-                    lp,
+                    l10n,
                   )
                 : _buildMobileLayout(
                     context,
                     session,
                     currentExercise,
                     isRest,
-                    lp,
+                    l10n,
                   ),
           ),
           _buildControls(context, session),
@@ -101,7 +101,7 @@ class _WorkoutPlayerScreenState extends State<WorkoutPlayerScreen> {
     WorkoutSessionProvider session,
     Exercise currentExercise,
     bool isRest,
-    LocaleProvider lp,
+    AppLocalizations l10n,
   ) {
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
@@ -110,10 +110,10 @@ class _WorkoutPlayerScreenState extends State<WorkoutPlayerScreen> {
         children: [
           _buildExerciseVisual(context, currentExercise, isRest),
           const SizedBox(height: 40),
-          _buildExerciseInfo(context, session, currentExercise, isRest, lp),
+          _buildExerciseInfo(context, session, currentExercise, isRest, l10n),
           const SizedBox(height: 20),
           if (!isRest && session.currentIndex < session.exercises.length - 1)
-            _buildNextPreview(lp, session),
+            _buildNextPreview(l10n, session),
         ],
       ),
     );
@@ -124,7 +124,7 @@ class _WorkoutPlayerScreenState extends State<WorkoutPlayerScreen> {
     WorkoutSessionProvider session,
     Exercise currentExercise,
     bool isRest,
-    LocaleProvider lp,
+    AppLocalizations l10n,
   ) {
     return Padding(
       padding: const EdgeInsets.all(40),
@@ -150,12 +150,12 @@ class _WorkoutPlayerScreenState extends State<WorkoutPlayerScreen> {
                   session,
                   currentExercise,
                   isRest,
-                  lp,
+                  l10n,
                 ),
                 const SizedBox(height: 40),
                 if (!isRest &&
                     session.currentIndex < session.exercises.length - 1)
-                  _buildNextPreview(lp, session),
+                  _buildNextPreview(l10n, session),
               ],
             ),
           ),
@@ -191,19 +191,19 @@ class _WorkoutPlayerScreenState extends State<WorkoutPlayerScreen> {
     WorkoutSessionProvider session,
     Exercise currentExercise,
     bool isRest,
-    LocaleProvider lp,
+    AppLocalizations l10n,
   ) {
     return Column(
       children: [
         Text(
-          isRest ? lp.translate('get_ready_for_next') : currentExercise.name,
+          isRest ? l10n.getReadyForNext : currentExercise.name,
           style: AppTextStyles.heading2,
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: 12),
         if (!isRest)
           Text(
-            '${currentExercise.reps ?? '--'} ${lp.translate('reps')}',
+            '${currentExercise.reps ?? '--'} ${l10n.reps}',
             style: AppTextStyles.bodyLarge.copyWith(
               color: AppColors.textSecondary,
               fontWeight: FontWeight.w600,
@@ -231,7 +231,7 @@ class _WorkoutPlayerScreenState extends State<WorkoutPlayerScreen> {
     return '${mins.toString().padLeft(2, '0')}:${secs.toString().padLeft(2, '0')}';
   }
 
-  Widget _buildNextPreview(LocaleProvider lp, WorkoutSessionProvider session) {
+  Widget _buildNextPreview(AppLocalizations l10n, WorkoutSessionProvider session) {
     final next = session.exercises[session.currentIndex + 1];
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
@@ -243,7 +243,7 @@ class _WorkoutPlayerScreenState extends State<WorkoutPlayerScreen> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-            '${lp.translate('next')}: ',
+            '${l10n.next}: ',
             style: AppTextStyles.bodySmall.copyWith(
               fontWeight: FontWeight.bold,
             ),
@@ -327,7 +327,7 @@ class _WorkoutPlayerScreenState extends State<WorkoutPlayerScreen> {
     );
   }
 
-  Widget _buildCompletionScreen(BuildContext context, LocaleProvider lp) {
+  Widget _buildCompletionScreen(BuildContext context, AppLocalizations l10n) {
     final session = context.read<WorkoutSessionProvider>();
     return Scaffold(
       body: Center(
@@ -339,12 +339,12 @@ class _WorkoutPlayerScreenState extends State<WorkoutPlayerScreen> {
               const Icon(Icons.check_circle, size: 100, color: Colors.green),
               const SizedBox(height: 24),
               Text(
-                lp.translate('congratulations'),
+                l10n.congratulations,
                 style: AppTextStyles.heading2,
               ),
               const SizedBox(height: 8),
               Text(
-                lp.translate('workout_completed_msg'),
+                l10n.workoutCompletedMsg,
                 style: AppTextStyles.bodyLarge,
                 textAlign: TextAlign.center,
               ),
@@ -355,12 +355,12 @@ class _WorkoutPlayerScreenState extends State<WorkoutPlayerScreen> {
                   _buildSummaryItem(
                     context,
                     '${session.totalDurationMinutes}',
-                    lp.translate('duration'),
+                    l10n.duration,
                   ),
                   _buildSummaryItem(
                     context,
                     '${session.exercises.length}',
-                    lp.translate('exercises'),
+                    l10n.exercises,
                   ),
                 ],
               ),
@@ -377,7 +377,7 @@ class _WorkoutPlayerScreenState extends State<WorkoutPlayerScreen> {
                     ),
                   ),
                   child: Text(
-                    lp.translate('finish'),
+                    l10n.finish,
                     style: const TextStyle(color: Colors.white, fontSize: 18),
                   ),
                 ),
@@ -389,24 +389,24 @@ class _WorkoutPlayerScreenState extends State<WorkoutPlayerScreen> {
     );
   }
 
-  void _confirmExit(BuildContext context, LocaleProvider lp) {
+  void _confirmExit(BuildContext context, AppLocalizations l10n) {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: Text(lp.translate('wait')),
-        content: Text(lp.translate('cancel_workout_confirm')),
+        title: Text(l10n.wait),
+        content: Text(l10n.cancelWorkoutConfirm),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: Text(lp.translate('no_account')),
-          ), // Using no_account as placeholder or similar
+            child: Text(l10n.noAccount),
+          ),
           TextButton(
             onPressed: () {
               Navigator.pop(ctx);
               Navigator.pop(context);
             },
             child: Text(
-              lp.translate('yes'),
+              l10n.yes,
               style: const TextStyle(color: Colors.red),
             ),
           ),

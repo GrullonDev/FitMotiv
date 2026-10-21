@@ -1,7 +1,7 @@
 import 'package:fit_motiv/constants/app_colors.dart';
 import 'package:fit_motiv/constants/app_text_styles.dart';
-import 'package:fit_motiv/core/localization/locale_provider.dart';
 import 'package:fit_motiv/features/progress/presentation/providers/progress_provider.dart';
+import 'package:fit_motiv/l10n/app_localizations.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -43,13 +43,14 @@ class _ProgressScreenState extends State<ProgressScreen>
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<ProgressProvider>();
+    final l10n = AppLocalizations.of(context)!;
 
     return DefaultTabController(
       length: 3,
       child: Scaffold(
         appBar: AppBar(
           title: Text(
-            context.watch<LocaleProvider>().translate('progress'),
+            l10n.progress,
             style: AppTextStyles.heading3,
           ),
           centerTitle: true,
@@ -72,9 +73,9 @@ class _ProgressScreenState extends State<ProgressScreen>
             ).colorScheme.onSurfaceVariant,
             indicatorColor: Theme.of(context).colorScheme.primary,
             tabs: [
-              Tab(text: context.watch<LocaleProvider>().translate('summary')),
-              Tab(text: context.watch<LocaleProvider>().translate('weight')),
-              Tab(text: context.watch<LocaleProvider>().translate('goals')),
+              Tab(text: l10n.summary),
+              Tab(text: l10n.weight),
+              Tab(text: l10n.goals),
             ],
           ),
         ),
@@ -96,7 +97,7 @@ class _ProgressScreenState extends State<ProgressScreen>
             // TODO: Abrir modal de registro
             _showActionSheet(context, provider);
           },
-          label: Text(context.watch<LocaleProvider>().translate('register')),
+          label: Text(l10n.register),
           icon: const Icon(Icons.add),
           backgroundColor: Theme.of(context).colorScheme.primary,
           foregroundColor: Colors.white,
@@ -106,6 +107,7 @@ class _ProgressScreenState extends State<ProgressScreen>
   }
 
   void _showActionSheet(BuildContext context, ProgressProvider provider) {
+    final l10n = AppLocalizations.of(context)!;
     showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
@@ -117,7 +119,7 @@ class _ProgressScreenState extends State<ProgressScreen>
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              context.read<LocaleProvider>().translate('what_to_register'),
+              l10n.whatToRegister,
               style: AppTextStyles.heading4,
             ),
             const SizedBox(height: 20),
@@ -126,9 +128,7 @@ class _ProgressScreenState extends State<ProgressScreen>
                 Icons.monitor_weight_outlined,
                 color: Color(0xFF4ECDC4),
               ),
-              title: Text(
-                context.read<LocaleProvider>().translate('register_weight'),
-              ),
+              title: Text(l10n.registerWeight),
               onTap: () {
                 Navigator.pop(ctx);
                 _showWeightDialog(context, provider);
@@ -136,7 +136,7 @@ class _ProgressScreenState extends State<ProgressScreen>
             ),
             ListTile(
               leading: const Icon(Icons.flag_outlined, color: Colors.orange),
-              title: Text(context.read<LocaleProvider>().translate('new_goal')),
+              title: Text(l10n.newGoal),
               onTap: () {
                 Navigator.pop(ctx);
                 _showGoalDialog(context, provider);
@@ -144,9 +144,7 @@ class _ProgressScreenState extends State<ProgressScreen>
             ),
             ListTile(
               leading: const Icon(Icons.fitness_center, color: Colors.blue),
-              title: Text(
-                context.read<LocaleProvider>().translate('go_to_routines'),
-              ),
+              title: Text(l10n.goToRoutines),
               onTap: () {
                 Navigator.pop(ctx);
                 // Navigate to routines tab using bottom navigation
@@ -160,20 +158,18 @@ class _ProgressScreenState extends State<ProgressScreen>
   }
 
   void _showWeightDialog(BuildContext context, ProgressProvider provider) {
+    final l10n = AppLocalizations.of(context)!;
     final controller = TextEditingController();
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: Text(
-          context.read<LocaleProvider>().translate('register_weight'),
-        ),
+        title: Text(l10n.registerWeight),
         content: TextField(
           controller: controller,
           keyboardType: const TextInputType.numberWithOptions(decimal: true),
           decoration: InputDecoration(
-            hintText:
-                '${context.read<LocaleProvider>().translate('weight')} in lbs',
-            suffixText: 'lbs',
+            hintText: '${l10n.weight} in ${l10n.lbs}',
+            suffixText: l10n.lbs,
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
           ),
           autofocus: true,
@@ -181,7 +177,7 @@ class _ProgressScreenState extends State<ProgressScreen>
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: Text(context.read<LocaleProvider>().translate('cancel')),
+            child: Text(l10n.cancel),
           ),
           TextButton(
             onPressed: () async {
@@ -191,7 +187,7 @@ class _ProgressScreenState extends State<ProgressScreen>
                 if (context.mounted) Navigator.pop(ctx);
               }
             },
-            child: Text(context.read<LocaleProvider>().translate('save')),
+            child: Text(l10n.save),
           ),
         ],
       ),
@@ -199,24 +195,23 @@ class _ProgressScreenState extends State<ProgressScreen>
   }
 
   void _showGoalDialog(BuildContext context, ProgressProvider provider) {
+    final l10n = AppLocalizations.of(context)!;
+
     final titleController = TextEditingController();
     final valueController = TextEditingController();
-    final l10n = context.read<LocaleProvider>();
 
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: Text(l10n.translate('new_goal')),
+        title: Text(l10n.newGoal),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             TextField(
               controller: titleController,
               decoration: InputDecoration(
-                hintText: l10n.translate(
-                  'full_name',
-                ), // Simple re-use of key or add new
-                labelText: l10n.translate('username'),
+                hintText: l10n.fullName,
+                labelText: l10n.username,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -228,8 +223,8 @@ class _ProgressScreenState extends State<ProgressScreen>
               controller: valueController,
               keyboardType: TextInputType.number,
               decoration: InputDecoration(
-                hintText: 'Target value',
-                labelText: 'Target',
+                hintText: l10n.targetValue,
+                labelText: l10n.target,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -240,7 +235,7 @@ class _ProgressScreenState extends State<ProgressScreen>
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: Text(l10n.translate('cancel')),
+            child: Text(l10n.cancel),
           ),
           ElevatedButton(
             onPressed: () async {
@@ -252,7 +247,7 @@ class _ProgressScreenState extends State<ProgressScreen>
                 );
                 if (success && context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('✅ ${l10n.translate('completed')}')),
+                    SnackBar(content: Text(l10n.completed)),
                   );
                 }
               }
@@ -264,7 +259,7 @@ class _ProgressScreenState extends State<ProgressScreen>
               ),
             ),
             child: Text(
-              l10n.translate('save'),
+              l10n.save,
               style: const TextStyle(color: Colors.white),
             ),
           ),
@@ -281,6 +276,8 @@ class _OverviewTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return RefreshIndicator(
       color: Theme.of(context).colorScheme.primary,
       onRefresh: () => provider.refreshAll(),
@@ -296,7 +293,7 @@ class _OverviewTab extends StatelessWidget {
                 Expanded(
                   child: _StatBox(
                     icon: Icons.fitness_center_outlined,
-                    label: context.read<LocaleProvider>().translate('routines'),
+                    label: l10n.routines,
                     value: '${provider.totalSessions}',
                     color: Theme.of(context).colorScheme.primary,
                   ),
@@ -305,7 +302,7 @@ class _OverviewTab extends StatelessWidget {
                 Expanded(
                   child: _StatBox(
                     icon: Icons.local_fire_department_outlined,
-                    label: context.read<LocaleProvider>().translate('calories'),
+                    label: l10n.calories,
                     value: '${provider.totalCalories}',
                     color: const Color(0xFFFF6B6B),
                   ),
@@ -318,13 +315,10 @@ class _OverviewTab extends StatelessWidget {
                 Expanded(
                   child: _StatBox(
                     icon: Icons.monitor_weight_outlined,
-                    label:
-                        '${context.read<LocaleProvider>().translate('weight')} actual',
+                    label: l10n.actual,
                     value: provider.latestWeight != null
-                        ? '${provider.latestWeight!.toStringAsFixed(1)} lbs'
-                        : context.read<LocaleProvider>().translate(
-                            'pending_registration',
-                          ),
+                        ? '${provider.latestWeight!.toStringAsFixed(1)} ${l10n.lbs}'
+                        : l10n.pendingRegistration,
                     color: const Color(0xFF4ECDC4),
                   ),
                 ),
@@ -332,10 +326,10 @@ class _OverviewTab extends StatelessWidget {
                 Expanded(
                   child: _StatBox(
                     icon: Icons.trending_down,
-                    label: 'Diferencia',
+                    label: l10n.difference,
                     value: provider.weightChange != null
-                        ? '${provider.weightChange! >= 0 ? "+" : ""}${provider.weightChange!.toStringAsFixed(1)} lbs'
-                        : '-- lbs',
+                        ? '${provider.weightChange! >= 0 ? "+" : ""}${provider.weightChange!.toStringAsFixed(1)} ${l10n.lbs}'
+                        : '-- ${l10n.lbs}',
                     color:
                         provider.weightChange != null &&
                             provider.weightChange! < 0
@@ -349,7 +343,7 @@ class _OverviewTab extends StatelessWidget {
 
             // Weekly Activity Chart
             Text(
-              context.read<LocaleProvider>().translate('weekly_activity'),
+              l10n.weeklyActivity,
               style: AppTextStyles.heading4,
             ),
             const SizedBox(height: 12),
@@ -358,40 +352,37 @@ class _OverviewTab extends StatelessWidget {
 
             // Recent workout sessions
             Text(
-              context.read<LocaleProvider>().translate('completed'),
+              l10n.completed,
               style: AppTextStyles.heading4,
             ),
             const SizedBox(height: 12),
             if (provider.sessions.isEmpty)
               _buildEmptyCard(
                 context,
-                'Sin sesiones aún',
-                'Completa un entrenamiento para ver tu historial.',
+                l10n.noSessionsYet,
+                l10n.completeWorkoutToSeeHistory,
                 Icons.history,
               )
             else
               ...provider.sessions
                   .take(3)
                   .map(
-                    (session) => _SessionCard(
-                      session: session,
-                      l10n: context.read<LocaleProvider>(),
-                    ),
+                    (session) => _SessionCard(session: session),
                   ),
 
             const SizedBox(height: 24),
 
             // Weight log
             Text(
-              '${context.read<LocaleProvider>().translate('weight')} log',
+              l10n.weightLog,
               style: AppTextStyles.heading4,
             ),
             const SizedBox(height: 12),
             if (provider.weightLog.isEmpty)
               _buildEmptyCard(
                 context,
-                'Sin registros de peso',
-                'Empieza a monitorear tu peso para ver el progreso.',
+                l10n.noWeightRecords,
+                l10n.startMonitoringWeight,
                 Icons.monitor_weight_outlined,
               )
             else
@@ -457,6 +448,8 @@ class _WeightTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return RefreshIndicator(
       color: Theme.of(context).colorScheme.primary,
       onRefresh: () => provider.refreshAll(),
@@ -465,7 +458,7 @@ class _WeightTab extends StatelessWidget {
         children: [
           // Weight Trend Chart
           Text(
-            context.read<LocaleProvider>().translate('weight_trend'),
+            l10n.weightTrend,
             style: AppTextStyles.heading4,
           ),
           const SizedBox(height: 12),
@@ -474,15 +467,15 @@ class _WeightTab extends StatelessWidget {
 
           // Weight History List
           Text(
-            context.read<LocaleProvider>().translate('summary'),
+            l10n.summary,
             style: AppTextStyles.heading4,
           ),
           const SizedBox(height: 12),
           if (provider.weightLog.isEmpty)
             _buildEmptyState(
               context,
-              'Sin registros',
-              'Registra tu peso para ver la evolución.',
+              l10n.noRecords,
+              l10n.recordWeightToSeeEvolution,
               Icons.monitor_weight_outlined,
             )
           else
@@ -543,6 +536,8 @@ class _GoalsTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return RefreshIndicator(
       color: Theme.of(context).colorScheme.primary,
       onRefresh: () => provider.refreshAll(),
@@ -550,7 +545,7 @@ class _GoalsTab extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         children: [
           // Predefined Goals Section (Task 7)
-          Text('Metas Sugeridas', style: AppTextStyles.heading4),
+          Text(l10n.suggestedGoals, style: AppTextStyles.heading4),
           const SizedBox(height: 12),
           SizedBox(
             height: 100,
@@ -558,37 +553,29 @@ class _GoalsTab extends StatelessWidget {
               scrollDirection: Axis.horizontal,
               children: [
                 _SuggestedGoalCard(
-                  title: context.read<LocaleProvider>().translate(
-                    'weight_loss_plan',
-                  ),
+                  title: l10n.weightLossPlan,
                   icon: Icons.trending_down,
                   color: Colors.blue,
                   onTap: () => provider.createGoal(
-                    title: context.read<LocaleProvider>().translate(
-                      'weight_trend',
-                    ),
+                    title: l10n.weightTrend,
                     description: '',
                   ),
                 ),
                 _SuggestedGoalCard(
-                  title: context.read<LocaleProvider>().translate(
-                    'muscle_building',
-                  ),
+                  title: l10n.muscleBuilding,
                   icon: Icons.fitness_center,
                   color: Colors.orange,
                   onTap: () => provider.createGoal(
-                    title: context.read<LocaleProvider>().translate(
-                      'muscle_building',
-                    ),
+                    title: l10n.muscleBuilding,
                     description: '',
                   ),
                 ),
                 _SuggestedGoalCard(
-                  title: 'Mantenerse',
+                  title: l10n.maintain,
                   icon: Icons.accessibility_new,
                   color: Colors.green,
                   onTap: () => provider.createGoal(
-                    title: 'Mantenerse activo',
+                    title: l10n.stayActive,
                     description: '',
                   ),
                 ),
@@ -598,15 +585,15 @@ class _GoalsTab extends StatelessWidget {
           const SizedBox(height: 24),
 
           Text(
-            context.read<LocaleProvider>().translate('goals'),
+            l10n.goals,
             style: AppTextStyles.heading4,
           ),
           const SizedBox(height: 12),
           if (provider.goals.isEmpty)
             _buildEmptyState(
               context,
-              'Sin metas',
-              'Establece objetivos para medir tu progreso.',
+              l10n.noGoals,
+              l10n.setGoalsToMeasureProgress,
               Icons.flag_outlined,
             )
           else
@@ -614,7 +601,6 @@ class _GoalsTab extends StatelessWidget {
               return _GoalCard(
                 goal: goal,
                 provider: provider,
-                l10n: context.read<LocaleProvider>(),
               );
             }),
           const SizedBox(height: 80),
@@ -949,14 +935,13 @@ class _GoalCard extends StatelessWidget {
   const _GoalCard({
     required this.goal,
     required this.provider,
-    required this.l10n,
   });
   final Map<String, dynamic> goal;
   final ProgressProvider provider;
-  final LocaleProvider l10n;
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final isCompleted = goal['is_completed'] as bool? ?? false;
     final title = goal['title'] as String? ?? '';
     final description = goal['description'] as String? ?? '';
@@ -964,7 +949,7 @@ class _GoalCard extends StatelessWidget {
     // Simular progreso para demostración (Task 8)
     double progress = isCompleted ? 1.0 : 0.45;
     String progressText = isCompleted
-        ? l10n.translate('water_reached')
+        ? l10n.waterReached
         : "Llevas 5 lbs de 20 lbs";
 
     return Container(
@@ -1071,13 +1056,13 @@ class _GoalCard extends StatelessWidget {
 }
 
 class _SessionCard extends StatelessWidget {
-  const _SessionCard({required this.session, required this.l10n});
+  const _SessionCard({required this.session});
   final Map<String, dynamic> session;
-  final LocaleProvider l10n;
 
   @override
   Widget build(BuildContext context) {
-    final name = session['workout_name'] as String? ?? 'Entrenamiento';
+    final l10n = AppLocalizations.of(context)!;
+    final name = session['workout_name'] as String? ?? l10n.workout;
     final duration = session['duration_minutes'] as int? ?? 0;
     final calories = session['calories_burned'] as int? ?? 0;
     final completedAt = session['completed_at'] as String? ?? '';
@@ -1088,11 +1073,11 @@ class _SessionCard extends StatelessWidget {
         final date = DateTime.parse(completedAt);
         final diff = DateTime.now().difference(date);
         if (diff.inDays > 0) {
-          timeAgo = 'hace ${diff.inDays}d';
+          timeAgo = l10n.daysAgo(diff.inDays);
         } else if (diff.inHours > 0) {
-          timeAgo = 'hace ${diff.inHours}h';
+          timeAgo = l10n.hoursAgo(diff.inHours);
         } else {
-          timeAgo = 'hace ${diff.inMinutes}m';
+          timeAgo = l10n.minutesAgo(diff.inMinutes);
         }
       } catch (_) {}
     }
@@ -1164,6 +1149,7 @@ class _WeightEntry extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final weight = (entry['weight'] as num?)?.toDouble() ?? 0;
     final recordedAt = entry['recorded_at'] as String? ?? '';
 
@@ -1215,7 +1201,7 @@ class _WeightEntry extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  '${weight.toStringAsFixed(1)} lbs',
+                  '${weight.toStringAsFixed(1)} ${l10n.lbs}',
                   style: AppTextStyles.bodyMedium.copyWith(
                     fontWeight: FontWeight.bold,
                   ),

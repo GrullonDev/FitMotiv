@@ -1,7 +1,7 @@
 import 'package:fit_motiv/constants/app_colors.dart';
 import 'package:fit_motiv/constants/app_text_styles.dart';
-import 'package:fit_motiv/core/localization/locale_provider.dart';
 import 'package:fit_motiv/core/utils/responsive_utils.dart';
+import 'package:fit_motiv/l10n/app_localizations.dart';
 import 'package:fit_motiv/features/routines/domain/entities/exercise.dart';
 import 'package:fit_motiv/features/routines/presentation/providers/workout_provider.dart';
 import 'package:fit_motiv/features/routines/presentation/screens/workout_player_screen.dart';
@@ -64,11 +64,11 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
           .map(
             (e) => Exercise(
               id: e['id'] as String? ?? '',
-              name: e['name'] as String? ?? 'Exercise',
+              name: e['name'] as String? ?? 'Exercise', // fallback data
               category: e['category'] as String? ?? widget.category,
               seconds: e['seconds'] as int? ?? _selectedDuration,
               reps: e['reps'] as int?,
-              description: e['description'] as String? ?? 'Focus on your form.',
+              description: e['description'] as String? ?? '', // fallback
             ),
           )
           .toList();
@@ -101,7 +101,7 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final lp = context.read<LocaleProvider>();
+    final l10n = AppLocalizations.of(context)!;
     final isTablet = Responsive.isTablet(context);
     final exerciseCount = _dbExercises.isNotEmpty
         ? _dbExercises.length
@@ -125,13 +125,13 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
                   children: [
                     _buildHeroHeader(context),
                     const SizedBox(height: 32),
-                    _buildRoutineSummary(context, lp),
+                    _buildRoutineSummary(context, l10n),
                     const SizedBox(height: 32),
-                    _buildTimerSettings(lp),
+                    _buildTimerSettings(l10n),
                     const SizedBox(height: 32),
-                    _buildDescription(lp),
+                    _buildDescription(l10n),
                     const SizedBox(height: 48),
-                    _buildStartButton(context, lp),
+                    _buildStartButton(context, l10n),
                   ],
                 ),
               ),
@@ -149,7 +149,7 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
                   Padding(
                     padding: const EdgeInsets.all(32),
                     child: Text(
-                      '${lp.translate('exercises').toUpperCase()} ($exerciseCount)',
+                      '${l10n.exercises.toUpperCase()} ($exerciseCount)',
                       style: AppTextStyles.bodySmall.copyWith(
                         fontWeight: FontWeight.bold,
                         letterSpacing: 1.2,
@@ -171,7 +171,7 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
                               index: index,
                               name: _dbExercises.isNotEmpty
                                   ? _dbExercises[index]['name'] as String? ??
-                                        'Exercise'
+                                        l10n.exercise
                                   : null,
                             ),
                           ),
@@ -200,14 +200,14 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildRoutineSummary(context, lp),
+                  _buildRoutineSummary(context, l10n),
                   const SizedBox(height: 24),
-                  _buildTimerSettings(lp),
+                  _buildTimerSettings(l10n),
                   const SizedBox(height: 24),
-                  _buildDescription(lp),
+                  _buildDescription(l10n),
                   const SizedBox(height: 24),
                   Text(
-                    '${lp.translate('exercises').toUpperCase()} ($exerciseCount)',
+                    '${l10n.exercises.toUpperCase()} ($exerciseCount)',
                     style: AppTextStyles.bodySmall.copyWith(
                       fontWeight: FontWeight.bold,
                       letterSpacing: 1.2,
@@ -236,7 +236,7 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
                 (context, index) => _ExerciseTile(
                   index: index,
                   name: _dbExercises.isNotEmpty
-                      ? _dbExercises[index]['name'] as String? ?? 'Exercise'
+                      ? _dbExercises[index]['name'] as String? ?? l10n.exercise
                       : null,
                 ),
                 childCount: exerciseCount,
@@ -257,12 +257,12 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
             ),
           ],
         ),
-        child: _buildStartButton(context, lp),
+        child: _buildStartButton(context, l10n),
       ),
     );
   }
 
-  Widget _buildTimerSettings(LocaleProvider lp) {
+  Widget _buildTimerSettings(AppLocalizations l10n) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -284,7 +284,7 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
               ),
               const SizedBox(width: 8),
               Text(
-                lp.translate('workout_settings'),
+                l10n.workoutSettings,
                 style: AppTextStyles.bodyMedium.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
@@ -296,7 +296,7 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                lp.translate('exercise_duration'),
+                l10n.exerciseDuration,
                 style: AppTextStyles.bodySmall,
               ),
               Row(
@@ -311,7 +311,7 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
                   SizedBox(
                     width: 60,
                     child: Text(
-                      '$_selectedDuration${lp.translate('sec_short')}',
+                      '$_selectedDuration${l10n.secShort}',
                       textAlign: TextAlign.center,
                       style: AppTextStyles.bodyLarge.copyWith(
                         fontWeight: FontWeight.bold,
@@ -376,7 +376,7 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
     );
   }
 
-  Widget _buildRoutineSummary(BuildContext context, LocaleProvider lp) {
+  Widget _buildRoutineSummary(BuildContext context, AppLocalizations l10n) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -387,7 +387,7 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
               Text(widget.title, style: AppTextStyles.heading4),
               const SizedBox(height: 4),
               Text(
-                '${lp.translate(widget.category.toLowerCase())} • ${widget.duration} min',
+                '${widget.category} • ${widget.duration} min',
                 style: AppTextStyles.bodyMedium.copyWith(
                   color: AppColors.textSecondary,
                 ),
@@ -395,26 +395,24 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
             ],
           ),
         ),
-        _buildDifficultyTag(context, lp),
+        _buildDifficultyTag(context, l10n),
       ],
     );
   }
 
-  Widget _buildDescription(LocaleProvider lp) {
+  Widget _buildDescription(AppLocalizations l10n) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          lp.translate('description') == 'description'
-              ? 'Description'
-              : lp.translate('description'),
+          l10n.description,
           style: AppTextStyles.bodyLarge.copyWith(fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 8),
         Text(
           widget.description.isNotEmpty
               ? widget.description
-              : 'This routine is designed to help you reach your goals with a mix of targeted exercises.',
+              : l10n.defaultRoutineDescription,
           style: AppTextStyles.bodyMedium.copyWith(
             color: AppColors.textSecondary,
           ),
@@ -423,7 +421,7 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
     );
   }
 
-  Widget _buildStartButton(BuildContext context, LocaleProvider lp) {
+  Widget _buildStartButton(BuildContext context, AppLocalizations l10n) {
     return ElevatedButton(
       onPressed: () {
         final exercises = _buildExerciseList();
@@ -454,7 +452,7 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
           const Icon(Icons.play_arrow_rounded),
           const SizedBox(width: 8),
           Text(
-            lp.translate('start_now'),
+            l10n.startNow,
             style: AppTextStyles.bodyLarge.copyWith(
               color: Colors.white,
               fontWeight: FontWeight.bold,
@@ -466,7 +464,7 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
     );
   }
 
-  Widget _buildDifficultyTag(BuildContext context, LocaleProvider lp) {
+  Widget _buildDifficultyTag(BuildContext context, AppLocalizations l10n) {
     Color color;
     switch (widget.difficulty.toLowerCase()) {
       case 'beginner':
@@ -492,7 +490,7 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
         borderRadius: BorderRadius.circular(10),
       ),
       child: Text(
-        lp.translate(widget.difficulty.toLowerCase()),
+        widget.difficulty.toLowerCase(),
         style: AppTextStyles.bodySmall.copyWith(
           color: color,
           fontWeight: FontWeight.bold,

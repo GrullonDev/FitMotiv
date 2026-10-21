@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fit_motiv/constants/app_colors.dart';
 import 'package:fit_motiv/constants/app_text_styles.dart';
 import 'package:fit_motiv/core/services/assistant_service.dart';
+import 'package:fit_motiv/l10n/app_localizations.dart';
 
 class AssistantChatScreen extends StatefulWidget {
   const AssistantChatScreen({super.key});
@@ -12,13 +13,8 @@ class AssistantChatScreen extends StatefulWidget {
 
 class _AssistantChatScreenState extends State<AssistantChatScreen> {
   final TextEditingController _controller = TextEditingController();
-  final List<Map<String, dynamic>> _messages = [
-    {
-      'text':
-          "Hola! Soy tu asistente de FitMotiv. ¿En qué puedo ayudarte a entrenar hoy?",
-      'isUser': false,
-    },
-  ];
+  final List<Map<String, dynamic>> _messages = [];
+  bool _greetingAdded = false;
   final AssistantService _assistantService = AssistantServiceImpl();
   bool _isLoading = false;
 
@@ -42,12 +38,19 @@ class _AssistantChatScreenState extends State<AssistantChatScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if (!_greetingAdded) {
+      _greetingAdded = true;
+      _messages.insert(0, {
+        'text': AppLocalizations.of(context)!.aiAssistantGreeting,
+        'isUser': false,
+      });
+    }
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
         backgroundColor: AppColors.background,
         elevation: 0,
-        title: Text('Asistente IA', style: AppTextStyles.heading3),
+        title: Text(AppLocalizations.of(context)!.aiAssistant, style: AppTextStyles.heading3),
         centerTitle: true,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: AppColors.textPrimary),
@@ -122,7 +125,7 @@ class _AssistantChatScreenState extends State<AssistantChatScreen> {
               controller: _controller,
               style: AppTextStyles.bodyMedium,
               decoration: InputDecoration(
-                hintText: "Escribe tu mensaje...",
+                hintText: AppLocalizations.of(context)!.typeYourMessage,
                 hintStyle: AppTextStyles.bodyMedium.copyWith(
                   color: AppColors.textSecondary,
                 ),

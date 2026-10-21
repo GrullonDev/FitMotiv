@@ -1,8 +1,8 @@
 import 'package:fit_motiv/constants/app_colors.dart';
 import 'package:fit_motiv/constants/app_text_styles.dart';
-import 'package:fit_motiv/core/localization/locale_provider.dart';
 import 'package:fit_motiv/features/routines/presentation/providers/workout_provider.dart';
 import 'package:fit_motiv/features/routines/presentation/screens/routine_detail_screen.dart';
+import 'package:fit_motiv/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -12,6 +12,7 @@ class RoutinesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<WorkoutProvider>();
+    final l10n = AppLocalizations.of(context)!;
 
     return DefaultTabController(
       length: 4,
@@ -19,7 +20,7 @@ class RoutinesScreen extends StatelessWidget {
         appBar: AppBar(
           centerTitle: true,
           title: Text(
-            context.watch<LocaleProvider>().translate('routines'),
+            l10n.routines,
             style: AppTextStyles.heading3,
           ),
           actions: [
@@ -41,11 +42,11 @@ class RoutinesScreen extends StatelessWidget {
             ).colorScheme.onSurfaceVariant,
             indicatorColor: Theme.of(context).colorScheme.primary,
             tabs: [
-              Tab(text: context.read<LocaleProvider>().translate('all')),
-              Tab(text: context.read<LocaleProvider>().translate('cardio')),
-              Tab(text: context.read<LocaleProvider>().translate('strength')),
+              Tab(text: l10n.all),
+              Tab(text: l10n.cardio),
+              Tab(text: l10n.strength),
               Tab(
-                text: context.read<LocaleProvider>().translate('flexibility'),
+                text: l10n.flexibility,
               ),
             ],
           ),
@@ -95,10 +96,10 @@ class RoutinesScreen extends StatelessWidget {
               color: AppColors.textSecondary.withValues(alpha: 0.5),
             ),
             const SizedBox(height: 16),
-            Text('No routines yet', style: AppTextStyles.heading4),
+            Text(AppLocalizations.of(context)!.noRoutinesYet, style: AppTextStyles.heading4),
             const SizedBox(height: 8),
             Text(
-              'Workouts will appear here once you create them\nor they are added to the database.',
+              AppLocalizations.of(context)!.noRoutinesDescription,
               style: AppTextStyles.bodySmall,
               textAlign: TextAlign.center,
             ),
@@ -106,7 +107,7 @@ class RoutinesScreen extends StatelessWidget {
             ElevatedButton.icon(
               onPressed: () => provider.refreshWorkouts(),
               icon: const Icon(Icons.refresh),
-              label: const Text('Refresh'),
+              label: Text(AppLocalizations.of(context)!.refresh),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Theme.of(context).colorScheme.primary,
                 foregroundColor: Colors.white,
@@ -138,7 +139,7 @@ class RoutinesScreen extends StatelessWidget {
             ),
             const SizedBox(height: 12),
             Text(
-              'No workouts in this category',
+              AppLocalizations.of(context)!.noWorkoutsInCategory,
               style: AppTextStyles.bodyMedium,
             ),
           ],
@@ -163,9 +164,9 @@ class RoutinesScreen extends StatelessWidget {
             final w = workouts[index];
             return _RoutineCard(
               id: w['id'] as String? ?? index.toString(),
-              title: w['name'] as String? ?? 'Untitled',
+              title: w['name'] as String? ?? AppLocalizations.of(context)!.untitled,
               duration: w['duration'] as int? ?? 0,
-              category: w['category'] as String? ?? 'General',
+              category: w['category'] as String? ?? AppLocalizations.of(context)!.general,
               difficulty: w['difficulty'] as String? ?? '',
               description: w['description'] as String? ?? '',
               exerciseCount: w['exercise_count'] as int? ?? (8 + (index % 5)),
@@ -240,7 +241,7 @@ class _RoutineCardState extends State<_RoutineCard> {
 
   @override
   Widget build(BuildContext context) {
-    final lp = context.read<LocaleProvider>();
+    final l10n = AppLocalizations.of(context)!;
 
     return Hero(
       tag: 'routine_${widget.id}',
@@ -363,7 +364,7 @@ class _RoutineCardState extends State<_RoutineCard> {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        '${widget.exerciseCount} ${lp.translate('exercises')}',
+                        '${widget.exerciseCount} ${l10n.exercises}',
                         style: AppTextStyles.bodySmall.copyWith(
                           color: Theme.of(context).colorScheme.primary,
                           fontWeight: FontWeight.w600,
@@ -400,7 +401,7 @@ class _RoutineCardState extends State<_RoutineCard> {
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Text(
-                            lp.translate(widget.difficulty.toLowerCase()),
+                            widget.difficulty.toLowerCase(),
                             style: AppTextStyles.bodySmall.copyWith(
                               color: _difficultyColor,
                               fontSize: 9,

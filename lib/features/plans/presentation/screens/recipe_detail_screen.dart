@@ -1,9 +1,9 @@
 import 'package:fit_motiv/constants/app_colors.dart';
 import 'package:fit_motiv/constants/app_text_styles.dart';
 import 'package:fit_motiv/core/di/injection_container.dart';
-import 'package:fit_motiv/core/localization/locale_provider.dart';
 import 'package:fit_motiv/core/services/analytics_service.dart';
 import 'package:fit_motiv/core/theme/theme_provider.dart';
+import 'package:fit_motiv/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -38,7 +38,7 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
     final imageUrl = widget.imageUrl;
     final calories = widget.calories;
     final time = widget.time;
-    final l10n = context.watch<LocaleProvider>();
+    final l10n = AppLocalizations.of(context)!;
     final primaryColor = context.watch<ThemeProvider>().primaryColor;
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
@@ -84,7 +84,7 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Text(
-                          l10n.translate('easy'),
+                          l10n.easy,
                           style: TextStyle(
                             color: primaryColor,
                             fontWeight: FontWeight.bold,
@@ -100,12 +100,12 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                       const SizedBox(width: 16),
                       _buildInfoTile(Icons.bolt_outlined, calories, isDark),
                       const SizedBox(width: 16),
-                      _buildInfoTile(Icons.person_outline, '2 serv', isDark),
+                      _buildInfoTile(Icons.person_outline, l10n.servings(2), isDark),
                     ],
                   ),
                   const SizedBox(height: 32),
                   Text(
-                    l10n.translate('ingredients'),
+                    l10n.ingredients,
                     style: AppTextStyles.heading4,
                   ),
                   const SizedBox(height: 16),
@@ -116,7 +116,7 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                   _buildIngredientItem('Semillas de sésamo'),
                   const SizedBox(height: 32),
                   Text(
-                    l10n.translate('preparation'),
+                    l10n.preparation,
                     style: AppTextStyles.heading4,
                   ),
                   const SizedBox(height: 16),

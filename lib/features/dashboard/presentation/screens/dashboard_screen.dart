@@ -9,7 +9,7 @@ import 'package:fit_motiv/features/profile_settings/presentation/screens/setting
 import 'package:fit_motiv/widgets/progress_card.dart';
 import 'package:fit_motiv/widgets/recipe_card.dart';
 import 'package:fit_motiv/widgets/workout_card.dart';
-import 'package:fit_motiv/core/localization/locale_provider.dart';
+import 'package:fit_motiv/l10n/app_localizations.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -59,7 +59,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final profile = profileProvider.profile;
     final firstName = profile != null
         ? profile.displayName.split(' ').first
-        : context.read<LocaleProvider>().translate('profile');
+        : AppLocalizations.of(context)!.profile;
 
     return FadeInDown(
       duration: const Duration(milliseconds: 600),
@@ -71,7 +71,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  context.read<LocaleProvider>().translate('welcome_back'),
+                  AppLocalizations.of(context)!.welcomeBack,
                   style: AppTextStyles.welcome,
                 ),
                 const SizedBox(height: 4),
@@ -175,7 +175,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             Expanded(
               child: _MiniStatCard(
                 icon: Icons.monitor_weight_outlined,
-                label: context.watch<LocaleProvider>().translate('weight'),
+                label: AppLocalizations.of(context)!.weight,
                 value: '${profile.weight.toStringAsFixed(1)} lbs',
                 color: const Color(0xFF4ECDC4),
               ),
@@ -186,7 +186,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             Expanded(
               child: _MiniStatCard(
                 icon: Icons.height,
-                label: context.watch<LocaleProvider>().translate('height'),
+                label: AppLocalizations.of(context)!.height,
                 value: '${profile.height.toStringAsFixed(2)} m',
                 color: const Color(0xFF45B7D1),
               ),
@@ -198,7 +198,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             Expanded(
               child: _MiniStatCard(
                 icon: Icons.flag_outlined,
-                label: context.watch<LocaleProvider>().translate('goal'),
+                label: AppLocalizations.of(context)!.goal,
                 value: profile.fitnessGoal,
                 color: const Color(0xFFFF6B6B),
               ),
@@ -216,7 +216,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            context.read<LocaleProvider>().translate('personal_records'),
+            AppLocalizations.of(context)!.personalRecords,
             style: AppTextStyles.heading3,
           ),
           const SizedBox(height: 16),
@@ -228,7 +228,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   Widget _buildQuoteSection(BuildContext context) {
     final dashboardProvider = context.watch<DashboardProvider>();
-    final quoteText = dashboardProvider.quote?.text ?? 'Loading...';
+    final quoteText = dashboardProvider.quote?.text ?? AppLocalizations.of(context)!.loading;
 
     return FadeInUp(
       duration: const Duration(milliseconds: 600),
@@ -237,7 +237,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            context.read<LocaleProvider>().translate('quote_of_the_day'),
+            AppLocalizations.of(context)!.quoteOfTheDay,
             style: AppTextStyles.heading3,
           ),
           const SizedBox(height: 16),
@@ -284,7 +284,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          context.read<LocaleProvider>().translate('workout_of_the_day'),
+          AppLocalizations.of(context)!.workoutOfTheDay,
           style: AppTextStyles.heading3,
         ),
         const SizedBox(height: 16),
@@ -300,7 +300,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          context.read<LocaleProvider>().translate('healthy_recipe'),
+          AppLocalizations.of(context)!.healthyRecipe,
           style: AppTextStyles.heading3,
         ),
         const SizedBox(height: 16),

@@ -1,8 +1,8 @@
 import 'package:fit_motiv/constants/app_colors.dart';
 import 'package:fit_motiv/constants/app_text_styles.dart';
-import 'package:fit_motiv/core/localization/locale_provider.dart';
 import 'package:fit_motiv/core/theme/theme_provider.dart';
 import 'package:fit_motiv/core/utils/responsive_utils.dart';
+import 'package:fit_motiv/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
@@ -18,7 +18,9 @@ class PlanDetailScreen extends StatefulWidget {
 
 class _PlanDetailScreenState extends State<PlanDetailScreen> {
   int selectedDay = 0;
-  final List<String> days = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
+  List<String> _localizedDays(AppLocalizations l10n) => [
+    l10n.dayMon, l10n.dayTue, l10n.dayWed, l10n.dayThu, l10n.dayFri, l10n.daySat, l10n.daySun,
+  ];
   late ScrollController _scrollController;
   bool _isFabVisible = true;
 
@@ -52,7 +54,7 @@ class _PlanDetailScreenState extends State<PlanDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = context.watch<LocaleProvider>();
+    final l10n = AppLocalizations.of(context)!;
     final primaryColor = context.watch<ThemeProvider>().primaryColor;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final isMobile = Responsive.isMobile(context);
@@ -85,7 +87,7 @@ class _PlanDetailScreenState extends State<PlanDetailScreen> {
                   ),
                   scrollDirection: Axis.horizontal,
                   physics: const BouncingScrollPhysics(),
-                  itemCount: days.length,
+                  itemCount: _localizedDays(l10n).length,
                   itemBuilder: (context, index) {
                     bool isSelected = selectedDay == index;
                     return GestureDetector(
@@ -126,7 +128,7 @@ class _PlanDetailScreenState extends State<PlanDetailScreen> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              days[index],
+                              _localizedDays(l10n)[index],
                               style: TextStyle(
                                 color: isSelected
                                     ? Colors.white
@@ -182,7 +184,7 @@ class _PlanDetailScreenState extends State<PlanDetailScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       _buildMacroIndicator(
-                        l10n.translate('proteins'),
+                        l10n.proteins,
                         '120g',
                         '150g',
                         0.8,
@@ -191,7 +193,7 @@ class _PlanDetailScreenState extends State<PlanDetailScreen> {
                         isMobile,
                       ),
                       _buildMacroIndicator(
-                        l10n.translate('carbs'),
+                        l10n.carbs,
                         '200g',
                         '250g',
                         0.8,
@@ -200,7 +202,7 @@ class _PlanDetailScreenState extends State<PlanDetailScreen> {
                         isMobile,
                       ),
                       _buildMacroIndicator(
-                        l10n.translate('fats'),
+                        l10n.fats,
                         '45g',
                         '60g',
                         0.75,
@@ -223,7 +225,7 @@ class _PlanDetailScreenState extends State<PlanDetailScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      l10n.translate('meal_plans'),
+                      l10n.mealPlans,
                       style:
                           (isMobile
                                   ? AppTextStyles.heading4
@@ -233,28 +235,28 @@ class _PlanDetailScreenState extends State<PlanDetailScreen> {
                     const SizedBox(height: 16),
                     if (isMobile) ...[
                       _buildMealCard(
-                        l10n.translate('breakfast'),
+                        l10n.breakfast,
                         'Omelet de espinacas y aguacate',
                         '450 kcal',
                         Icons.egg_outlined,
                         primaryColor,
                       ),
                       _buildMealCard(
-                        l10n.translate('lunch'),
+                        l10n.lunch,
                         'Pollo a la plancha con quinoa y brócoli',
                         '650 kcal',
                         Icons.restaurant_outlined,
                         primaryColor,
                       ),
                       _buildMealCard(
-                        l10n.translate('snacks'),
+                        l10n.snacks,
                         'Yogurt griego con moras',
                         '200 kcal',
                         Icons.apple_outlined,
                         primaryColor,
                       ),
                       _buildMealCard(
-                        l10n.translate('dinner'),
+                        l10n.dinner,
                         'Salmón al horno con espárragos',
                         '500 kcal',
                         Icons.set_meal_outlined,
@@ -270,28 +272,28 @@ class _PlanDetailScreenState extends State<PlanDetailScreen> {
                         childAspectRatio: 2.5,
                         children: [
                           _buildMealCard(
-                            l10n.translate('breakfast'),
+                            l10n.breakfast,
                             'Omelet de espinacas',
                             '450 kcal',
                             Icons.egg_outlined,
                             primaryColor,
                           ),
                           _buildMealCard(
-                            l10n.translate('lunch'),
+                            l10n.lunch,
                             'Pollo con quinoa',
                             '650 kcal',
                             Icons.restaurant_outlined,
                             primaryColor,
                           ),
                           _buildMealCard(
-                            l10n.translate('snacks'),
+                            l10n.snacks,
                             'Yogurt griego',
                             '200 kcal',
                             Icons.apple_outlined,
                             primaryColor,
                           ),
                           _buildMealCard(
-                            l10n.translate('dinner'),
+                            l10n.dinner,
                             'Salmón al horno',
                             '500 kcal',
                             Icons.set_meal_outlined,
@@ -323,7 +325,7 @@ class _PlanDetailScreenState extends State<PlanDetailScreen> {
               color: Colors.white,
             ),
             label: Text(
-              l10n.translate('shopping_list'),
+              l10n.shoppingList,
               style: const TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.bold,

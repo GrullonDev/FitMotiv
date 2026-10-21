@@ -1,8 +1,8 @@
 import 'package:fit_motiv/constants/app_colors.dart';
 import 'package:fit_motiv/constants/app_text_styles.dart';
-import 'package:fit_motiv/core/localization/locale_provider.dart';
 import 'package:fit_motiv/core/theme/theme_provider.dart';
 import 'package:fit_motiv/features/plans/presentation/screens/plan_detail_screen.dart';
+import 'package:fit_motiv/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -28,7 +28,7 @@ class NutritionPlanCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = context.read<LocaleProvider>();
+    final l10n = AppLocalizations.of(context)!;
     final primaryColor = context.watch<ThemeProvider>().primaryColor;
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
@@ -127,7 +127,7 @@ class NutritionPlanCard extends StatelessWidget {
                                   ),
                                   const SizedBox(width: 4),
                                   Text(
-                                    l10n.translate('recommended_for_you'),
+                                    l10n.recommendedForYou,
                                     style: const TextStyle(
                                       color: Colors.white,
                                       fontSize: 11,

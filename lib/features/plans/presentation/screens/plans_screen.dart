@@ -1,11 +1,11 @@
 import 'package:fit_motiv/constants/app_colors.dart';
 import 'package:fit_motiv/constants/app_text_styles.dart';
-import 'package:fit_motiv/core/localization/locale_provider.dart';
 import 'package:fit_motiv/core/theme/theme_provider.dart';
 import 'package:fit_motiv/core/utils/responsive_utils.dart';
 import 'package:fit_motiv/features/plans/presentation/providers/plans_provider.dart';
 import 'package:fit_motiv/features/plans/presentation/widgets/nutrition_plan_card.dart';
 import 'package:fit_motiv/features/plans/presentation/widgets/recipe_card.dart';
+import 'package:fit_motiv/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -14,7 +14,7 @@ class PlansScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = context.watch<LocaleProvider>();
+    final l10n = AppLocalizations.of(context)!;
     final primaryColor = context.watch<ThemeProvider>().primaryColor;
 
     return DefaultTabController(
@@ -29,7 +29,7 @@ class PlansScreen extends StatelessWidget {
               top: Responsive.isMobile(context) ? 16.0 : 24.0,
             ),
             child: Text(
-              l10n.translate('nutrition'),
+              l10n.nutrition,
               style:
                   (Responsive.isMobile(context)
                           ? AppTextStyles.heading2
@@ -50,18 +50,18 @@ class PlansScreen extends StatelessWidget {
             ),
             unselectedLabelStyle: AppTextStyles.bodyMedium,
             tabs: [
-              Tab(text: l10n.translate('meal_plans')),
-              Tab(text: l10n.translate('recipes')),
-              Tab(text: l10n.translate('tips')),
+              Tab(text: l10n.mealPlans),
+              Tab(text: l10n.recipes),
+              Tab(text: l10n.tips),
             ],
           ),
         ),
         body: TabBarView(
           physics: const BouncingScrollPhysics(),
           children: [
-            _buildMealPlansTab(context, l10n, primaryColor),
-            _buildRecipesTab(context, l10n, primaryColor),
-            _buildTipsTab(context, l10n),
+            _buildMealPlansTab(context, primaryColor),
+            _buildRecipesTab(context, primaryColor),
+            _buildTipsTab(context),
           ],
         ),
       ),
@@ -70,9 +70,9 @@ class PlansScreen extends StatelessWidget {
 
   Widget _buildMealPlansTab(
     BuildContext context,
-    LocaleProvider l10n,
     Color primaryColor,
   ) {
+    final l10n = AppLocalizations.of(context)!;
     final provider = context.watch<PlansProvider>();
     bool isMobile = Responsive.isMobile(context);
 
@@ -100,7 +100,7 @@ class PlansScreen extends StatelessWidget {
                 ),
                 const SizedBox(width: 8),
                 Text(
-                  l10n.translate('personalized_meal_plans'),
+                  l10n.personalizedMealPlans,
                   style: isMobile
                       ? AppTextStyles.heading4
                       : AppTextStyles.heading3,
@@ -111,8 +111,8 @@ class PlansScreen extends StatelessWidget {
             if (plans.isEmpty)
               _buildEmptyState(
                 context,
-                l10n.translate('no_posts'), // Or more specific if added
-                l10n.translate('personalized_meal_plans'),
+                l10n.noPosts,
+                l10n.personalizedMealPlans,
                 Icons.restaurant_menu,
               )
             else if (isMobile)
@@ -164,9 +164,9 @@ class PlansScreen extends StatelessWidget {
 
   Widget _buildRecipesTab(
     BuildContext context,
-    LocaleProvider l10n,
     Color primaryColor,
   ) {
+    final l10n = AppLocalizations.of(context)!;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final isMobile = Responsive.isMobile(context);
     final provider = context.watch<PlansProvider>();
@@ -193,7 +193,7 @@ class PlansScreen extends StatelessWidget {
             ),
             child: TextField(
               decoration: InputDecoration(
-                hintText: l10n.translate('search_recipes'),
+                hintText: l10n.searchRecipes,
                 prefixIcon: const Icon(Icons.search),
                 filled: true,
                 fillColor: isDark ? Colors.white10 : Colors.white,
@@ -239,7 +239,7 @@ class PlansScreen extends StatelessWidget {
                           color: AppColors.textSecondary.withValues(alpha: 0.3),
                         ),
                         const SizedBox(height: 12),
-                        Text('No hay recetas', style: AppTextStyles.bodyMedium),
+                        Text(l10n.noRecipes, style: AppTextStyles.bodyMedium),
                       ],
                     ),
                   )
@@ -295,7 +295,8 @@ class PlansScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildTipsTab(BuildContext context, LocaleProvider l10n) {
+  Widget _buildTipsTab(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final primaryColor = context.watch<ThemeProvider>().primaryColor;
     final provider = context.watch<PlansProvider>();
 
@@ -313,13 +314,13 @@ class PlansScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Carrusel - Sabías que? — desde la API
-            Text(l10n.translate('did_you_know'), style: AppTextStyles.heading4),
+            Text(l10n.didYouKnow, style: AppTextStyles.heading4),
             const SizedBox(height: 16),
             if (provider.tips.isEmpty)
               _buildEmptyState(
                 context,
-                l10n.translate('tips'),
-                'Daily updates here',
+                l10n.tips,
+                l10n.dailyUpdatesHere,
                 Icons.lightbulb_outline,
               )
             else
@@ -346,7 +347,7 @@ class PlansScreen extends StatelessWidget {
 
             // Water Calculator — persistido en la API
             Text(
-              l10n.translate('water_tracker'),
+              l10n.waterTracker,
               style: AppTextStyles.heading4,
             ),
             const SizedBox(height: 16),
@@ -356,17 +357,15 @@ class PlansScreen extends StatelessWidget {
 
             // Articles — desde la API
             Text(
-              l10n.translate('recommended_articles'),
+              l10n.recommendedArticles,
               style: AppTextStyles.heading4,
             ),
             const SizedBox(height: 16),
             if (provider.articles.isEmpty)
               _buildEmptyState(
                 context,
-                l10n.translate(
-                  'no_account',
-                ), // Use descriptive key if available
-                l10n.translate('recipes'),
+                l10n.noAccount,
+                l10n.recipes,
                 Icons.article_outlined,
               )
             else
@@ -436,7 +435,7 @@ class PlansScreen extends StatelessWidget {
     Color color,
     Color primary,
   ) {
-    final l10n = context.read<LocaleProvider>();
+    final l10n = AppLocalizations.of(context)!;
     return Container(
       margin: const EdgeInsets.only(right: 12),
       padding: const EdgeInsets.all(20),
@@ -511,7 +510,7 @@ class PlansScreen extends StatelessWidget {
                   ),
                   const SizedBox(width: 4),
                   Text(
-                    l10n.translate('share'),
+                    l10n.share,
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 11,
@@ -608,7 +607,7 @@ class _WaterTrackerWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = context.watch<LocaleProvider>();
+    final l10n = AppLocalizations.of(context)!;
     final primaryColor = context.watch<ThemeProvider>().primaryColor;
 
     final glassesValue = provider.todayWaterGlasses;
@@ -644,13 +643,13 @@ class _WaterTrackerWidget extends StatelessWidget {
                       fontWeight: FontWeight.w900,
                     ),
                     child: Text(
-                      '$glassesValue / 8 ${l10n.translate('glasses')}',
+                      '$glassesValue / 8 ${l10n.glasses}',
                     ),
                   ),
                   Text(
                     isComplete
-                        ? l10n.translate('water_reached')
-                        : l10n.translate('water_target'),
+                        ? l10n.waterReached
+                        : l10n.waterTarget,
                     style: TextStyle(
                       color: isComplete
                           ? Colors.green
