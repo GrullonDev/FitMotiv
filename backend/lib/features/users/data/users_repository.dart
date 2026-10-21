@@ -38,8 +38,15 @@ class UsersRepository {
   }
 
   static const _allowedFields = {
-    'full_name', 'username', 'bio', 'fitness_goal',
-    'activity_level', 'age', 'height', 'weight', 'avatar_url',
+    'full_name',
+    'username',
+    'bio',
+    'fitness_goal',
+    'activity_level',
+    'age',
+    'height',
+    'weight',
+    'avatar_url',
   };
 
   Future<Map<String, dynamic>?> updateProfile(

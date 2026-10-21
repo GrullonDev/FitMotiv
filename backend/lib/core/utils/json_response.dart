@@ -51,6 +51,8 @@ Response jsonTooManyRequests([String message = 'Too many requests']) {
 }
 
 Response methodNotAllowed() {
-  return jsonError('Method not allowed',
-      statusCode: HttpStatus.methodNotAllowed);
+  return jsonError(
+    'Method not allowed',
+    statusCode: HttpStatus.methodNotAllowed,
+  );
 }

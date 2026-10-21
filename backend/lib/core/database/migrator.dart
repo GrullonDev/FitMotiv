@@ -11,10 +11,9 @@ class Migrator {
   Future<void> run() async {
     await _ensureMigrationsTable();
     final applied = await _getAppliedMigrations();
-    final pending = _allMigrations
-        .where((m) => !applied.contains(m.version))
-        .toList()
-      ..sort((a, b) => a.version.compareTo(b.version));
+    final pending =
+        _allMigrations.where((m) => !applied.contains(m.version)).toList()
+          ..sort((a, b) => a.version.compareTo(b.version));
 
     if (pending.isEmpty) {
       stdout.writeln('[Migrator] All migrations are up to date');
@@ -22,7 +21,9 @@ class Migrator {
     }
 
     for (final migration in pending) {
-      stdout.writeln('[Migrator] Applying migration ${migration.version}: ${migration.name}');
+      stdout.writeln(
+        '[Migrator] Applying migration ${migration.version}: ${migration.name}',
+      );
       await _db.transaction((tx) async {
         await tx.execute(migration.sql);
         await tx.execute(

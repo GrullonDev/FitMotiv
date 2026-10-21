@@ -18,13 +18,15 @@ class ProgressRepository {
     );
 
     return result
-        .map((row) => {
-              'id': row[0],
-              'weight': row[1],
-              'notes': row[2],
-              'recorded_at': (row[3] as DateTime).toIso8601String(),
-              'created_at': (row[4] as DateTime).toIso8601String(),
-            })
+        .map(
+          (row) => {
+            'id': row[0],
+            'weight': row[1],
+            'notes': row[2],
+            'recorded_at': (row[3] as DateTime).toIso8601String(),
+            'created_at': (row[4] as DateTime).toIso8601String(),
+          },
+        )
         .toList();
   }
 
@@ -71,20 +73,22 @@ class ProgressRepository {
     );
 
     return result
-        .map((row) => {
-              'id': row[0],
-              'title': row[1],
-              'description': row[2],
-              'target_value': row[3],
-              'current_value': row[4],
-              'unit': row[5],
-              'icon': row[6],
-              'is_completed': row[7],
-              'deadline': row[8] != null
-                  ? (row[8] as DateTime).toIso8601String()
-                  : null,
-              'created_at': (row[9] as DateTime).toIso8601String(),
-            })
+        .map(
+          (row) => {
+            'id': row[0],
+            'title': row[1],
+            'description': row[2],
+            'target_value': row[3],
+            'current_value': row[4],
+            'unit': row[5],
+            'icon': row[6],
+            'is_completed': row[7],
+            'deadline': row[8] != null
+                ? (row[8] as DateTime).toIso8601String()
+                : null,
+            'created_at': (row[9] as DateTime).toIso8601String(),
+          },
+        )
         .toList();
   }
 
@@ -121,8 +125,9 @@ class ProgressRepository {
       'unit': row[5],
       'icon': row[6],
       'is_completed': row[7],
-      'deadline':
-          row[8] != null ? (row[8] as DateTime).toIso8601String() : null,
+      'deadline': row[8] != null
+          ? (row[8] as DateTime).toIso8601String()
+          : null,
       'created_at': (row[9] as DateTime).toIso8601String(),
     };
   }
@@ -153,16 +158,16 @@ class ProgressRepository {
       'unit': row[5],
       'icon': row[6],
       'is_completed': row[7],
-      'deadline':
-          row[8] != null ? (row[8] as DateTime).toIso8601String() : null,
+      'deadline': row[8] != null
+          ? (row[8] as DateTime).toIso8601String()
+          : null,
       'created_at': (row[9] as DateTime).toIso8601String(),
     };
   }
 
   // --- Workout Sessions ---
 
-  Future<List<Map<String, dynamic>>> getWorkoutSessions(
-      String userId) async {
+  Future<List<Map<String, dynamic>>> getWorkoutSessions(String userId) async {
     final result = await _db.query(
       '''
       SELECT id, workout_id, workout_name, duration_minutes,
@@ -175,16 +180,18 @@ class ProgressRepository {
     );
 
     return result
-        .map((row) => {
-              'id': row[0],
-              'workout_id': row[1],
-              'workout_name': row[2],
-              'duration_minutes': row[3],
-              'calories_burned': row[4],
-              'notes': row[5],
-              'completed_at': (row[6] as DateTime).toIso8601String(),
-              'created_at': (row[7] as DateTime).toIso8601String(),
-            })
+        .map(
+          (row) => {
+            'id': row[0],
+            'workout_id': row[1],
+            'workout_name': row[2],
+            'duration_minutes': row[3],
+            'calories_burned': row[4],
+            'notes': row[5],
+            'completed_at': (row[6] as DateTime).toIso8601String(),
+            'created_at': (row[7] as DateTime).toIso8601String(),
+          },
+        )
         .toList();
   }
 

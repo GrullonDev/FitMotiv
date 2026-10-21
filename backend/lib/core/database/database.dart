@@ -31,7 +31,9 @@ class Database {
     );
 
     _initialized = true;
-    stdout.writeln('[DB] Connected to PostgreSQL at ${Env.dbHost}:${Env.dbPort}/${Env.dbName}');
+    stdout.writeln(
+      '[DB] Connected to PostgreSQL at ${Env.dbHost}:${Env.dbPort}/${Env.dbName}',
+    );
   }
 
   Connection get connection {

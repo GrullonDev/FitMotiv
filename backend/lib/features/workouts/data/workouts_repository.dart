@@ -26,8 +26,7 @@ class WorkoutsRepository {
       parameters['user_id'] = userId;
     }
 
-    final where =
-        conditions.isEmpty ? '' : 'WHERE ${conditions.join(' AND ')}';
+    final where = conditions.isEmpty ? '' : 'WHERE ${conditions.join(' AND ')}';
 
     final result = await _db.query(
       '''
@@ -70,17 +69,19 @@ class WorkoutsRepository {
     );
 
     workout['exercises'] = exercises
-        .map((e) => {
-              'id': e[0],
-              'name': e[1],
-              'description': e[2],
-              'category': e[3],
-              'seconds': e[4],
-              'reps': e[5],
-              'rest_seconds': e[6],
-              'sort_order': e[7],
-              'image_url': e[8],
-            })
+        .map(
+          (e) => {
+            'id': e[0],
+            'name': e[1],
+            'description': e[2],
+            'category': e[3],
+            'seconds': e[4],
+            'reps': e[5],
+            'rest_seconds': e[6],
+            'sort_order': e[7],
+            'image_url': e[8],
+          },
+        )
         .toList();
 
     return workout;
@@ -126,17 +127,19 @@ class WorkoutsRepository {
     );
 
     workout['exercises'] = exercises
-        .map((e) => {
-              'id': e[0],
-              'name': e[1],
-              'description': e[2],
-              'category': e[3],
-              'seconds': e[4],
-              'reps': e[5],
-              'rest_seconds': e[6],
-              'sort_order': e[7],
-              'image_url': e[8],
-            })
+        .map(
+          (e) => {
+            'id': e[0],
+            'name': e[1],
+            'description': e[2],
+            'category': e[3],
+            'seconds': e[4],
+            'reps': e[5],
+            'rest_seconds': e[6],
+            'sort_order': e[7],
+            'image_url': e[8],
+          },
+        )
         .toList();
 
     return workout;

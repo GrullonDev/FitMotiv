@@ -14,7 +14,9 @@ Future<Map<String, dynamic>> parseJsonBody(RequestContext context) async {
 
 String? validateEmail(String? email) {
   if (email == null || email.isEmpty) return 'Email is required';
-  final emailRegex = RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
+  final emailRegex = RegExp(
+    r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
+  );
   if (!emailRegex.hasMatch(email)) return 'Invalid email format';
   return null;
 }

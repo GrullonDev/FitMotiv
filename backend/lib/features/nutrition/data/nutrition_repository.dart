@@ -18,17 +18,19 @@ class NutritionRepository {
     );
 
     return result
-        .map((row) => {
-              'id': row[0],
-              'title': row[1],
-              'description': row[2],
-              'calories': row[3],
-              'icon': row[4],
-              'badge_text': row[5],
-              'image_url': row[6],
-              'is_recommended': row[7],
-              'created_at': (row[8] as DateTime).toIso8601String(),
-            })
+        .map(
+          (row) => {
+            'id': row[0],
+            'title': row[1],
+            'description': row[2],
+            'calories': row[3],
+            'icon': row[4],
+            'badge_text': row[5],
+            'image_url': row[6],
+            'is_recommended': row[7],
+            'created_at': (row[8] as DateTime).toIso8601String(),
+          },
+        )
         .toList();
   }
 
@@ -103,7 +105,10 @@ class NutritionRepository {
     );
 
     if (result.isEmpty) {
-      return {'glasses': 0, 'date': DateTime.now().toIso8601String().split('T')[0]};
+      return {
+        'glasses': 0,
+        'date': DateTime.now().toIso8601String().split('T')[0],
+      };
     }
 
     final row = result.first;

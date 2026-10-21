@@ -45,7 +45,8 @@ class AuthRepository {
       if (userResult.isEmpty) {
         // Email already exists — return a generic success to prevent enumeration
         return {
-          'message': 'If this email is available, your account has been created. Check your email to continue.',
+          'message':
+              'If this email is available, your account has been created. Check your email to continue.',
         };
       }
 
@@ -71,7 +72,9 @@ class AuthRepository {
         parameters: {
           'user_id': userId,
           'full_name': fullName,
-          'username': username.isEmpty ? 'user_${userId.substring(0, 8)}' : username,
+          'username': username.isEmpty
+              ? 'user_${userId.substring(0, 8)}'
+              : username,
           'bio': bio,
           'fitness_goal': fitnessGoal,
           'activity_level': activityLevel,
@@ -82,7 +85,8 @@ class AuthRepository {
       );
 
       return {
-        'message': 'If this email is available, your account has been created. Check your email to continue.',
+        'message':
+            'If this email is available, your account has been created. Check your email to continue.',
       };
     });
   }
@@ -117,8 +121,11 @@ class AuthRepository {
 
     // Check lockout
     if (lockedUntil != null && lockedUntil.isAfter(DateTime.now().toUtc())) {
-      final minutes = lockedUntil.difference(DateTime.now().toUtc()).inMinutes + 1;
-      throw AuthException('Account is temporarily locked. Try again in $minutes minutes');
+      final minutes =
+          lockedUntil.difference(DateTime.now().toUtc()).inMinutes + 1;
+      throw AuthException(
+        'Account is temporarily locked. Try again in $minutes minutes',
+      );
     }
 
     // Verify password
@@ -129,7 +136,9 @@ class AuthRepository {
           'UPDATE users SET failed_login_attempts = @attempts, locked_until = @locked_until WHERE id = @id',
           parameters: {
             'attempts': newAttempts,
-            'locked_until': DateTime.now().toUtc().add(Duration(minutes: Env.loginLockoutMinutes)),
+            'locked_until': DateTime.now().toUtc().add(
+              Duration(minutes: Env.loginLockoutMinutes),
+            ),
             'id': userId,
           },
         );
@@ -159,7 +168,9 @@ class AuthRepository {
       parameters: {
         'user_id': userId,
         'token_hash': tokenHash,
-        'expires_at': DateTime.now().toUtc().add(Duration(days: Env.refreshTokenExpiryDays)),
+        'expires_at': DateTime.now().toUtc().add(
+          Duration(days: Env.refreshTokenExpiryDays),
+        ),
       },
     );
 
@@ -226,14 +237,18 @@ class AuthRepository {
     // Generate new pair
     final newAccessToken = JwtService.generateAccessToken(userId, email);
     final newRefreshToken = JwtService.generateRefreshToken(userId);
-    final newTokenHash = sha256.convert(utf8.encode(newRefreshToken)).toString();
+    final newTokenHash = sha256
+        .convert(utf8.encode(newRefreshToken))
+        .toString();
 
     await _db.query(
       'INSERT INTO refresh_tokens (user_id, token_hash, expires_at) VALUES (@user_id, @token_hash, @expires_at)',
       parameters: {
         'user_id': userId,
         'token_hash': newTokenHash,
-        'expires_at': DateTime.now().toUtc().add(Duration(days: Env.refreshTokenExpiryDays)),
+        'expires_at': DateTime.now().toUtc().add(
+          Duration(days: Env.refreshTokenExpiryDays),
+        ),
       },
     );
 
@@ -247,7 +262,9 @@ class AuthRepository {
 
   Future<void> logout(String userId, {String? refreshTokenValue}) async {
     if (refreshTokenValue != null) {
-      final tokenHash = sha256.convert(utf8.encode(refreshTokenValue)).toString();
+      final tokenHash = sha256
+          .convert(utf8.encode(refreshTokenValue))
+          .toString();
       await _db.query(
         'UPDATE refresh_tokens SET revoked = true WHERE token_hash = @hash AND user_id = @user_id',
         parameters: {'hash': tokenHash, 'user_id': userId},

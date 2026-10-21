@@ -34,8 +34,7 @@ class QuotesRepository {
       parameters['category'] = category;
     }
 
-    final where =
-        conditions.isEmpty ? '' : 'WHERE ${conditions.join(' AND ')}';
+    final where = conditions.isEmpty ? '' : 'WHERE ${conditions.join(' AND ')}';
 
     final result = await _db.query(
       '''
@@ -48,12 +47,14 @@ class QuotesRepository {
     );
 
     return result
-        .map((row) => {
-              'id': row[0],
-              'text': row[1],
-              'author': row[2],
-              'category': row[3],
-            })
+        .map(
+          (row) => {
+            'id': row[0],
+            'text': row[1],
+            'author': row[2],
+            'category': row[3],
+          },
+        )
         .toList();
   }
 }

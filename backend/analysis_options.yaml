@@ -13,3 +13,4 @@ linter:
     no_default_cases: false
     sort_pub_dependencies: false
     prefer_single_quotes: false
+    prefer_relative_imports: true
