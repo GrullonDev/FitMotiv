@@ -2,8 +2,8 @@ import 'package:dio/dio.dart';
 
 class WorkoutApiDatasource {
   WorkoutApiDatasource({required Dio dio, required String baseUrl})
-      : _dio = dio,
-        _baseUrl = baseUrl;
+    : _dio = dio,
+      _baseUrl = baseUrl;
 
   final Dio _dio;
   final String _baseUrl;
@@ -15,7 +15,9 @@ class WorkoutApiDatasource {
       final data = responseData['data'];
       if (data is List) return List<Map<String, dynamic>>.from(data);
     }
-    if (responseData is List) return List<Map<String, dynamic>>.from(responseData);
+    if (responseData is List) {
+      return List<Map<String, dynamic>>.from(responseData);
+    }
     return [];
   }
 
@@ -34,7 +36,9 @@ class WorkoutApiDatasource {
     return _extractList(response.data);
   }
 
-  Future<List<Map<String, dynamic>>> getWorkoutsByCategory(String category) async {
+  Future<List<Map<String, dynamic>>> getWorkoutsByCategory(
+    String category,
+  ) async {
     final response = await _dio.get(
       _workoutsBase,
       queryParameters: {'category': category},

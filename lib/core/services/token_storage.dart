@@ -1,6 +1,13 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class TokenStorage {
+  TokenStorage({FlutterSecureStorage? storage})
+    : _storage =
+          storage ??
+          const FlutterSecureStorage(
+            aOptions: AndroidOptions(encryptedSharedPreferences: true),
+          );
+
   static const _accessTokenKey = 'access_token';
   static const _refreshTokenKey = 'refresh_token';
 
@@ -8,12 +15,6 @@ class TokenStorage {
 
   String? _cachedAccessToken;
   String? _cachedRefreshToken;
-
-  TokenStorage({FlutterSecureStorage? storage})
-      : _storage = storage ??
-            const FlutterSecureStorage(
-              aOptions: AndroidOptions(encryptedSharedPreferences: true),
-            );
 
   Future<void> saveTokens({
     required String accessToken,

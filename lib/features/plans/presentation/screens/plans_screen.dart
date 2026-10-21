@@ -345,14 +345,20 @@ class PlansScreen extends StatelessWidget {
             const SizedBox(height: 32),
 
             // Water Calculator — persistido en la API
-            Text(l10n.translate('water_tracker'), style: AppTextStyles.heading4),
+            Text(
+              l10n.translate('water_tracker'),
+              style: AppTextStyles.heading4,
+            ),
             const SizedBox(height: 16),
             _WaterTrackerWidget(provider: provider),
 
             const SizedBox(height: 32),
 
             // Articles — desde la API
-            Text(l10n.translate('recommended_articles'), style: AppTextStyles.heading4),
+            Text(
+              l10n.translate('recommended_articles'),
+              style: AppTextStyles.heading4,
+            ),
             const SizedBox(height: 16),
             if (provider.articles.isEmpty)
               _buildEmptyState(

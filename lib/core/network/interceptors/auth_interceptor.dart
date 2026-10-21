@@ -4,11 +4,9 @@ import 'package:dio/dio.dart';
 import 'package:fit_motiv/core/services/token_storage.dart';
 
 class AuthInterceptor extends Interceptor {
-  AuthInterceptor({
-    required TokenStorage tokenStorage,
-    required Dio dio,
-  })  : _tokenStorage = tokenStorage,
-        _dio = dio;
+  AuthInterceptor({required TokenStorage tokenStorage, required Dio dio})
+    : _tokenStorage = tokenStorage,
+      _dio = dio;
 
   final TokenStorage _tokenStorage;
   final Dio _dio;
@@ -32,7 +30,8 @@ class AuthInterceptor extends Interceptor {
     RequestInterceptorHandler handler,
   ) async {
     final path = options.path;
-    final needsAuth = !_noAuthPaths.any((p) => path.contains(p)) ||
+    final needsAuth =
+        !_noAuthPaths.any((p) => path.contains(p)) ||
         path.contains('/progress') ||
         path.contains('/users/me') ||
         path.contains('/nutrition/water');

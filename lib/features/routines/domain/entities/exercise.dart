@@ -1,5 +1,4 @@
 class Exercise {
-
   const Exercise({
     required this.id,
     required this.name,

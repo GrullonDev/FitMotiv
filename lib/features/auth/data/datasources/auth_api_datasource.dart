@@ -12,9 +12,9 @@ class AuthApiDataSource extends BaseRemoteDataSource implements AuthDataSource {
     required Dio dio,
     required String baseUrl,
     required TokenStorage tokenStorage,
-  })  : _dio = dio,
-        _baseUrl = baseUrl,
-        _tokenStorage = tokenStorage;
+  }) : _dio = dio,
+       _baseUrl = baseUrl,
+       _tokenStorage = tokenStorage;
 
   final Dio _dio;
   final String _baseUrl;
@@ -93,8 +93,10 @@ class AuthApiDataSource extends BaseRemoteDataSource implements AuthDataSource {
       weight: request.weight,
       isActive: data['is_active'] as bool? ?? true,
       isVerify: data['is_verified'] as bool? ?? false,
-      createdAt: data['created_at'] as String? ?? DateTime.now().toIso8601String(),
-      updatedAt: data['created_at'] as String? ?? DateTime.now().toIso8601String(),
+      createdAt:
+          data['created_at'] as String? ?? DateTime.now().toIso8601String(),
+      updatedAt:
+          data['created_at'] as String? ?? DateTime.now().toIso8601String(),
       message: data['message'] as String? ?? 'Registration successful',
     );
   }
@@ -107,9 +109,7 @@ class AuthApiDataSource extends BaseRemoteDataSource implements AuthDataSource {
     try {
       await _dio.post(
         '$_authBase/logout',
-        data: {
-          if (refreshToken != null) 'refresh_token': refreshToken,
-        },
+        data: {if (refreshToken != null) 'refresh_token': refreshToken},
         options: Options(
           headers: {
             if (accessToken != null) 'Authorization': 'Bearer $accessToken',
@@ -199,7 +199,9 @@ class AuthApiDataSource extends BaseRemoteDataSource implements AuthDataSource {
   Future<Map<String, dynamic>> verifyEmail(
     Map<String, dynamic> verificationData,
   ) async {
-    throw UnimplementedError('Email verification not yet implemented in backend');
+    throw UnimplementedError(
+      'Email verification not yet implemented in backend',
+    );
   }
 
   @override

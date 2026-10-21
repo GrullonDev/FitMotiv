@@ -2,8 +2,8 @@ import 'package:dio/dio.dart';
 
 class PlansApiDatasource {
   PlansApiDatasource({required Dio dio, required String baseUrl})
-      : _dio = dio,
-        _baseUrl = baseUrl;
+    : _dio = dio,
+      _baseUrl = baseUrl;
 
   final Dio _dio;
   final String _baseUrl;
@@ -15,7 +15,9 @@ class PlansApiDatasource {
       final data = responseData['data'];
       if (data is List) return List<Map<String, dynamic>>.from(data);
     }
-    if (responseData is List) return List<Map<String, dynamic>>.from(responseData);
+    if (responseData is List) {
+      return List<Map<String, dynamic>>.from(responseData);
+    }
     return [];
   }
 
@@ -90,9 +92,6 @@ class PlansApiDatasource {
   }
 
   Future<void> updateWaterGlasses(int glasses) async {
-    await _dio.put(
-      '$_nutritionBase/water',
-      data: {'glasses': glasses},
-    );
+    await _dio.put('$_nutritionBase/water', data: {'glasses': glasses});
   }
 }

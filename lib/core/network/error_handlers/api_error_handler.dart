@@ -328,7 +328,7 @@ class ApiErrorHandler {
     }
 
     final errorString = error.toString();
-    
+
     // Handle common auth error strings from the backend
     if (errorString.contains('email_address_invalid')) {
       return ValidationException(

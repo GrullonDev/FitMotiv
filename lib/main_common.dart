@@ -1,4 +1,3 @@
-import 'package:fit_motiv/core/config/app_config.dart';
 import 'package:fit_motiv/core/di/injection_container.dart' as di;
 import 'package:fit_motiv/core/localization/locale_provider.dart';
 import 'package:fit_motiv/core/services/analytics_service.dart';

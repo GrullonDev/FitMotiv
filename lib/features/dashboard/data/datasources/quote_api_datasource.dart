@@ -2,8 +2,8 @@ import 'package:dio/dio.dart';
 
 class QuoteApiDatasource {
   QuoteApiDatasource({required Dio dio, required String baseUrl})
-      : _dio = dio,
-        _baseUrl = baseUrl;
+    : _dio = dio,
+      _baseUrl = baseUrl;
 
   final Dio _dio;
   final String _baseUrl;
@@ -36,8 +36,9 @@ class QuoteApiDatasource {
   }
 
   Map<String, dynamic> _fallbackQuote() {
-    final dayOfYear =
-        DateTime.now().difference(DateTime(DateTime.now().year)).inDays;
+    final dayOfYear = DateTime.now()
+        .difference(DateTime(DateTime.now().year))
+        .inDays;
     final index = dayOfYear % _fallbackQuotes.length;
     return {'text': _fallbackQuotes[index], 'author': 'Unknown'};
   }

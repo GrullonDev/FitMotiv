@@ -5,7 +5,7 @@ import 'package:fit_motiv/features/community/data/datasources/community_stub_dat
 
 class CommunityProvider extends ChangeNotifier {
   CommunityProvider({required CommunityStubDatasource datasource})
-      : _datasource = datasource {
+    : _datasource = datasource {
     loadAll();
   }
 

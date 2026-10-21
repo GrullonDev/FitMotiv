@@ -1,10 +1,9 @@
+import 'package:backend/core/database/database.dart';
+import 'package:backend/core/middleware/auth_middleware.dart';
+import 'package:backend/core/utils/json_response.dart';
+import 'package:backend/core/utils/request_helpers.dart';
+import 'package:backend/features/progress/data/progress_repository.dart';
 import 'package:dart_frog/dart_frog.dart';
-
-import '../../../../lib/core/database/database.dart';
-import '../../../../lib/core/middleware/auth_middleware.dart';
-import '../../../../lib/core/utils/json_response.dart';
-import '../../../../lib/core/utils/request_helpers.dart';
-import '../../../../lib/features/progress/data/progress_repository.dart';
 
 Future<Response> onRequest(RequestContext context) async {
   final authUser = context.read<AuthUser>();

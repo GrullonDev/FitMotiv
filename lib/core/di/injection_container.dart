@@ -46,8 +46,12 @@ Future<void> init() async {
       localDatasource: sl<QuoteLocalDatasource>(),
     ),
   );
-  sl.registerLazySingleton<GetDailyQuote>(() => GetDailyQuote(sl<QuoteRepository>()));
-  sl.registerFactory<DashboardProvider>(() => DashboardProvider(getDailyQuote: sl<GetDailyQuote>()));
+  sl.registerLazySingleton<GetDailyQuote>(
+    () => GetDailyQuote(sl<QuoteRepository>()),
+  );
+  sl.registerFactory<DashboardProvider>(
+    () => DashboardProvider(getDailyQuote: sl<GetDailyQuote>()),
+  );
 
   // ─────────────────────────────────────────
   // Profile feature
@@ -82,14 +86,21 @@ Future<void> init() async {
     () => ProgressApiDatasource(dio: dio, baseUrl: baseUrl),
   );
   sl.registerFactory<ProgressProvider>(
-    () => ProgressProvider(datasource: sl<ProgressApiDatasource>(), analyticsService: sl<AnalyticsService>()),
+    () => ProgressProvider(
+      datasource: sl<ProgressApiDatasource>(),
+      analyticsService: sl<AnalyticsService>(),
+    ),
   );
 
   // ─────────────────────────────────────────
   // Community feature (stub until backend supports it)
   // ─────────────────────────────────────────
-  sl.registerLazySingleton<CommunityStubDatasource>(() => CommunityStubDatasource());
-  sl.registerFactory<CommunityProvider>(() => CommunityProvider(datasource: sl<CommunityStubDatasource>()));
+  sl.registerLazySingleton<CommunityStubDatasource>(
+    () => CommunityStubDatasource(),
+  );
+  sl.registerFactory<CommunityProvider>(
+    () => CommunityProvider(datasource: sl<CommunityStubDatasource>()),
+  );
 
   // ─────────────────────────────────────────
   // Plans/Nutrition feature
@@ -97,7 +108,9 @@ Future<void> init() async {
   sl.registerLazySingleton<PlansApiDatasource>(
     () => PlansApiDatasource(dio: dio, baseUrl: baseUrl),
   );
-  sl.registerFactory<PlansProvider>(() => PlansProvider(datasource: sl<PlansApiDatasource>()));
+  sl.registerFactory<PlansProvider>(
+    () => PlansProvider(datasource: sl<PlansApiDatasource>()),
+  );
 
   // ─────────────────────────────────────────
   // Services

@@ -2,7 +2,8 @@ import 'package:fit_motiv/features/routines/data/datasources/workout_api_datasou
 import 'package:flutter/material.dart';
 
 class WorkoutProvider extends ChangeNotifier {
-  WorkoutProvider({required WorkoutApiDatasource datasource}) : _datasource = datasource {
+  WorkoutProvider({required WorkoutApiDatasource datasource})
+    : _datasource = datasource {
     loadWorkouts();
   }
 

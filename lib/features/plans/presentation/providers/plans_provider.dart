@@ -2,7 +2,8 @@ import 'package:fit_motiv/features/plans/data/datasources/plans_api_datasource.d
 import 'package:flutter/material.dart';
 
 class PlansProvider extends ChangeNotifier {
-  PlansProvider({required PlansApiDatasource datasource}) : _datasource = datasource {
+  PlansProvider({required PlansApiDatasource datasource})
+    : _datasource = datasource {
     loadAll();
   }
 

@@ -2,8 +2,8 @@ import 'package:dio/dio.dart';
 
 class ProfileApiDatasource {
   ProfileApiDatasource({required Dio dio, required String baseUrl})
-      : _dio = dio,
-        _baseUrl = baseUrl;
+    : _dio = dio,
+      _baseUrl = baseUrl;
 
   final Dio _dio;
   final String _baseUrl;

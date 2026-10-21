@@ -6,7 +6,7 @@ import 'package:fit_motiv/features/profile_settings/data/models/user_profile_mod
 
 class UserProfileProvider extends ChangeNotifier {
   UserProfileProvider({required ProfileApiDatasource datasource})
-      : _datasource = datasource {
+    : _datasource = datasource {
     loadProfile();
   }
 

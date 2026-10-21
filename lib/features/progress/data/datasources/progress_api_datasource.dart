@@ -2,8 +2,8 @@ import 'package:dio/dio.dart';
 
 class ProgressApiDatasource {
   ProgressApiDatasource({required Dio dio, required String baseUrl})
-      : _dio = dio,
-        _baseUrl = baseUrl;
+    : _dio = dio,
+      _baseUrl = baseUrl;
 
   final Dio _dio;
   final String _baseUrl;
@@ -15,7 +15,9 @@ class ProgressApiDatasource {
       final data = responseData['data'];
       if (data is List) return List<Map<String, dynamic>>.from(data);
     }
-    if (responseData is List) return List<Map<String, dynamic>>.from(responseData);
+    if (responseData is List) {
+      return List<Map<String, dynamic>>.from(responseData);
+    }
     return [];
   }
 

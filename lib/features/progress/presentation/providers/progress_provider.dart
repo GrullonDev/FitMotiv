@@ -3,9 +3,11 @@ import 'package:fit_motiv/features/progress/data/datasources/progress_api_dataso
 import 'package:flutter/material.dart';
 
 class ProgressProvider extends ChangeNotifier {
-  ProgressProvider({required ProgressApiDatasource datasource, required AnalyticsService analyticsService})
-    : _datasource = datasource,
-      _analyticsService = analyticsService {
+  ProgressProvider({
+    required ProgressApiDatasource datasource,
+    required AnalyticsService analyticsService,
+  }) : _datasource = datasource,
+       _analyticsService = analyticsService {
     loadAll();
   }
 

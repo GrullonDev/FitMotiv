@@ -25,9 +25,7 @@ class NetworkDI {
     dio.options.headers['Content-Type'] = 'application/json';
     dio.options.headers['Accept'] = 'application/json';
 
-    dio.interceptors.add(
-      AuthInterceptor(tokenStorage: tokenStorage, dio: dio),
-    );
+    dio.interceptors.add(AuthInterceptor(tokenStorage: tokenStorage, dio: dio));
 
     if (_isLoggingEnabled()) {
       dio.interceptors.add(
