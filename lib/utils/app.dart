@@ -10,6 +10,7 @@ import 'package:fit_motiv/features/profile_settings/presentation/screens/setting
 import 'package:fit_motiv/features/profile_settings/presentation/screens/notification_settings_screen.dart';
 import 'package:fit_motiv/features/profile_settings/presentation/screens/faq_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:fit_motiv/l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:fit_motiv/core/localization/locale_provider.dart';
@@ -28,6 +29,7 @@ class FitMotivApp extends StatelessWidget {
       locale: localeProvider.locale,
       supportedLocales: const [Locale('en'), Locale('es')],
       localizationsDelegates: const [
+        AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
