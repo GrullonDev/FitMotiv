@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:fit_motiv/constants/app_colors.dart';
 import 'package:fit_motiv/constants/app_text_styles.dart';
+import 'package:fit_motiv/l10n/app_localizations.dart';
 
 class ForgotPasswordScreen extends StatelessWidget {
   const ForgotPasswordScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
@@ -24,18 +26,18 @@ class ForgotPasswordScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Forgot Your Password?', style: AppTextStyles.heading1),
+              Text(l10n.forgotYourPassword, style: AppTextStyles.heading1),
               const SizedBox(height: 16),
               Text(
-                'Enter your email and we’ll send you instructions to reset your password.',
+                l10n.forgotPasswordInstructions,
                 style: AppTextStyles.bodyMedium.copyWith(height: 1.5),
               ),
               const SizedBox(height: 24),
-              Text('Email Address', style: AppTextStyles.bodyMedium),
+              Text(l10n.emailAddress, style: AppTextStyles.bodyMedium),
               const SizedBox(height: 8),
               TextField(
                 decoration: InputDecoration(
-                  hintText: 'Enter your email',
+                  hintText: l10n.enterYourEmail,
                   filled: true,
                   fillColor: const Color(0xFFE8F5F1),
                   border: OutlineInputBorder(
@@ -57,7 +59,7 @@ class ForgotPasswordScreen extends StatelessWidget {
                     ),
                   ),
                   child: Text(
-                    'Send Reset Link',
+                    l10n.sendResetLink,
                     style: AppTextStyles.buttonText,
                   ),
                 ),
@@ -67,7 +69,7 @@ class ForgotPasswordScreen extends StatelessWidget {
                 child: GestureDetector(
                   onTap: () => Navigator.pop(context),
                   child: Text(
-                    'Back to Sign In',
+                    l10n.backToSignIn,
                     style: AppTextStyles.bodySmall.copyWith(
                       color: AppColors.primary,
                     ),

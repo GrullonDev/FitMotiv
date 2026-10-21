@@ -1,4 +1,5 @@
 import 'package:fit_motiv/constants/app_colors.dart';
+import 'package:fit_motiv/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 
 class RegisterSuccessDialog extends StatelessWidget {
@@ -6,6 +7,7 @@ class RegisterSuccessDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: Padding(
@@ -31,7 +33,7 @@ class RegisterSuccessDialog extends StatelessWidget {
 
             // Título
             Text(
-              'Account Created!',
+              l10n.accountCreated,
               style: const TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
@@ -43,7 +45,7 @@ class RegisterSuccessDialog extends StatelessWidget {
 
             // Descripción
             Text(
-              'Welcome to FitMotiv! Your account has been successfully created. You can now start your fitness journey.',
+              l10n.accountCreatedMessage,
               style: TextStyle(
                 fontSize: 16,
                 color: Colors.grey.shade600,
@@ -68,8 +70,8 @@ class RegisterSuccessDialog extends StatelessWidget {
                     borderRadius: BorderRadius.circular(12),
                   ),
                 ),
-                child: const Text(
-                  'Get Started',
+                child: Text(
+                  l10n.getStarted,
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,

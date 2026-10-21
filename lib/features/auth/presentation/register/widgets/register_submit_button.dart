@@ -1,4 +1,5 @@
 import 'package:fit_motiv/features/auth/presentation/register/bloc/register_bloc.dart';
+import 'package:fit_motiv/l10n/app_localizations.dart';
 import 'package:fit_motiv/utils/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
 
@@ -9,9 +10,10 @@ class RegisterSubmitButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return CustomButton(
-      text: 'Sign Up',
-      loadingText: 'Creating Account...',
+      text: l10n.signUp,
+      loadingText: l10n.creatingAccount,
       isLoading: bloc.isLoading,
       onPressed: () => _handleRegister(context),
     );

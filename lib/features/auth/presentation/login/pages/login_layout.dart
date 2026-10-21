@@ -1,5 +1,6 @@
 import 'package:fit_motiv/features/auth/presentation/login/bloc/login_bloc.dart';
 import 'package:fit_motiv/features/auth/presentation/login/widgets/widgets.dart';
+import 'package:fit_motiv/l10n/app_localizations.dart';
 import 'package:fit_motiv/utils/widgets/auth_link.dart';
 import 'package:fit_motiv/utils/widgets/message_card.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +11,7 @@ class LoginLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Consumer<LoginBloc>(
       builder: (context, model, child) {
         return SingleChildScrollView(
@@ -44,7 +46,7 @@ class LoginLayout extends StatelessWidget {
                           ? null
                           : () => model.resendVerificationEmail(),
                       icon: const Icon(Icons.email_outlined, size: 18),
-                      label: const Text('Resend Verification Email'),
+                      label: Text(l10n.resendVerification),
                       style: OutlinedButton.styleFrom(
                         foregroundColor: Colors.orange.shade700,
                         side: BorderSide(color: Colors.orange.shade400),
@@ -72,7 +74,7 @@ class LoginLayout extends StatelessWidget {
                     // Navigator.pushNamed(context, '/forgot-password');
                   },
                   child: Text(
-                    'Forgot Password?',
+                    l10n.forgotPassword,
                     style: TextStyle(color: Colors.grey[600], fontSize: 16),
                   ),
                 ),
@@ -82,8 +84,8 @@ class LoginLayout extends StatelessWidget {
 
               // Link para register
               AuthLink(
-                text: "Don't have an account? ",
-                linkText: 'Sign Up',
+                text: l10n.dontHaveAccountPrefix,
+                linkText: l10n.signUp,
                 onTap: () => Navigator.pushNamed(context, '/register'),
               ),
             ],

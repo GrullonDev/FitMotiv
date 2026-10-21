@@ -1,4 +1,5 @@
 import 'package:fit_motiv/constants/app_text_styles.dart';
+import 'package:fit_motiv/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 
 class OnboardingScreen extends StatelessWidget {
@@ -6,6 +7,7 @@ class OnboardingScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
@@ -18,13 +20,13 @@ class OnboardingScreen extends StatelessWidget {
               Column(
                 children: [
                   Text(
-                    'Welcome to FitMotiv!',
+                    l10n.welcomeToFitMotiv,
                     style: AppTextStyles.heading1,
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    'Your journey to a healthier, happier you starts here. Get personalized plans, track your progress, and join our supportive community.',
+                    l10n.onboardingDescription,
                     style: AppTextStyles.bodyMedium.copyWith(height: 1.5),
                     textAlign: TextAlign.center,
                   ),
@@ -44,7 +46,7 @@ class OnboardingScreen extends StatelessWidget {
                         borderRadius: BorderRadius.circular(30),
                       ),
                     ),
-                    child: Text('Get Started', style: AppTextStyles.buttonText),
+                    child: Text(l10n.getStarted, style: AppTextStyles.buttonText),
                   ),
                 ),
               ),
