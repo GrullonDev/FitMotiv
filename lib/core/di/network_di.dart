@@ -2,37 +2,33 @@ import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get_it/get_it.dart';
 
-import 'package:fit_motiv/core/network/services/api_service.dart';
+import 'package:fit_motiv/core/network/interceptors/auth_interceptor.dart';
+import 'package:fit_motiv/core/services/token_storage.dart';
 
-/// Core network dependency injection configuration
-/// This class provides generic network services that can be used across all modules
-/// Follows the Dependency Injection principle and helps maintain
-/// a clean separation of concerns for network operations
 class NetworkDI {
   static void init(GetIt sl) {
-    // Register Dio instance for general API communication
-    sl.registerLazySingleton<Dio>(() => _createDio(), instanceName: 'mainDio');
+    sl.registerLazySingleton<TokenStorage>(() => TokenStorage());
 
-    // Register ApiService
-    sl.registerLazySingleton<ApiService>(
-      () => ApiService(
-        dio: sl<Dio>(instanceName: 'mainDio'),
-        baseUrl: _getApiBaseUrl(),
-      ),
+    sl.registerLazySingleton<Dio>(
+      () => _createDio(sl<TokenStorage>()),
+      instanceName: 'mainDio',
     );
   }
 
-  /// Create configured Dio instance for general API communication
-  static Dio _createDio() {
+  static Dio _createDio(TokenStorage tokenStorage) {
     final dio = Dio();
 
-    // Base configuration
     dio.options.baseUrl = _getApiBaseUrl();
     dio.options.connectTimeout = Duration(seconds: _getTimeoutSeconds());
     dio.options.receiveTimeout = Duration(seconds: _getTimeoutSeconds());
     dio.options.sendTimeout = Duration(seconds: _getTimeoutSeconds());
+    dio.options.headers['Content-Type'] = 'application/json';
+    dio.options.headers['Accept'] = 'application/json';
 
-    // Add logging interceptor in development
+    dio.interceptors.add(
+      AuthInterceptor(tokenStorage: tokenStorage, dio: dio),
+    );
+
     if (_isLoggingEnabled()) {
       dio.interceptors.add(
         LogInterceptor(
@@ -50,18 +46,15 @@ class NetworkDI {
     return dio;
   }
 
-  /// Get base URL for the API
   static String _getApiBaseUrl() {
     final isProd = dotenv.env['ENVIRONMENT'] == 'production';
     final baseUrl = isProd
         ? dotenv.env['PROD_API_URL'] ?? 'https://api.tuapp.com'
-        : dotenv.env['DEV_API_URL'] ?? 'http://localhost:8000';
+        : dotenv.env['DEV_API_URL'] ?? 'http://localhost:8080';
 
-    // Add /api suffix if not present
     return baseUrl.endsWith('/api') ? baseUrl : '$baseUrl/api';
   }
 
-  /// Get timeout configuration
   static int _getTimeoutSeconds() {
     final isProd = dotenv.env['ENVIRONMENT'] == 'production';
     final timeoutStr = isProd
@@ -71,7 +64,6 @@ class NetworkDI {
     return int.tryParse(timeoutStr) ?? (isProd ? 15 : 30);
   }
 
-  /// Check if logging is enabled
   static bool _isLoggingEnabled() {
     final isProd = dotenv.env['ENVIRONMENT'] == 'production';
     final loggingStr = isProd

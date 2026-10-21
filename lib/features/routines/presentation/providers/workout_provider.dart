@@ -1,14 +1,12 @@
-import 'package:fit_motiv/features/routines/data/datasources/workout_supabase_datasource.dart';
+import 'package:fit_motiv/features/routines/data/datasources/workout_api_datasource.dart';
 import 'package:flutter/material.dart';
 
-/// Provider que gestiona los workouts desde Supabase
 class WorkoutProvider extends ChangeNotifier {
-  WorkoutProvider({required WorkoutSupabaseDatasource datasource})
-    : _datasource = datasource {
+  WorkoutProvider({required WorkoutApiDatasource datasource}) : _datasource = datasource {
     loadWorkouts();
   }
 
-  final WorkoutSupabaseDatasource _datasource;
+  final WorkoutApiDatasource _datasource;
 
   List<Map<String, dynamic>> _workouts = [];
   Map<String, dynamic>? _dailyWorkout;
@@ -31,12 +29,12 @@ class WorkoutProvider extends ChangeNotifier {
     return _workouts.where((w) => w['category'] == category).toList();
   }
 
-  /// Obtiene ejercicios de un workout (desde cache o Supabase)
+  /// Obtiene ejercicios de un workout (desde cache o API)
   List<Map<String, dynamic>> getExercisesFor(String workoutId) {
     return _exercisesCache[workoutId] ?? [];
   }
 
-  /// Carga los ejercicios de un workout específico desde Supabase
+  /// Carga los ejercicios de un workout específico desde la API
   Future<List<Map<String, dynamic>>> loadExercises(String workoutId) async {
     if (_exercisesCache.containsKey(workoutId)) {
       return _exercisesCache[workoutId]!;

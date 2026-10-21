@@ -1,14 +1,12 @@
-import 'package:fit_motiv/features/plans/data/datasources/plans_supabase_datasource.dart';
+import 'package:fit_motiv/features/plans/data/datasources/plans_api_datasource.dart';
 import 'package:flutter/material.dart';
 
-/// Provider que gestiona los datos de nutrición y planes desde Supabase
 class PlansProvider extends ChangeNotifier {
-  PlansProvider({required PlansSupabaseDatasource datasource})
-    : _datasource = datasource {
+  PlansProvider({required PlansApiDatasource datasource}) : _datasource = datasource {
     loadAll();
   }
 
-  final PlansSupabaseDatasource _datasource;
+  final PlansApiDatasource _datasource;
 
   List<Map<String, dynamic>> _mealPlans = [];
   List<Map<String, dynamic>> _recipes = [];
@@ -85,7 +83,7 @@ class PlansProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Agrega un vaso de agua y persiste en Supabase
+  /// Agrega un vaso de agua y persiste en la API
   Future<void> addWaterGlass() async {
     if (_todayWaterGlasses < 20) {
       _todayWaterGlasses++;

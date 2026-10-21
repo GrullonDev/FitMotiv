@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 /// Card del "Workout of the Day" en el Dashboard.
-/// Ahora lee los datos desde WorkoutProvider (Supabase).
+/// Ahora lee los datos desde WorkoutProvider (API).
 class WorkoutCard extends StatelessWidget {
   const WorkoutCard({super.key});
 

@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:fit_motiv/core/services/analytics_service.dart';
-import 'package:fit_motiv/features/progress/data/datasources/progress_supabase_datasource.dart';
+import 'package:fit_motiv/features/progress/data/datasources/progress_api_datasource.dart';
 import 'package:fit_motiv/features/routines/domain/entities/exercise.dart';
 import 'package:flutter/material.dart';
 
@@ -10,8 +10,7 @@ enum WorkoutState { idle, playing, paused, rest, completed }
 class WorkoutSessionProvider extends ChangeNotifier {
   WorkoutSessionProvider({this.progressDatasource, this.analyticsService});
 
-  /// Datasource opcional para persistir la sesión al completarse
-  final ProgressSupabaseDatasource? progressDatasource;
+  final ProgressApiDatasource? progressDatasource;
   final AnalyticsService? analyticsService;
 
   List<Exercise> _exercises = [];
@@ -129,7 +128,7 @@ class WorkoutSessionProvider extends ChangeNotifier {
     } else {
       _state = WorkoutState.completed;
       _stopTimer();
-      // Persistir la sesión completa en Supabase
+      // Persist the completed session to the backend
       _logCompletedSession();
     }
     notifyListeners();
@@ -154,7 +153,7 @@ class WorkoutSessionProvider extends ChangeNotifier {
         durationMinutes: _totalDurationMinutes > 0 ? _totalDurationMinutes : 1,
         caloriesBurned: _totalCaloriesBurned > 0 ? _totalCaloriesBurned : 10,
       );
-      debugPrint('✅ Workout session logged to Supabase');
+      debugPrint('Workout session logged');
     } catch (e) {
       debugPrint('❌ Error logging workout session: $e');
     }

@@ -8,11 +8,11 @@ enum AppFlavor { dev, prod }
 /// según el flavor/entorno actual.
 ///
 /// Cada flavor carga su propio archivo .env:
-///   - dev  → .env.dev  (conecta al proyecto Supabase de desarrollo)
-///   - prod → .env.prod (conecta al proyecto Supabase de producción)
+///   - dev  → .env.dev  (conecta al backend de desarrollo)
+///   - prod → .env.prod (conecta al backend de producción)
 ///
 /// Esto permite que la rama develop y main del proyecto se conecten
-/// a proyectos Supabase diferentes automáticamente.
+/// a entornos diferentes automáticamente.
 class AppConfig {
   AppConfig._internal();
   static AppConfig? _instance;
@@ -35,7 +35,7 @@ class AppConfig {
       debugPrint('✅ AppConfig initialized: $environmentName environment');
       debugPrint('📁 Loaded env file: $envFileName');
       if (isDevelopment) {
-        debugPrint('🔗 Supabase URL: $supabaseUrl');
+        debugPrint('🔗 API URL: $apiBaseUrl');
       }
     } catch (e) {
       debugPrint('⚠️ Error loading $envFileName: $e');
@@ -73,7 +73,7 @@ class AppConfig {
 
     switch (_flavor) {
       case AppFlavor.dev:
-        return dotenv.env['API_URL'] ?? 'http://localhost:8000';
+        return dotenv.env['API_URL'] ?? 'http://localhost:8080';
       case AppFlavor.prod:
         return dotenv.env['API_URL'] ?? 'https://api.fitmotiv.com/api';
     }
@@ -117,22 +117,6 @@ class AppConfig {
         : baseUrl;
 
     return '$cleanBaseUrl/$cleanEndpoint';
-  }
-
-  // ─────────────────────────────────────────────
-  // Supabase Configuration
-  // ─────────────────────────────────────────────
-
-  /// URL del proyecto Supabase (dev o prod según el flavor)
-  String get supabaseUrl {
-    _ensureInitialized();
-    return dotenv.env['SUPABASE_URL'] ?? '';
-  }
-
-  /// Anon Key del proyecto Supabase (dev o prod según el flavor)
-  String get supabaseAnonKey {
-    _ensureInitialized();
-    return dotenv.env['SUPABASE_ANON_KEY'] ?? '';
   }
 
   /// Helper para verificar que la configuración fue inicializada

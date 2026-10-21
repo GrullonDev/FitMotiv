@@ -4,7 +4,6 @@ import 'package:fit_motiv/core/localization/locale_provider.dart';
 import 'package:fit_motiv/features/community/presentation/providers/community_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ChatRoomScreen extends StatefulWidget {
   const ChatRoomScreen({
@@ -60,7 +59,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<CommunityProvider>();
-    final currentUserId = Supabase.instance.client.auth.currentUser?.id;
+    const currentUserId = '';
 
     final l10n = context.read<LocaleProvider>();
 

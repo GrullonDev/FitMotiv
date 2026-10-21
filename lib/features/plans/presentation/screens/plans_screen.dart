@@ -206,7 +206,7 @@ class PlansScreen extends StatelessWidget {
             ),
           ),
 
-          // Category Chips desde Supabase
+          // Category Chips desde la API
           if (categories.isNotEmpty)
             SizedBox(
               height: 50,
@@ -312,7 +312,7 @@ class PlansScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Carrusel - Sabías que? — desde Supabase
+            // Carrusel - Sabías que? — desde la API
             Text(l10n.translate('did_you_know'), style: AppTextStyles.heading4),
             const SizedBox(height: 16),
             if (provider.tips.isEmpty)
@@ -344,21 +344,15 @@ class PlansScreen extends StatelessWidget {
 
             const SizedBox(height: 32),
 
-            // Water Calculator — persistido en Supabase
-            Text(
-              l10n.translate('water_tracker'),
-              style: AppTextStyles.heading4,
-            ),
+            // Water Calculator — persistido en la API
+            Text(l10n.translate('water_tracker'), style: AppTextStyles.heading4),
             const SizedBox(height: 16),
             _WaterTrackerWidget(provider: provider),
 
             const SizedBox(height: 32),
 
-            // Articles — desde Supabase
-            Text(
-              l10n.translate('recommended_articles'),
-              style: AppTextStyles.heading4,
-            ),
+            // Articles — desde la API
+            Text(l10n.translate('recommended_articles'), style: AppTextStyles.heading4),
             const SizedBox(height: 16),
             if (provider.articles.isEmpty)
               _buildEmptyState(
@@ -601,7 +595,7 @@ class PlansScreen extends StatelessWidget {
   }
 }
 
-/// Water Tracker conectado a Supabase (persiste los vasos)
+/// Water Tracker conectado a la API (persiste los vasos)
 class _WaterTrackerWidget extends StatelessWidget {
   const _WaterTrackerWidget({required this.provider});
   final PlansProvider provider;

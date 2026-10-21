@@ -160,7 +160,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  /// Muestra stats rápidas del usuario (datos del perfil de Supabase)
+  /// Muestra stats rápidas del usuario
   Widget _buildUserStatsRow(BuildContext context) {
     final profile = context.watch<UserProfileProvider>().profile;
 
