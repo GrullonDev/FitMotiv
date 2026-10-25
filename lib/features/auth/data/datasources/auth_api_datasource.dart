@@ -79,24 +79,7 @@ class AuthApiDataSource extends BaseRemoteDataSource implements AuthDataSource {
 
     final data = _extractData(response.data);
 
-    return RegisterResponse(
-      id: 0,
-      email: data['email'] as String? ?? request.email,
-      password: request.password,
-      username: request.username,
-      fullName: request.fullName,
-      fitnesGoal: request.fitnesGoal,
-      bio: request.bio,
-      activityLevel: request.activityLevel,
-      age: request.age,
-      height: request.height,
-      weight: request.weight,
-      isActive: data['is_active'] as bool? ?? true,
-      isVerify: data['is_verified'] as bool? ?? false,
-      createdAt: data['created_at'] as String? ?? DateTime.now().toIso8601String(),
-      updatedAt: data['created_at'] as String? ?? DateTime.now().toIso8601String(),
-      message: data['message'] as String? ?? 'Registration successful',
-    );
+    return RegisterResponse.fromJson(data);
   }
 
   @override

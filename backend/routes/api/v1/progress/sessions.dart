@@ -13,7 +13,10 @@ Future<Response> onRequest(RequestContext context) async {
 
   switch (context.request.method) {
     case HttpMethod.get:
-      final sessions = await repo.getWorkoutSessions(authUser.id);
+      final params = context.request.uri.queryParameters;
+      final limit = parsePaginationParam(params['limit'], defaultValue: 50, max: 100);
+      final offset = parsePaginationParam(params['offset']);
+      final sessions = await repo.getWorkoutSessions(authUser.id, limit: limit, offset: offset);
       return jsonOk(sessions);
     case HttpMethod.post:
       return _logSession(context, repo, authUser);

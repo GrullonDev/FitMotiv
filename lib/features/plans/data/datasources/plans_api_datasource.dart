@@ -32,37 +32,25 @@ class PlansApiDatasource {
   // --- Meal Plans ---
 
   Future<List<Map<String, dynamic>>> getMealPlans() async {
-    try {
-      final response = await _dio.get('$_nutritionBase/meals');
-      return _extractList(response.data);
-    } catch (_) {
-      return [];
-    }
+    final response = await _dio.get('$_nutritionBase/meals');
+    return _extractList(response.data);
   }
 
   // --- Recipes ---
 
   Future<List<Map<String, dynamic>>> getRecipes({String? category}) async {
-    try {
-      final response = await _dio.get(
-        '$_nutritionBase/recipes',
-        queryParameters: {
-          if (category != null && category.isNotEmpty) 'category': category,
-        },
-      );
-      return _extractList(response.data);
-    } catch (_) {
-      return [];
-    }
+    final response = await _dio.get(
+      '$_nutritionBase/recipes',
+      queryParameters: {
+        if (category != null && category.isNotEmpty) 'category': category,
+      },
+    );
+    return _extractList(response.data);
   }
 
   Future<Map<String, dynamic>?> getRandomRecipe() async {
-    try {
-      final response = await _dio.get('$_nutritionBase/recipes/random');
-      return _extractData(response.data);
-    } catch (_) {
-      return null;
-    }
+    final response = await _dio.get('$_nutritionBase/recipes/random');
+    return _extractData(response.data);
   }
 
   // --- Tips (not implemented in backend yet, return empty) ---
@@ -80,13 +68,9 @@ class PlansApiDatasource {
   // --- Water Log ---
 
   Future<int> getTodayWaterGlasses() async {
-    try {
-      final response = await _dio.get('$_nutritionBase/water');
-      final data = _extractData(response.data);
-      return (data['glasses'] as int?) ?? 0;
-    } catch (_) {
-      return 0;
-    }
+    final response = await _dio.get('$_nutritionBase/water');
+    final data = _extractData(response.data);
+    return (data['glasses'] as int?) ?? 0;
   }
 
   Future<void> updateWaterGlasses(int glasses) async {

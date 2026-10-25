@@ -8,11 +8,20 @@ class AuthInterceptor extends Interceptor {
     required TokenStorage tokenStorage,
     required Dio dio,
   })  : _tokenStorage = tokenStorage,
-        _dio = dio;
+        _dio = dio,
+        _refreshDio = Dio(BaseOptions(
+          baseUrl: dio.options.baseUrl,
+          connectTimeout: dio.options.connectTimeout,
+          receiveTimeout: dio.options.receiveTimeout,
+          headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
+        ));
 
   final TokenStorage _tokenStorage;
   final Dio _dio;
+  final Dio _refreshDio;
   bool _isRefreshing = false;
+  int _refreshFailures = 0;
+  static const _maxRefreshRetries = 2;
   final _pendingRequests = <Completer<void>>[];
 
   static const _noAuthPaths = [
@@ -81,6 +90,13 @@ class AuthInterceptor extends Interceptor {
     _isRefreshing = true;
 
     try {
+      if (_refreshFailures >= _maxRefreshRetries) {
+        await _tokenStorage.clearTokens();
+        _refreshFailures = 0;
+        handler.next(err);
+        return;
+      }
+
       final refreshToken = await _tokenStorage.getRefreshToken();
       if (refreshToken == null || refreshToken.isEmpty) {
         await _tokenStorage.clearTokens();
@@ -88,8 +104,9 @@ class AuthInterceptor extends Interceptor {
         return;
       }
 
-      final response = await _dio.post(
-        '${err.requestOptions.baseUrl.replaceAll(RegExp(r'/api$'), '')}/api/v1/auth/refresh',
+      final baseUrl = err.requestOptions.baseUrl.replaceAll(RegExp(r'/api$'), '');
+      final response = await _refreshDio.post(
+        '$baseUrl/api/v1/auth/refresh',
         data: {'refresh_token': refreshToken},
       );
 
@@ -102,6 +119,7 @@ class AuthInterceptor extends Interceptor {
       final newRefreshToken = responseData['refresh_token'] as String?;
 
       if (newAccessToken != null && newRefreshToken != null) {
+        _refreshFailures = 0;
         await _tokenStorage.saveTokens(
           accessToken: newAccessToken,
           refreshToken: newRefreshToken,
@@ -118,9 +136,11 @@ class AuthInterceptor extends Interceptor {
         return;
       }
 
+      _refreshFailures++;
       await _tokenStorage.clearTokens();
       handler.next(err);
     } catch (_) {
+      _refreshFailures++;
       await _tokenStorage.clearTokens();
       for (final completer in _pendingRequests) {
         completer.completeError(err);

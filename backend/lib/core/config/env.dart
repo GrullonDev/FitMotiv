@@ -36,8 +36,8 @@ class Env {
   static String get dbHost => get('DB_HOST', defaultValue: 'localhost');
   static int get dbPort => getInt('DB_PORT', defaultValue: 5432);
   static String get dbName => get('DB_NAME', defaultValue: 'fitmotiv');
-  static String get dbUser => get('DB_USER', defaultValue: 'fitmotiv');
-  static String get dbPassword => get('DB_PASSWORD', defaultValue: 'fitmotiv_dev');
+  static String get dbUser => get('DB_USER', defaultValue: 'fitmotiv_user');
+  static String get dbPassword => get('DB_PASSWORD', defaultValue: 'fitmotiv_dev_password');
 
   // JWT
   static String get jwtSecret =>

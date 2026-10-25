@@ -13,7 +13,10 @@ Future<Response> onRequest(RequestContext context) async {
 
   switch (context.request.method) {
     case HttpMethod.get:
-      final goals = await repo.getGoals(authUser.id);
+      final params = context.request.uri.queryParameters;
+      final limit = parsePaginationParam(params['limit'], defaultValue: 50, max: 100);
+      final offset = parsePaginationParam(params['offset']);
+      final goals = await repo.getGoals(authUser.id, limit: limit, offset: offset);
       return jsonOk(goals);
     case HttpMethod.post:
       return _createGoal(context, repo, authUser);

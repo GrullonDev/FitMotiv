@@ -3,12 +3,12 @@ import 'dart:convert';
 import 'package:dart_frog/dart_frog.dart';
 
 Future<Map<String, dynamic>> parseJsonBody(RequestContext context) async {
+  final body = await context.request.body();
+  if (body.isEmpty) return {};
   try {
-    final body = await context.request.body();
-    if (body.isEmpty) return {};
     return jsonDecode(body) as Map<String, dynamic>;
-  } catch (_) {
-    return {};
+  } on FormatException {
+    throw const FormatException('Invalid JSON body');
   }
 }
 
@@ -40,5 +40,14 @@ String? validateRequired(String? value, String fieldName) {
 }
 
 String sanitize(String input) {
-  return input.trim();
+  final stripped = input.replaceAll(RegExp(r'<[^>]*>'), '').replaceAll('\x00', '');
+  return stripped.trim();
+}
+
+int parsePaginationParam(String? value, {int defaultValue = 0, int max = 100}) {
+  if (value == null) return defaultValue;
+  final parsed = int.tryParse(value) ?? defaultValue;
+  if (parsed < 0) return 0;
+  if (parsed > max) return max;
+  return parsed;
 }

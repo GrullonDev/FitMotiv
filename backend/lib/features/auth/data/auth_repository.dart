@@ -112,13 +112,11 @@ class AuthRepository {
     final lockedUntil = user[5] as DateTime?;
 
     if (!isActive) {
-      throw AuthException('Account is deactivated');
+      throw AuthException('Invalid email or password');
     }
 
-    // Check lockout
     if (lockedUntil != null && lockedUntil.isAfter(DateTime.now().toUtc())) {
-      final minutes = lockedUntil.difference(DateTime.now().toUtc()).inMinutes + 1;
-      throw AuthException('Account is temporarily locked. Try again in $minutes minutes');
+      throw AuthException('Invalid email or password');
     }
 
     // Verify password
@@ -180,69 +178,85 @@ class AuthRepository {
     final userId = payload['sub'] as String;
     final tokenHash = sha256.convert(utf8.encode(refreshTokenValue)).toString();
 
-    // Find and validate stored refresh token
-    final result = await _db.query(
-      'SELECT id, revoked, expires_at FROM refresh_tokens WHERE token_hash = @hash AND user_id = @user_id',
-      parameters: {'hash': tokenHash, 'user_id': userId},
-    );
-
-    if (result.isEmpty) {
-      throw AuthException('Refresh token not found');
-    }
-
-    final storedToken = result.first;
-    final isRevoked = storedToken[1] as bool;
-    final expiresAt = storedToken[2] as DateTime;
-
-    if (isRevoked) {
-      // Potential token reuse — revoke all tokens for this user
-      await _db.query(
-        'UPDATE refresh_tokens SET revoked = true WHERE user_id = @user_id',
-        parameters: {'user_id': userId},
+    return _db.transaction((tx) async {
+      // Lock the token row to prevent concurrent rotation
+      final result = await tx.execute(
+        Sql.named(
+          'SELECT id, revoked, expires_at FROM refresh_tokens '
+          'WHERE token_hash = @hash AND user_id = @user_id FOR UPDATE',
+        ),
+        parameters: {'hash': tokenHash, 'user_id': userId},
       );
-      throw AuthException('Token has been revoked');
-    }
 
-    if (expiresAt.isBefore(DateTime.now().toUtc())) {
-      throw AuthException('Refresh token expired');
-    }
+      if (result.isEmpty) {
+        throw AuthException('Refresh token not found');
+      }
 
-    // Revoke old token (rotation)
-    await _db.query(
-      'UPDATE refresh_tokens SET revoked = true WHERE token_hash = @hash',
-      parameters: {'hash': tokenHash},
-    );
+      final storedToken = result.first;
+      final isRevoked = storedToken[1] as bool;
+      final expiresAt = storedToken[2] as DateTime;
 
-    // Get user email
-    final userResult = await _db.query(
-      'SELECT email FROM users WHERE id = @id AND is_active = true',
-      parameters: {'id': userId},
-    );
-    if (userResult.isEmpty) {
-      throw AuthException('User not found');
-    }
-    final email = userResult.first[0] as String;
+      if (isRevoked) {
+        await tx.execute(
+          Sql.named(
+            'UPDATE refresh_tokens SET revoked = true WHERE user_id = @user_id',
+          ),
+          parameters: {'user_id': userId},
+        );
+        throw AuthException('Token has been revoked');
+      }
 
-    // Generate new pair
-    final newAccessToken = JwtService.generateAccessToken(userId, email);
-    final newRefreshToken = JwtService.generateRefreshToken(userId);
-    final newTokenHash = sha256.convert(utf8.encode(newRefreshToken)).toString();
+      if (expiresAt.isBefore(DateTime.now().toUtc())) {
+        throw AuthException('Refresh token expired');
+      }
 
-    await _db.query(
-      'INSERT INTO refresh_tokens (user_id, token_hash, expires_at) VALUES (@user_id, @token_hash, @expires_at)',
-      parameters: {
-        'user_id': userId,
-        'token_hash': newTokenHash,
-        'expires_at': DateTime.now().toUtc().add(Duration(days: Env.refreshTokenExpiryDays)),
-      },
-    );
+      // Revoke old token (rotation)
+      await tx.execute(
+        Sql.named(
+          'UPDATE refresh_tokens SET revoked = true WHERE token_hash = @hash',
+        ),
+        parameters: {'hash': tokenHash},
+      );
 
-    return {
-      'access_token': newAccessToken,
-      'refresh_token': newRefreshToken,
-      'token_type': 'bearer',
-      'expires_in': Env.accessTokenExpiryMinutes * 60,
-    };
+      // Get user email
+      final userResult = await tx.execute(
+        Sql.named(
+          'SELECT email FROM users WHERE id = @id AND is_active = true',
+        ),
+        parameters: {'id': userId},
+      );
+      if (userResult.isEmpty) {
+        throw AuthException('User not found');
+      }
+      final email = userResult.first[0] as String;
+
+      // Generate new pair
+      final newAccessToken = JwtService.generateAccessToken(userId, email);
+      final newRefreshToken = JwtService.generateRefreshToken(userId);
+      final newTokenHash =
+          sha256.convert(utf8.encode(newRefreshToken)).toString();
+
+      await tx.execute(
+        Sql.named(
+          'INSERT INTO refresh_tokens (user_id, token_hash, expires_at) '
+          'VALUES (@user_id, @token_hash, @expires_at)',
+        ),
+        parameters: {
+          'user_id': userId,
+          'token_hash': newTokenHash,
+          'expires_at': DateTime.now()
+              .toUtc()
+              .add(Duration(days: Env.refreshTokenExpiryDays)),
+        },
+      );
+
+      return {
+        'access_token': newAccessToken,
+        'refresh_token': newRefreshToken,
+        'token_type': 'bearer',
+        'expires_in': Env.accessTokenExpiryMinutes * 60,
+      };
+    });
   }
 
   Future<void> logout(String userId, {String? refreshTokenValue}) async {
