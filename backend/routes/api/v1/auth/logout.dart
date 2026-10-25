@@ -16,7 +16,9 @@ Future<Response> onRequest(RequestContext context) async {
 
   final token = authHeader.substring(7);
   final payload = JwtService.verifyToken(token);
-  if (payload == null) return jsonUnauthorized('Invalid token');
+  if (payload == null || payload['type'] != 'access') {
+    return jsonUnauthorized('Invalid token');
+  }
 
   final userId = payload['sub'] as String?;
   if (userId == null) return jsonUnauthorized('Invalid token');

@@ -115,21 +115,26 @@ flutter run -t lib/main_dev.dart
 
 Para ejecutar la aplicación en modo desarrollo, **necesitas tener el backend ejecutándose localmente**.
 
-#### Obtener el Backend:
+#### Iniciar el Backend:
 ```bash
-# Clona el repositorio del backend
-git clone https://github.com/GrullonDev/FitMotiv-Backend.git
+cd backend
 
-# Sigue las instrucciones del README del backend para:
-# 1. Configurar la base de datos
-# 2. Instalar dependencias
-# 3. Ejecutar el servidor local
+# 1. Inicia PostgreSQL (Podman o Docker)
+podman compose up -d
 
-# El backend por defecto corre en: http://localhost:8000
+# 2. Configura variables de entorno
+cp .env.example .env
+# Edita .env — genera JWT_SECRET: openssl rand -base64 64
+
+# 3. Instala dependencias e inicia el servidor
+dart pub get
+dart_frog dev
 ```
 
+Consulta `backend/README.md` para más detalles.
+
 #### URLs Configuradas:
-- **Desarrollo**: `http://localhost:8000` (Backend local requerido)
+- **Desarrollo**: `http://localhost:8080` (Backend local requerido)
 
 #### ¿No tienes el backend?
 Si no puedes ejecutar el backend localmente:
@@ -410,7 +415,7 @@ Crea tu archivo `.env` basado en `.env.example`:
 
 ```bash
 # URLs de API
-DEV_API_URL=http://localhost:8000          # Backend local
+DEV_API_URL=http://localhost:8080          # Backend local
 PROD_API_URL=https://api.tuapp.com/api     # Servidor remoto
 
 # Configuraciones de timeout
@@ -689,7 +694,7 @@ Consulta el archivo `LICENSE` para más detalles.
 - **Proyecto**: [FitMotiv](https://github.com/GrullonDev/FitMotiv)
 
 ### Enlaces Relacionados:
-- 🔗 **Backend**: [FitMotiv-Backend](https://github.com/GrullonDev/FitMotiv-Backend)
+- 🔗 **Backend**: incluido en `backend/` (Dart Frog + PostgreSQL)
 - 📱 **App Store**: *Próximamente*
 - 🤖 **Google Play**: *Próximamente*
 

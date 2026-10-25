@@ -73,9 +73,9 @@ class AppConfig {
 
     switch (_flavor) {
       case AppFlavor.dev:
-        return dotenv.env['API_URL'] ?? 'http://localhost:8080';
+        return dotenv.env['DEV_API_URL'] ?? 'http://localhost:8080';
       case AppFlavor.prod:
-        return dotenv.env['API_URL'] ?? 'https://api.fitmotiv.com/api';
+        return dotenv.env['PROD_API_URL'] ?? 'https://api.fitmotiv.com';
     }
   }
 

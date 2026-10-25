@@ -6,15 +6,20 @@ class ProgressRepository {
 
   // --- Weight Log ---
 
-  Future<List<Map<String, dynamic>>> getWeightLog(String userId) async {
+  Future<List<Map<String, dynamic>>> getWeightLog(
+    String userId, {
+    int limit = 50,
+    int offset = 0,
+  }) async {
     final result = await _db.query(
       '''
       SELECT id, weight, notes, recorded_at, created_at
       FROM weight_log
       WHERE user_id = @user_id
       ORDER BY recorded_at DESC
+      LIMIT @limit OFFSET @offset
       ''',
-      parameters: {'user_id': userId},
+      parameters: {'user_id': userId, 'limit': limit, 'offset': offset},
     );
 
     return result
@@ -58,7 +63,11 @@ class ProgressRepository {
 
   // --- Goals ---
 
-  Future<List<Map<String, dynamic>>> getGoals(String userId) async {
+  Future<List<Map<String, dynamic>>> getGoals(
+    String userId, {
+    int limit = 50,
+    int offset = 0,
+  }) async {
     final result = await _db.query(
       '''
       SELECT id, title, description, target_value, current_value,
@@ -66,8 +75,9 @@ class ProgressRepository {
       FROM goals
       WHERE user_id = @user_id
       ORDER BY created_at DESC
+      LIMIT @limit OFFSET @offset
       ''',
-      parameters: {'user_id': userId},
+      parameters: {'user_id': userId, 'limit': limit, 'offset': offset},
     );
 
     return result
@@ -162,7 +172,10 @@ class ProgressRepository {
   // --- Workout Sessions ---
 
   Future<List<Map<String, dynamic>>> getWorkoutSessions(
-      String userId) async {
+    String userId, {
+    int limit = 50,
+    int offset = 0,
+  }) async {
     final result = await _db.query(
       '''
       SELECT id, workout_id, workout_name, duration_minutes,
@@ -170,8 +183,9 @@ class ProgressRepository {
       FROM workout_sessions
       WHERE user_id = @user_id
       ORDER BY completed_at DESC
+      LIMIT @limit OFFSET @offset
       ''',
-      parameters: {'user_id': userId},
+      parameters: {'user_id': userId, 'limit': limit, 'offset': offset},
     );
 
     return result

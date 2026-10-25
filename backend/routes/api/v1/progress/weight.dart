@@ -13,7 +13,10 @@ Future<Response> onRequest(RequestContext context) async {
 
   switch (context.request.method) {
     case HttpMethod.get:
-      final entries = await repo.getWeightLog(authUser.id);
+      final params = context.request.uri.queryParameters;
+      final limit = parsePaginationParam(params['limit'], defaultValue: 50, max: 100);
+      final offset = parsePaginationParam(params['offset']);
+      final entries = await repo.getWeightLog(authUser.id, limit: limit, offset: offset);
       return jsonOk(entries);
     case HttpMethod.post:
       return _logWeight(context, repo, authUser);

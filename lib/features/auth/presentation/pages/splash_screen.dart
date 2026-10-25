@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:fit_motiv/constants/app_colors.dart';
 import 'package:fit_motiv/core/config/app_config.dart';
 import 'package:fit_motiv/core/di/injection_container.dart' as di;
@@ -47,15 +48,22 @@ class _SplashScreenState extends State<SplashScreen>
       final tokenStorage = di.sl<TokenStorage>();
       final hasTokens = await tokenStorage.hasTokens();
 
-      if (hasTokens && mounted) {
-        Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
-        return;
+      if (hasTokens) {
+        final dio = di.sl<Dio>(instanceName: 'mainDio');
+        final response = await dio.get('/v1/users/me');
+        if (response.statusCode == 200 && mounted) {
+          Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
+          return;
+        }
       }
 
       if (mounted) {
         Navigator.pushReplacementNamed(context, '/onboarding');
       }
     } catch (e) {
+      try {
+        await di.sl<TokenStorage>().clearTokens();
+      } catch (_) {}
       if (mounted) {
         Navigator.pushReplacementNamed(context, '/onboarding');
       }

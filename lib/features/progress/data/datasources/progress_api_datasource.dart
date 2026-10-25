@@ -22,12 +22,8 @@ class ProgressApiDatasource {
   // --- Weight Log ---
 
   Future<List<Map<String, dynamic>>> getWeightLog() async {
-    try {
-      final response = await _dio.get('$_progressBase/weight');
-      return _extractList(response.data);
-    } catch (_) {
-      return [];
-    }
+    final response = await _dio.get('$_progressBase/weight');
+    return _extractList(response.data);
   }
 
   Future<void> logWeight(double weight, {String notes = ''}) async {
@@ -40,12 +36,8 @@ class ProgressApiDatasource {
   // --- Goals ---
 
   Future<List<Map<String, dynamic>>> getGoals() async {
-    try {
-      final response = await _dio.get('$_progressBase/goals');
-      return _extractList(response.data);
-    } catch (_) {
-      return [];
-    }
+    final response = await _dio.get('$_progressBase/goals');
+    return _extractList(response.data);
   }
 
   Future<void> createGoal({
@@ -74,12 +66,8 @@ class ProgressApiDatasource {
   // --- Workout Sessions ---
 
   Future<List<Map<String, dynamic>>> getWorkoutSessions() async {
-    try {
-      final response = await _dio.get('$_progressBase/sessions');
-      return _extractList(response.data);
-    } catch (_) {
-      return [];
-    }
+    final response = await _dio.get('$_progressBase/sessions');
+    return _extractList(response.data);
   }
 
   Future<void> logWorkoutSession({

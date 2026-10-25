@@ -43,32 +43,20 @@ class WorkoutApiDatasource {
   }
 
   Future<Map<String, dynamic>?> getRandomWorkout() async {
-    try {
-      final response = await _dio.get('$_workoutsBase/random');
-      return _extractData(response.data);
-    } catch (_) {
-      return null;
-    }
+    final response = await _dio.get('$_workoutsBase/random');
+    return _extractData(response.data);
   }
 
   Future<List<Map<String, dynamic>>> getExercises(String workoutId) async {
-    try {
-      final response = await _dio.get('$_workoutsBase/$workoutId');
-      final data = _extractData(response.data);
-      final exercises = data['exercises'];
-      if (exercises is List) return List<Map<String, dynamic>>.from(exercises);
-      return [];
-    } catch (_) {
-      return [];
-    }
+    final response = await _dio.get('$_workoutsBase/$workoutId');
+    final data = _extractData(response.data);
+    final exercises = data['exercises'];
+    if (exercises is List) return List<Map<String, dynamic>>.from(exercises);
+    return [];
   }
 
   Future<Map<String, dynamic>?> getWorkoutById(String id) async {
-    try {
-      final response = await _dio.get('$_workoutsBase/$id');
-      return _extractData(response.data);
-    } catch (_) {
-      return null;
-    }
+    final response = await _dio.get('$_workoutsBase/$id');
+    return _extractData(response.data);
   }
 }
