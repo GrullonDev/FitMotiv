@@ -11,8 +11,13 @@ Future<Response> onRequest(RequestContext context) async {
   final repo = WorkoutsRepository(db);
   final params = context.request.uri.queryParameters;
 
+  final limit = int.tryParse(params['limit'] ?? '') ?? 20;
+  final offset = int.tryParse(params['offset'] ?? '') ?? 0;
+
   final workouts = await repo.getWorkouts(
     category: params['category'],
+    limit: limit.clamp(1, 100),
+    offset: offset < 0 ? 0 : offset,
   );
 
   return jsonOk(workouts);

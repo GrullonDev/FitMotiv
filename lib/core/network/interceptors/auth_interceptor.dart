@@ -8,11 +8,21 @@ class AuthInterceptor extends Interceptor {
     required TokenStorage tokenStorage,
     required Dio dio,
   })  : _tokenStorage = tokenStorage,
-        _dio = dio;
+        _dio = dio,
+        _refreshDio = Dio(
+          BaseOptions(
+            baseUrl: dio.options.baseUrl,
+            connectTimeout: dio.options.connectTimeout,
+            receiveTimeout: dio.options.receiveTimeout,
+          ),
+        );
 
   final TokenStorage _tokenStorage;
   final Dio _dio;
+  final Dio _refreshDio;
   bool _isRefreshing = false;
+  int _refreshRetryCount = 0;
+  static const _maxRefreshRetries = 1;
   final _pendingRequests = <Completer<void>>[];
 
   static const _noAuthPaths = [
@@ -78,7 +88,15 @@ class AuthInterceptor extends Interceptor {
       return;
     }
 
+    if (_refreshRetryCount >= _maxRefreshRetries) {
+      _refreshRetryCount = 0;
+      await _tokenStorage.clearTokens();
+      handler.next(err);
+      return;
+    }
+
     _isRefreshing = true;
+    _refreshRetryCount++;
 
     try {
       final refreshToken = await _tokenStorage.getRefreshToken();
@@ -88,8 +106,8 @@ class AuthInterceptor extends Interceptor {
         return;
       }
 
-      final response = await _dio.post(
-        '${err.requestOptions.baseUrl.replaceAll(RegExp(r'/api$'), '')}/api/v1/auth/refresh',
+      final response = await _refreshDio.post(
+        '/api/v1/auth/refresh',
         data: {'refresh_token': refreshToken},
       );
 
@@ -112,6 +130,7 @@ class AuthInterceptor extends Interceptor {
         }
         _pendingRequests.clear();
 
+        _refreshRetryCount = 0;
         err.requestOptions.headers['Authorization'] = 'Bearer $newAccessToken';
         final retryResponse = await _dio.fetch(err.requestOptions);
         handler.resolve(retryResponse);

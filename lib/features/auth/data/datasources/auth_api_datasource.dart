@@ -82,7 +82,6 @@ class AuthApiDataSource extends BaseRemoteDataSource implements AuthDataSource {
     return RegisterResponse(
       id: 0,
       email: data['email'] as String? ?? request.email,
-      password: request.password,
       username: request.username,
       fullName: request.fullName,
       fitnesGoal: request.fitnesGoal,

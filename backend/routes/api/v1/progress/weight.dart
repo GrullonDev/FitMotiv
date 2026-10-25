@@ -13,7 +13,14 @@ Future<Response> onRequest(RequestContext context) async {
 
   switch (context.request.method) {
     case HttpMethod.get:
-      final entries = await repo.getWeightLog(authUser.id);
+      final params = context.request.uri.queryParameters;
+      final limit = int.tryParse(params['limit'] ?? '') ?? 20;
+      final offset = int.tryParse(params['offset'] ?? '') ?? 0;
+      final entries = await repo.getWeightLog(
+        authUser.id,
+        limit: limit.clamp(1, 100),
+        offset: offset < 0 ? 0 : offset,
+      );
       return jsonOk(entries);
     case HttpMethod.post:
       return _logWeight(context, repo, authUser);

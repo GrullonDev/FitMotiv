@@ -8,6 +8,8 @@ class WorkoutsRepository {
     String? category,
     bool publicOnly = true,
     String? userId,
+    int limit = 20,
+    int offset = 0,
   }) async {
     final conditions = <String>[];
     final parameters = <String, dynamic>{};
@@ -29,6 +31,9 @@ class WorkoutsRepository {
     final where =
         conditions.isEmpty ? '' : 'WHERE ${conditions.join(' AND ')}';
 
+    parameters['limit'] = limit;
+    parameters['offset'] = offset;
+
     final result = await _db.query(
       '''
       SELECT w.id, w.user_id, w.name, w.description, w.duration,
@@ -36,6 +41,7 @@ class WorkoutsRepository {
       FROM workouts w
       $where
       ORDER BY w.created_at DESC
+      LIMIT @limit OFFSET @offset
       ''',
       parameters: parameters,
     );

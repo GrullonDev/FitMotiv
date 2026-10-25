@@ -3,12 +3,12 @@ import 'dart:convert';
 import 'package:dart_frog/dart_frog.dart';
 
 Future<Map<String, dynamic>> parseJsonBody(RequestContext context) async {
+  final body = await context.request.body();
+  if (body.isEmpty) return {};
   try {
-    final body = await context.request.body();
-    if (body.isEmpty) return {};
     return jsonDecode(body) as Map<String, dynamic>;
-  } catch (_) {
-    return {};
+  } on FormatException {
+    throw const FormatException('Invalid JSON in request body');
   }
 }
 
@@ -40,5 +40,8 @@ String? validateRequired(String? value, String fieldName) {
 }
 
 String sanitize(String input) {
-  return input.trim();
+  return input
+      .trim()
+      .replaceAll(RegExp(r'<[^>]*>'), '')
+      .replaceAll('\x00', '');
 }
