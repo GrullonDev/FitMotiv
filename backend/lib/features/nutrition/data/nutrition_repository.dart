@@ -6,7 +6,10 @@ class NutritionRepository {
 
   // --- Meal Plans ---
 
-  Future<List<Map<String, dynamic>>> getMealPlans() async {
+  Future<List<Map<String, dynamic>>> getMealPlans({
+    int limit = 20,
+    int offset = 0,
+  }) async {
     final result = await _db.query(
       '''
       SELECT id, title, description, calories, icon, badge_text,
@@ -14,7 +17,9 @@ class NutritionRepository {
       FROM meal_plans
       WHERE is_public = true
       ORDER BY is_recommended DESC, created_at DESC
+      LIMIT @limit OFFSET @offset
       ''',
+      parameters: {'limit': limit, 'offset': offset},
     );
 
     return result
@@ -34,7 +39,11 @@ class NutritionRepository {
 
   // --- Recipes ---
 
-  Future<List<Map<String, dynamic>>> getRecipes({String? category}) async {
+  Future<List<Map<String, dynamic>>> getRecipes({
+    String? category,
+    int limit = 20,
+    int offset = 0,
+  }) async {
     final conditions = <String>['is_public = true'];
     final parameters = <String, dynamic>{};
 
@@ -45,6 +54,9 @@ class NutritionRepository {
 
     final where = 'WHERE ${conditions.join(' AND ')}';
 
+    parameters['limit'] = limit;
+    parameters['offset'] = offset;
+
     final result = await _db.query(
       '''
       SELECT id, title, description, time, calories, category,
@@ -52,6 +64,7 @@ class NutritionRepository {
       FROM recipes
       $where
       ORDER BY rating DESC, created_at DESC
+      LIMIT @limit OFFSET @offset
       ''',
       parameters: parameters,
     );

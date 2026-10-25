@@ -9,7 +9,14 @@ Future<Response> onRequest(RequestContext context) async {
 
   final db = context.read<Database>();
   final repo = NutritionRepository(db);
+  final params = context.request.uri.queryParameters;
 
-  final meals = await repo.getMealPlans();
+  final limit = int.tryParse(params['limit'] ?? '') ?? 20;
+  final offset = int.tryParse(params['offset'] ?? '') ?? 0;
+
+  final meals = await repo.getMealPlans(
+    limit: limit.clamp(1, 100),
+    offset: offset < 0 ? 0 : offset,
+  );
   return jsonOk(meals);
 }

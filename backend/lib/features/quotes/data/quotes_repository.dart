@@ -25,7 +25,11 @@ class QuotesRepository {
     };
   }
 
-  Future<List<Map<String, dynamic>>> getQuotes({String? category}) async {
+  Future<List<Map<String, dynamic>>> getQuotes({
+    String? category,
+    int limit = 20,
+    int offset = 0,
+  }) async {
     final conditions = <String>[];
     final parameters = <String, dynamic>{};
 
@@ -37,12 +41,16 @@ class QuotesRepository {
     final where =
         conditions.isEmpty ? '' : 'WHERE ${conditions.join(' AND ')}';
 
+    parameters['limit'] = limit;
+    parameters['offset'] = offset;
+
     final result = await _db.query(
       '''
       SELECT id, text, author, category
       FROM quotes
       $where
       ORDER BY random()
+      LIMIT @limit OFFSET @offset
       ''',
       parameters: parameters,
     );

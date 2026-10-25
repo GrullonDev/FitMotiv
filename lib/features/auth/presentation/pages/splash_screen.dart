@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:fit_motiv/constants/app_colors.dart';
 import 'package:fit_motiv/core/config/app_config.dart';
 import 'package:fit_motiv/core/di/injection_container.dart' as di;
@@ -47,9 +48,23 @@ class _SplashScreenState extends State<SplashScreen>
       final tokenStorage = di.sl<TokenStorage>();
       final hasTokens = await tokenStorage.hasTokens();
 
-      if (hasTokens && mounted) {
-        Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
-        return;
+      if (hasTokens) {
+        // Validate token by calling a lightweight endpoint
+        try {
+          final dio = di.sl<Dio>();
+          final response = await dio.get('/api/v1/users/me');
+          if (response.statusCode == 200 && mounted) {
+            Navigator.pushNamedAndRemoveUntil(
+              context,
+              '/home',
+              (route) => false,
+            );
+            return;
+          }
+        } catch (_) {
+          // Token invalid or network error — clear and go to login
+          await tokenStorage.clearTokens();
+        }
       }
 
       if (mounted) {

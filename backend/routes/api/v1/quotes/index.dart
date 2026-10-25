@@ -11,6 +11,13 @@ Future<Response> onRequest(RequestContext context) async {
   final repo = QuotesRepository(db);
   final params = context.request.uri.queryParameters;
 
-  final quotes = await repo.getQuotes(category: params['category']);
+  final limit = int.tryParse(params['limit'] ?? '') ?? 20;
+  final offset = int.tryParse(params['offset'] ?? '') ?? 0;
+
+  final quotes = await repo.getQuotes(
+    category: params['category'],
+    limit: limit.clamp(1, 100),
+    offset: offset < 0 ? 0 : offset,
+  );
   return jsonOk(quotes);
 }

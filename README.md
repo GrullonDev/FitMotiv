@@ -117,24 +117,30 @@ Para ejecutar la aplicación en modo desarrollo, **necesitas tener el backend ej
 
 #### Obtener el Backend:
 ```bash
-# Clona el repositorio del backend
-git clone https://github.com/GrullonDev/FitMotiv-Backend.git
+# El backend está incluido en este mismo repositorio bajo backend/
+cd backend
 
-# Sigue las instrucciones del README del backend para:
-# 1. Configurar la base de datos
-# 2. Instalar dependencias
-# 3. Ejecutar el servidor local
+# 1. Inicia PostgreSQL
+podman compose up -d   # o: docker compose up -d
 
-# El backend por defecto corre en: http://localhost:8000
+# 2. Configura variables de entorno
+cp .env.example .env
+# Edita .env — genera un JWT_SECRET: openssl rand -base64 64
+
+# 3. Instala dependencias e inicia el servidor
+dart pub get
+dart_frog dev
+
+# El backend por defecto corre en: http://localhost:8080
 ```
 
 #### URLs Configuradas:
-- **Desarrollo**: `http://localhost:8000` (Backend local requerido)
+- **Desarrollo**: `http://localhost:8080` (Backend local requerido)
 
 #### ¿No tienes el backend?
 Si no puedes ejecutar el backend localmente:
 1. Contacta al administrador del proyecto para acceso
-2. O cambia `DEV_API_URL` en `.env` a una URL de testing disponible
+2. O cambia `API_URL` en `.env` a una URL de testing disponible
 3. Algunas funciones pueden no estar disponibles sin el backend
 
 ---
@@ -409,9 +415,10 @@ git commit -m "feat: nueva funcionalidad"
 Crea tu archivo `.env` basado en `.env.example`:
 
 ```bash
-# URLs de API
-DEV_API_URL=http://localhost:8000          # Backend local
-PROD_API_URL=https://api.tuapp.com/api     # Servidor remoto
+# URL de API (cambia según el entorno)
+API_URL=http://localhost:8080              # Backend local (dev)
+# API_URL=https://api.tuapp.com/api       # Servidor remoto (prod)
+ENVIRONMENT=development                    # o: production
 
 # Configuraciones de timeout
 DEV_TIMEOUT_SECONDS=30
@@ -518,9 +525,9 @@ El proyecto utiliza un `.gitignore` avanzado que excluye automáticamente archiv
 #### "Failed host lookup: localhost"
 ```bash
 # Solución:
-1. Asegúrate de que el backend esté ejecutándose
+1. Asegúrate de que el backend esté ejecutándose (cd backend && dart_frog dev)
 2. Verifica que la URL en .env sea correcta
-3. En emulador Android, usa: 10.0.2.2:8000 en lugar de localhost:8000
+3. En emulador Android, usa: 10.0.2.2:8080 en lugar de localhost:8080
 ```
 
 #### "The Xcode project does not define custom schemes"
@@ -689,7 +696,7 @@ Consulta el archivo `LICENSE` para más detalles.
 - **Proyecto**: [FitMotiv](https://github.com/GrullonDev/FitMotiv)
 
 ### Enlaces Relacionados:
-- 🔗 **Backend**: [FitMotiv-Backend](https://github.com/GrullonDev/FitMotiv-Backend)
+- 🔗 **Backend**: Included in this repo under `backend/`
 - 📱 **App Store**: *Próximamente*
 - 🤖 **Google Play**: *Próximamente*
 

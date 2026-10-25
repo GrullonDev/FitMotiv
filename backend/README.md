@@ -23,7 +23,7 @@ cp .env.example .env
 dart pub get
 
 # 4. Run migrations and seed data
-dart run lib/core/seed_data.dart
+dart run lib/database/seeds/seed_data.dart
 
 # 5. Start the dev server
 dart_frog dev
@@ -98,20 +98,29 @@ The server starts at `http://localhost:8080`.
 ```
 backend/
 ├── lib/
-│   └── core/
-│       ├── database.dart         # PostgreSQL connection pool
-│       ├── env.dart              # Environment configuration
-│       ├── migrator.dart         # Database migration runner
-│       ├── seed_data.dart        # Seed data for development
-│       ├── auth_middleware.dart   # JWT authentication middleware
-│       ├── jwt_service.dart      # JWT token creation/verification
-│       ├── password_hasher.dart  # BCrypt password hashing
-│       ├── request_helpers.dart  # Request body parsing
-│       └── json_response.dart    # Standardized JSON responses
+│   ├── core/
+│   │   ├── config/env.dart           # Environment configuration
+│   │   ├── database/database.dart    # PostgreSQL connection pool
+│   │   ├── database/migrator.dart    # Database migration runner
+│   │   ├── middleware/auth_middleware.dart  # JWT auth middleware
+│   │   └── utils/
+│   │       ├── json_response.dart    # Standardized JSON responses
+│   │       ├── jwt_service.dart      # JWT token creation/verification
+│   │       ├── password_hasher.dart  # BCrypt password hashing
+│   │       └── request_helpers.dart  # Request body parsing & validation
+│   ├── database/seeds/seed_data.dart # Seed data for development
+│   ├── features/
+│   │   ├── auth/data/                # Auth repository
+│   │   ├── nutrition/data/           # Nutrition repository
+│   │   ├── progress/data/            # Progress repository
+│   │   ├── quotes/data/              # Quotes repository
+│   │   ├── users/data/               # Users repository
+│   │   └── workouts/data/            # Workouts repository
+│   └── server_init.dart              # Server initialization
 ├── routes/
-│   └── api/v1/                   # File-system based routing
-├── docker-compose.yml            # PostgreSQL container (works with podman compose)
-├── .env.example                  # Environment template
+│   └── api/v1/                       # File-system based routing
+├── docker-compose.yml                # PostgreSQL container (works with podman compose)
+├── .env.example                      # Environment template
 └── pubspec.yaml
 ```
 

@@ -1,7 +1,6 @@
 class RegisterResponse {
   RegisterResponse({
     required this.email,
-    required this.password,
     required this.username,
     required this.fullName,
     required this.fitnesGoal,
@@ -21,7 +20,6 @@ class RegisterResponse {
   factory RegisterResponse.fromJson(Map<String, dynamic> json) {
     return RegisterResponse(
       email: json['email'] ?? '',
-      password: json['password'] ?? '',
       username: json['username'] ?? '',
       fullName: json['fullName'] ?? '',
       fitnesGoal: json['fitnesGoal'] ?? '',
@@ -42,7 +40,6 @@ class RegisterResponse {
   Map<String, dynamic> toJson() {
     return {
       'email': email,
-      'password': password,
       'username': username,
       'full_name': fullName,
       'fitnes_goal': fitnesGoal,
@@ -61,7 +58,6 @@ class RegisterResponse {
   }
 
   final String email;
-  final String password;
   final String username;
   final String fullName;
   final String fitnesGoal;

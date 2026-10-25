@@ -18,6 +18,10 @@ Future<Response> onRequest(RequestContext context) async {
   final payload = JwtService.verifyToken(token);
   if (payload == null) return jsonUnauthorized('Invalid token');
 
+  if (payload['type'] != 'access') {
+    return jsonUnauthorized('Invalid token type');
+  }
+
   final userId = payload['sub'] as String?;
   if (userId == null) return jsonUnauthorized('Invalid token');
 

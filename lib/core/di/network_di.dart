@@ -49,8 +49,8 @@ class NetworkDI {
   static String _getApiBaseUrl() {
     final isProd = dotenv.env['ENVIRONMENT'] == 'production';
     final baseUrl = isProd
-        ? dotenv.env['PROD_API_URL'] ?? 'https://api.tuapp.com'
-        : dotenv.env['DEV_API_URL'] ?? 'http://localhost:8080';
+        ? dotenv.env['API_URL'] ?? 'https://api.tuapp.com'
+        : dotenv.env['API_URL'] ?? 'http://localhost:8080';
 
     return baseUrl.endsWith('/api') ? baseUrl : '$baseUrl/api';
   }
