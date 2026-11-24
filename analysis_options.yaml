@@ -1,4 +1,3 @@
-
 analyzer:
   exclude:
     - build/**
@@ -11,10 +10,6 @@ analyzer:
 include: package:flutter_lints/flutter.yaml
 
 linter:
-
   rules:
     always_use_package_imports: true
-    sort_constructors_first: true
-    require_trailing_commas: false
-    prefer_final_fields: true
-    avoid_print: true
+    prefer_single_quotes: true

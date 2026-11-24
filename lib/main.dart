@@ -1,15 +1,6 @@
-import 'package:flutter/material.dart';
-import 'package:fit_motiv/core/config/app_config.dart';
-import 'package:fit_motiv/main_common.dart';
+import 'package:fit_motiv/core/app/app.dart';
+import 'package:material_ui/material_ui.dart';
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-
-  // Inicializar configuración para desarrollo por defecto
-  await AppConfig.instance.initialize(flavor: AppFlavor.dev);
-
-  // Inicializar dependencias comunes
-  await initializeApp();
-
+void main() {
   runApp(const MyApp());
 }

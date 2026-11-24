@@ -32,6 +32,8 @@ dependencies:
   fl_chart: ^0.70.2
   shimmer: ^3.0.0
 
+  material_ui: ^1.11.1
+  cupertino_ui: any
 dev_dependencies:
   flutter_test:
     sdk: flutter
