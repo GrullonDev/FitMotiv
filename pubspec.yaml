@@ -1,6 +1,6 @@
 name: fit_motiv
 description: "A new Flutter project."
-publish_to: 'none' 
+publish_to: "none"
 
 version: 1.0.0+1
 
@@ -41,7 +41,6 @@ dev_dependencies:
   flutter_lints: ^5.0.0
 
 flutter:
-
   generate: true
   uses-material-design: true
 
